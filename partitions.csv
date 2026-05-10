@@ -1,0 +1,26 @@
+# Pisces Moon OS — Pisces Moon P4 partition table
+# Target hardware: ELECROW CrowPanel Advanced 7inch ESP32-P4 (16MB flash)
+#
+# Provisional layout — will be revisited once app sizes are known.
+# Carries over the S3 philosophy: one big factory app, no OTA on
+# device flash (OTA happens via SDIO to the C6, not to the P4).
+#
+# Differences from S3:
+# - app0 trimmed to 6MB (P4 binaries are larger but compressed differently;
+#   start with conservative budget, expand later if needed).
+# - storage (FAT) at 8MB for built-in assets:
+#     - C6 Ghost Engine firmware blob (for SDIO OTA, ~500KB)
+#     - LVGL fonts / icons / theme assets
+#     - Doom WAD / SimCity terrain (if loaded internally vs SD)
+# - littlefs (1MB) for app-managed config / state.
+# - nvs (24KB) for system NVS namespace use.
+#
+# Total: 0x10000 + 0x600000 + 0x800000 + 0x100000 + 0x6000 = 0xF06000
+# (fits in 16MB with headroom for bootloader and partition table)
+#
+# Name,      Type,  SubType,   Offset,    Size
+nvs,         data,  nvs,       0x9000,    0x6000
+phy_init,    data,  phy,       0xf000,    0x1000
+factory,     app,   factory,   0x10000,   0x600000
+storage,     data,  fat,       0x610000,  0x800000
+littlefs,    data,  spiffs,    0xE10000,  0x100000

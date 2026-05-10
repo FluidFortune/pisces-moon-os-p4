@@ -1,0 +1,70 @@
+# Pisces Moon OS — Pisces Moon P4 / ESP32-P4 sdkconfig defaults
+# Pisces Moon OS / Fluid Fortune / AGPL-3.0-or-later
+
+# Target chip
+CONFIG_IDF_TARGET="esp32p4"
+
+# CPU
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_360=y
+CONFIG_FREERTOS_HZ=1000
+CONFIG_FREERTOS_UNICORE=n
+
+# PSRAM — 32MB on this board
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_HEX=y
+CONFIG_SPIRAM_SPEED_200M=y
+CONFIG_SPIRAM_USE_MALLOC=y
+CONFIG_SPIRAM_TRY_ALLOCATE_WIFI_LWIP=y
+CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL=32768
+CONFIG_SPIRAM_FETCH_INSTRUCTIONS=y
+CONFIG_SPIRAM_RODATA=y
+
+# Flash — 16MB NOR
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# Console / debug serial — USB-CDC for debug
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG_ENABLED=y
+
+# Stack sizes
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+CONFIG_ESP_TIMER_TASK_STACK_SIZE=4096
+
+# Power management — keep things responsive
+CONFIG_PM_ENABLE=n
+
+# Logging
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_LOG_MAXIMUM_LEVEL_INFO=y
+
+# FATFS / SD
+CONFIG_FATFS_LFN_HEAP=y
+CONFIG_FATFS_LONG_FILENAMES=y
+CONFIG_FATFS_MAX_LFN=255
+CONFIG_FATFS_DEFAULT_CODEPAGE=437
+
+# Newlib for printf with floats (used by JSON / logging)
+CONFIG_NEWLIB_NANO_FORMAT=n
+
+# ─── LVGL v9 ────────────────────────────────────────────────
+# Set color depth, decoders, font options. For full menu, run
+# `idf.py menuconfig` → Component config → LVGL.
+CONFIG_LV_COLOR_DEPTH_16=y
+CONFIG_LV_COLOR_16_SWAP=n
+CONFIG_LV_USE_SYSMON=n
+
+# ─── esp_lvgl_port ──────────────────────────────────────────
+# Dedicated task for LVGL processing, pinned to Core 1 so the
+# C6 bridge (Core 0) doesn't starve LVGL during heavy radio
+# event flow.
+CONFIG_LV_DEF_REFR_PERIOD=16
+CONFIG_LV_DISP_DEF_REFR_PERIOD=16
+CONFIG_LV_INDEV_DEF_READ_PERIOD=20
+
+# ─── MIPI-DSI ───────────────────────────────────────────────
+# Power the DPHY from the internal LDO. Connect VDD_MIPI_DPHY
+# to the LDO output on the schematic — this is documented in
+# the ESP32-P4 LCD guide.
+CONFIG_ESP_LDO_CHANNEL_2_VOLTAGE_MV=2500

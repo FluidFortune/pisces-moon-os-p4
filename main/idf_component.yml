@@ -1,0 +1,23 @@
+# Pisces Moon OS
+# Copyright (C) 2026 Eric Becker / Fluid Fortune
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Contributions: see CLA.md
+# fluidfortune.com
+
+dependencies:
+  idf:
+    version: ">=5.4.0"
+  siara-cc/sqlite3:
+    version: "^0.4.0"
+  lvgl/lvgl:
+    version: "^9.2.0"          # LVGL v9
+  espressif/esp_lvgl_port:
+    version: "^2.4.0"          # LVGL ↔ esp_lcd integration
+  espressif/esp_lcd_ili9881c:
+    version: "^1.0.0"          # 1024×600 MIPI-DSI panel
+  espressif/esp_lcd_touch:
+    version: "^1.1.0"
+  espressif/esp_lcd_touch_gt911:
+    version: "^1.2.0"
+  jgromes/radiolib:
+    version: "^7.2.1"        # SX1262 driver
