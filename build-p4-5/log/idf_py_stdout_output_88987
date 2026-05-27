@@ -1,0 +1,439 @@
+Command: ninja all
+[1/87] Building C object esp-idf/pm_peer/CMakeFiles/__idf_pm_peer.dir/pm_peer.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_peer/pm_peer.c:76:20: warning: 'CAPS_TBEAM' defined but not used [-Wunused-variable]
+   76 | static const char* CAPS_TBEAM[] = {
+      |                    ^~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_peer/pm_peer.c:64:20: warning: 'CAPS_C6_WITH_NFC' defined but not used [-Wunused-variable]
+   64 | static const char* CAPS_C6_WITH_NFC[] = {
+      |                    ^~~~~~~~~~~~~~~~
+[2/87] Building C object esp-idf/pm_cardputer_i2c/CMakeFiles/__idf_pm_cardputer_i2c.dir/pm_cardputer_i2c.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_cardputer_i2c/pm_cardputer_i2c.c:537:13: warning: '_start_key_task' defined but not used [-Wunused-function]
+  537 | static void _start_key_task(void) {
+      |             ^~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_cardputer_i2c/pm_cardputer_i2c.c:517:13: warning: '_start_gps_task' defined but not used [-Wunused-function]
+  517 | static void _start_gps_task(void) {
+      |             ^~~~~~~~~~~~~~~
+[3/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_about.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_about.c:35:14: warning: 's_lbl_memory' defined but not used [-Wunused-variable]
+   35 | static void* s_lbl_memory    = NULL;
+      |              ^~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_about.c:34:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   34 | static void* s_screen        = NULL;
+      |              ^~~~~~~~
+[4/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_system.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c: In function '_refresh':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:85:44: warning: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'long unsigned int' [-Wformat=]
+   85 |     snprintf(buf, sizeof(buf), "UPTIME: %02u:%02u:%02u",
+      |                                         ~~~^
+      |                                            |
+      |                                            unsigned int
+      |                                         %02lu
+   86 |              up / 3600, (up / 60) % 60, up % 60);
+      |              ~~~~~~~~~                      
+      |                 |
+      |                 long unsigned int
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:85:49: warning: format '%u' expects argument of type 'unsigned int', but argument 5 has type 'long unsigned int' [-Wformat=]
+   85 |     snprintf(buf, sizeof(buf), "UPTIME: %02u:%02u:%02u",
+      |                                              ~~~^
+      |                                                 |
+      |                                                 unsigned int
+      |                                              %02lu
+   86 |              up / 3600, (up / 60) % 60, up % 60);
+      |                         ~~~~~~~~~~~~~~           
+      |                                   |
+      |                                   long unsigned int
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:85:54: warning: format '%u' expects argument of type 'unsigned int', but argument 6 has type 'long unsigned int' [-Wformat=]
+   85 |     snprintf(buf, sizeof(buf), "UPTIME: %02u:%02u:%02u",
+      |                                                   ~~~^
+      |                                                      |
+      |                                                      unsigned int
+      |                                                   %02lu
+   86 |              up / 3600, (up / 60) % 60, up % 60);
+      |                                         ~~~~~~~       
+      |                                            |
+      |                                            long unsigned int
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c: At top level:
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:70:13: warning: '_action_nvs_erase' defined but not used [-Wunused-function]
+   70 | static void _action_nvs_erase(void) {
+      |             ^~~~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:65:13: warning: '_action_c6_ping' defined but not used [-Wunused-function]
+   65 | static void _action_c6_ping(void) {
+      |             ^~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:59:13: warning: '_action_sd_mount' defined but not used [-Wunused-function]
+   59 | static void _action_sd_mount(void) {
+      |             ^~~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:53:13: warning: '_action_reboot' defined but not used [-Wunused-function]
+   53 | static void _action_reboot(void) {
+      |             ^~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:46:14: warning: 's_lbl_clock' defined but not used [-Wunused-variable]
+   46 | static void* s_lbl_clock   = NULL;
+      |              ^~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:45:14: warning: 's_lbl_c6' defined but not used [-Wunused-variable]
+   45 | static void* s_lbl_c6      = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:44:14: warning: 's_lbl_storage' defined but not used [-Wunused-variable]
+   44 | static void* s_lbl_storage = NULL;
+      |              ^~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:43:14: warning: 's_lbl_memory' defined but not used [-Wunused-variable]
+   43 | static void* s_lbl_memory  = NULL;
+      |              ^~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:42:14: warning: 's_lbl_uptime' defined but not used [-Wunused-variable]
+   42 | static void* s_lbl_uptime  = NULL;
+      |              ^~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_system.c:41:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   41 | static void* s_screen      = NULL;
+      |              ^~~~~~~~
+[5/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_files.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_files.c:69:14: warning: 's_preview_widget' defined but not used [-Wunused-variable]
+   69 | static void* s_preview_widget = NULL;
+      |              ^~~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_files.c:68:14: warning: 's_list_widget' defined but not used [-Wunused-variable]
+   68 | static void* s_list_widget = NULL;
+      |              ^~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_files.c:67:14: warning: 's_lbl_path' defined but not used [-Wunused-variable]
+   67 | static void* s_lbl_path    = NULL;
+      |              ^~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_files.c:66:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   66 | static void* s_screen      = NULL;
+      |              ^~~~~~~~
+[6/87] Building C object esp-idf/pm_ui/CMakeFiles/__idf_pm_ui.dir/pm_ui.c.obj
+[7/87] Building C object esp-idf/pm_boot/CMakeFiles/__idf_pm_boot.dir/pm_boot.c.obj
+[8/87] Building C object esp-idf/pm_bsp/CMakeFiles/__idf_pm_bsp.dir/pm_bsp.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_bsp/pm_bsp.c:58:33: warning: 's_dpi_panel' defined but not used [-Wunused-variable]
+   58 | static esp_lcd_panel_handle_t   s_dpi_panel  = NULL;
+      |                                 ^~~~~~~~~~~
+[9/87] Linking C static library esp-idf/pm_ui/libpm_ui.a
+[10/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_filemgr.c.obj
+[11/87] Linking C static library esp-idf/pm_bsp/libpm_bsp.a
+[12/87] Linking C static library esp-idf/pm_cardputer_i2c/libpm_cardputer_i2c.a
+[13/87] Linking C static library esp-idf/pm_peer/libpm_peer.a
+[14/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_bridge.c.obj
+[15/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_elf_browser.c.obj
+[16/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_micropython.c.obj
+[17/87] Building C object esp-idf/pm_apps_tools/CMakeFiles/__idf_pm_apps_tools.dir/pm_app_notepad.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_notepad.c:47:14: warning: 's_save_dlg' defined but not used [-Wunused-variable]
+   47 | static void* s_save_dlg = NULL;
+      |              ^~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_notepad.c:46:14: warning: 's_textarea' defined but not used [-Wunused-variable]
+   46 | static void* s_textarea = NULL;
+      |              ^~~~~~~~~~
+[18/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_gamepad.c.obj
+[19/87] Building C object esp-idf/pm_apps_system/CMakeFiles/__idf_pm_apps_system.dir/pm_app_c6_flasher.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_c6_flasher.c: In function '_populate_file_list':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_c6_flasher.c:121:40: warning: '%s' directive output may be truncated writing up to 255 bytes into a region of size 150 [-Wformat-truncation=]
+  121 |         snprintf(full, 160, "/sd/ghost/%s", name);
+      |                                        ^~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_c6_flasher.c:121:9: note: 'snprintf' output between 11 and 266 bytes into a destination of size 160
+  121 |         snprintf(full, 160, "/sd/ghost/%s", name);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_c6_flasher.c: In function '_list_row_cb':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_c6_flasher.c:95:43: warning: '%s' directive output may be truncated writing up to 127 bytes into a region of size 118 [-Wformat-truncation=]
+   95 |     snprintf(buf, sizeof(buf), "Selected: %s", s_selected_path);
+      |                                           ^~   ~~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_system/pm_app_c6_flasher.c:95:5: note: 'snprintf' output between 11 and 138 bytes into a destination of size 128
+   95 |     snprintf(buf, sizeof(buf), "Selected: %s", s_selected_path);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[20/87] Building C object esp-idf/pm_apps_tools/CMakeFiles/__idf_pm_apps_tools.dir/pm_app_keytest.c.obj
+[21/87] Building C object esp-idf/pm_apps_tools/CMakeFiles/__idf_pm_apps_tools.dir/pm_app_calculator.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_calculator.c:50:14: warning: 's_lbl_result' defined but not used [-Wunused-variable]
+   50 | static void* s_lbl_result = NULL;
+      |              ^~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_calculator.c:49:14: warning: 's_lbl_input' defined but not used [-Wunused-variable]
+   49 | static void* s_lbl_input  = NULL;
+      |              ^~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_calculator.c:48:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   48 | static void* s_screen     = NULL;
+      |              ^~~~~~~~
+[22/87] Building C object esp-idf/pm_apps_tools/CMakeFiles/__idf_pm_apps_tools.dir/pm_app_etch.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_etch.c:47:14: warning: 's_canvas_obj' defined but not used [-Wunused-variable]
+   47 | static void* s_canvas_obj = NULL;
+      |              ^~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_etch.c:46:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   46 | static void* s_screen     = NULL;
+      |              ^~~~~~~~
+[23/87] Building C object esp-idf/pm_apps_tools/CMakeFiles/__idf_pm_apps_tools.dir/pm_app_clock.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_clock.c: In function '_render_time':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_clock.c:112:50: warning: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'long unsigned int' [-Wformat=]
+  112 |         snprintf(time_str, sizeof(time_str), "%02u:%02u:%02u",
+      |                                               ~~~^
+      |                                                  |
+      |                                                  unsigned int
+      |                                               %02lu
+  113 |                  up / 3600, (up / 60) % 60, up % 60);
+      |                  ~~~~~~~~~                        
+      |                     |
+      |                     long unsigned int
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_clock.c:112:55: warning: format '%u' expects argument of type 'unsigned int', but argument 5 has type 'long unsigned int' [-Wformat=]
+  112 |         snprintf(time_str, sizeof(time_str), "%02u:%02u:%02u",
+      |                                                    ~~~^
+      |                                                       |
+      |                                                       unsigned int
+      |                                                    %02lu
+  113 |                  up / 3600, (up / 60) % 60, up % 60);
+      |                             ~~~~~~~~~~~~~~             
+      |                                       |
+      |                                       long unsigned int
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_clock.c:112:60: warning: format '%u' expects argument of type 'unsigned int', but argument 6 has type 'long unsigned int' [-Wformat=]
+  112 |         snprintf(time_str, sizeof(time_str), "%02u:%02u:%02u",
+      |                                                         ~~~^
+      |                                                            |
+      |                                                            unsigned int
+      |                                                         %02lu
+  113 |                  up / 3600, (up / 60) % 60, up % 60);
+      |                                             ~~~~~~~         
+      |                                                |
+      |                                                long unsigned int
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_clock.c: At top level:
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_clock.c:44:14: warning: 's_lbl_stopwatch' defined but not used [-Wunused-variable]
+   44 | static void* s_lbl_stopwatch = NULL;
+      |              ^~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_clock.c:41:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   41 | static void* s_screen        = NULL;
+      |              ^~~~~~~~
+[24/87] Building C object esp-idf/pm_apps_tools/CMakeFiles/__idf_pm_apps_tools.dir/pm_app_calendar.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_calendar.c:53:14: warning: 's_lbl_note' defined but not used [-Wunused-variable]
+   53 | static void* s_lbl_note  = NULL;
+      |              ^~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_calendar.c:52:14: warning: 's_lbl_title' defined but not used [-Wunused-variable]
+   52 | static void* s_lbl_title = NULL;
+      |              ^~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_calendar.c:51:14: warning: 's_grid' defined but not used [-Wunused-variable]
+   51 | static void* s_grid     = NULL;
+      |              ^~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_tools/pm_app_calendar.c:50:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   50 | static void* s_screen   = NULL;
+      |              ^~~~~~~~
+[25/87] Building C object esp-idf/pm_apps_intel/CMakeFiles/__idf_pm_apps_intel.dir/pm_app_terminal.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_intel/pm_app_terminal.c:54:14: warning: 's_lbl_status' defined but not used [-Wunused-variable]
+   54 | static void* s_lbl_status = NULL;
+      |              ^~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_intel/pm_app_terminal.c:53:14: warning: 's_lbl_input' defined but not used [-Wunused-variable]
+   53 | static void* s_lbl_input = NULL;
+      |              ^~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_intel/pm_app_terminal.c:52:14: warning: 's_lbl_scrollback' defined but not used [-Wunused-variable]
+   52 | static void* s_lbl_scrollback = NULL;
+      |              ^~~~~~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_intel/pm_app_terminal.c:51:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   51 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[26/87] Building C object esp-idf/pm_apps_tools/CMakeFiles/__idf_pm_apps_tools.dir/pm_app_camera_qr.c.obj
+[27/87] Building C object esp-idf/pm_apps_intel/CMakeFiles/__idf_pm_apps_intel.dir/pm_app_ref_med.c.obj
+[28/87] Building C object esp-idf/pm_apps_intel/CMakeFiles/__idf_pm_apps_intel.dir/pm_app_ref_surv.c.obj
+[29/87] Building C object esp-idf/pm_apps_intel/CMakeFiles/__idf_pm_apps_intel.dir/pm_app_baseball.c.obj
+[30/87] Building C object esp-idf/pm_apps_intel/CMakeFiles/__idf_pm_apps_intel.dir/pm_app_trails.c.obj
+[31/87] Building C object esp-idf/pm_apps_intel/CMakeFiles/__idf_pm_apps_intel.dir/pm_app_gemini_log.c.obj
+[32/87] Building C object esp-idf/pm_apps_intel/CMakeFiles/__idf_pm_apps_intel.dir/pm_app_ssh.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_intel/pm_app_ssh.c: In function 'pm_app_ssh_connect_at_cursor':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_intel/pm_app_ssh.c:130:18: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size between 48 and 79 [-Wformat-truncation=]
+  130 |              "%s@%s:%d", p.user, p.host, p.port);
+      |                  ^~              ~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_intel/pm_app_ssh.c:129:5: note: 'snprintf' output between 4 and 108 bytes into a destination of size 80
+  129 |     snprintf(s_session_label, sizeof(s_session_label),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |              "%s@%s:%d", p.user, p.host, p.port);
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[33/87] Building C object esp-idf/pm_apps_games/CMakeFiles/__idf_pm_apps_games.dir/pm_app_snake.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_snake.c:51:14: warning: 's_canvas' defined but not used [-Wunused-variable]
+   51 | static void* s_canvas = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_snake.c:50:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   50 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[34/87] Building C object esp-idf/pm_apps_games/CMakeFiles/__idf_pm_apps_games.dir/pm_app_pacman.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_pacman.c:120:14: warning: 's_canvas' defined but not used [-Wunused-variable]
+  120 | static void* s_canvas = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_pacman.c:119:14: warning: 's_screen' defined but not used [-Wunused-variable]
+  119 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[35/87] Building C object esp-idf/pm_apps_games/CMakeFiles/__idf_pm_apps_games.dir/pm_app_doom.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_doom.c:41:14: warning: 's_canvas' defined but not used [-Wunused-variable]
+   41 | static void* s_canvas = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_doom.c:40:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   40 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[36/87] Building C object esp-idf/pm_apps_games/CMakeFiles/__idf_pm_apps_games.dir/pm_app_retro_elf.c.obj
+[37/87] Building C object esp-idf/pm_apps_games/CMakeFiles/__idf_pm_apps_games.dir/pm_app_simcity.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_simcity.c:54:14: warning: 's_canvas' defined but not used [-Wunused-variable]
+   54 | static void* s_canvas = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_simcity.c:53:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   53 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[38/87] Building C object esp-idf/pm_apps_games/CMakeFiles/__idf_pm_apps_games.dir/pm_app_galaga.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_galaga.c:88:14: warning: 's_canvas' defined but not used [-Wunused-variable]
+   88 | static void* s_canvas = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_galaga.c:87:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   87 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[39/87] Building C object esp-idf/pm_apps_games/CMakeFiles/__idf_pm_apps_games.dir/pm_app_chess.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_games/pm_app_chess.c:55:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   55 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[40/87] Building C object esp-idf/pm_apps_media/CMakeFiles/__idf_pm_apps_media.dir/pm_app_audio_player.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_player.c:53:14: warning: 's_viz_obj' defined but not used [-Wunused-variable]
+   53 | static void* s_viz_obj  = NULL;
+      |              ^~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_player.c:52:14: warning: 's_list_obj' defined but not used [-Wunused-variable]
+   52 | static void* s_list_obj = NULL;
+      |              ^~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_player.c:51:14: warning: 's_lbl_now' defined but not used [-Wunused-variable]
+   51 | static void* s_lbl_now  = NULL;
+      |              ^~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_player.c:50:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   50 | static void* s_screen   = NULL;
+      |              ^~~~~~~~
+[41/87] Building C object esp-idf/pm_apps_media/CMakeFiles/__idf_pm_apps_media.dir/pm_app_camera.c.obj
+[42/87] Building C object esp-idf/pm_apps_media/CMakeFiles/__idf_pm_apps_media.dir/pm_app_audio_recorder.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_recorder.c:48:14: warning: 's_list_obj' defined but not used [-Wunused-variable]
+   48 | static void* s_list_obj   = NULL;
+      |              ^~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_recorder.c:47:14: warning: 's_meter' defined but not used [-Wunused-variable]
+   47 | static void* s_meter      = NULL;
+      |              ^~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_recorder.c:46:14: warning: 's_lbl_status' defined but not used [-Wunused-variable]
+   46 | static void* s_lbl_status = NULL;
+      |              ^~~~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_recorder.c:45:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   45 | static void* s_screen     = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_media/pm_app_audio_recorder.c:42:14: warning: 's_scroll' defined but not used [-Wunused-variable]
+   42 | static int   s_scroll    = 0;
+      |              ^~~~~~~~
+[43/87] Building C object esp-idf/pm_apps_comms/CMakeFiles/__idf_pm_apps_comms.dir/pm_app_bluetooth.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_comms/pm_app_bluetooth.c:54:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   54 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+[44/87] Building C object esp-idf/pm_apps_comms/CMakeFiles/__idf_pm_apps_comms.dir/pm_app_gps.c.obj
+[45/87] Building C object esp-idf/pm_apps_comms/CMakeFiles/__idf_pm_apps_comms.dir/pm_app_lora_voice.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_comms/pm_app_lora_voice.c:48:18: warning: 's_rx_peak' defined but not used [-Wunused-variable]
+   48 | static int       s_rx_peak   = 0;        // last RX RSSI
+      |                  ^~~~~~~~~
+[46/87] Building C object esp-idf/pm_apps_comms/CMakeFiles/__idf_pm_apps_comms.dir/pm_app_mesh_messenger.c.obj
+[47/87] Building C object esp-idf/pm_apps_comms/CMakeFiles/__idf_pm_apps_comms.dir/pm_app_wifi.c.obj
+[48/87] Building C object esp-idf/pm_apps_comms/CMakeFiles/__idf_pm_apps_comms.dir/pm_app_voice_terminal.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_comms/pm_app_voice_terminal.c:54:14: warning: 's_screen' defined but not used [-Wunused-variable]
+   54 | static void* s_screen = NULL;
+      |              ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_comms/pm_app_voice_terminal.c: In function 'pm_app_voice_terminal_input_char':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_comms/pm_app_voice_terminal.c:127:47: warning: '%s' directive output may be truncated writing up to 511 bytes into a region of size 122 [-Wformat-truncation=]
+  127 |             snprintf(tmp, sizeof(tmp), "user: %s", s_input);
+      |                                               ^~   ~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_comms/pm_app_voice_terminal.c:127:13: note: 'snprintf' output between 7 and 518 bytes into a destination of size 128
+  127 |             snprintf(tmp, sizeof(tmp), "user: %s", s_input);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[49/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_bt_radar.c.obj
+[50/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_silas_creek.c.obj
+[51/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_net_scanner.c.obj
+[52/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_beacon.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_beacon.c:34:13: warning: 's_cursor' defined but not used [-Wunused-variable]
+   34 | static int  s_cursor = 0;
+      |             ^~~~~~~~
+[53/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_pkt_sniffer.c.obj
+[54/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_hash_tool.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_hash_tool.c:111:13: warning: '_render' defined but not used [-Wunused-function]
+  111 | static void _render(void) {
+      |             ^~~~~~~
+[55/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_wardrive.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c:716:42: warning: '_stat' defined but not used [-Wunused-function]
+  716 | static lv_obj_t* __attribute__((unused)) _stat(lv_obj_t* parent, const char* label, lv_color_t accent) {
+      |                                          ^~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c: In function '_render':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c:602:47: warning: '%s' directive output may be truncated writing up to 15 bytes into a region of size between 1 and 40 [-Wformat-truncation=]
+  602 |         snprintf(buf, sizeof(buf), "session_%s%s",
+      |                                               ^~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c:602:9: note: 'snprintf' output between 9 and 63 bytes into a destination of size 48
+  602 |         snprintf(buf, sizeof(buf), "session_%s%s",
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  603 |                   s_session_label,
+      |                   ~~~~~~~~~~~~~~~~
+  604 |                   s_csv_fallback
+      |                   ~~~~~~~~~~~~~~
+  605 |                     ? (s_csv_live_paused ? " (CSV paused)" : " (CSV fallback)")
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  606 |                     : "");
+      |                     ~~~~~
+[56/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_clinician.c.obj
+[57/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_ble_gatt.c.obj
+[58/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_rf_spectrum.c.obj
+[59/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_probe_intel.c.obj
+[60/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_pkt_analysis.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_pkt_analysis.c:123:13: warning: '_render' defined but not used [-Wunused-function]
+  123 | static void _render(void) {
+      |             ^~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_pkt_analysis.c:65:21: warning: 's_frame_cursor' defined but not used [-Wunused-variable]
+   65 | static int          s_frame_cursor = 0;
+      |                     ^~~~~~~~~~~~~~
+[61/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_wpa_hs.c.obj
+[62/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_ble_ducky.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_ble_ducky.c:98:13: warning: '_render' defined but not used [-Wunused-function]
+   98 | static void _render(void) {
+      |             ^~~~~~~
+[63/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_usb_ducky.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_usb_ducky.c:84:13: warning: '_render' defined but not used [-Wunused-function]
+   84 | static void _render(void) {
+      |             ^~~~~~~
+[64/87] Linking C static library esp-idf/pm_boot/libpm_boot.a
+[65/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_wifi_ducky.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wifi_ducky.c:73:13: warning: '_render' defined but not used [-Wunused-function]
+   73 | static void _render(void) {
+      |             ^~~~~~~
+[66/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_nfc_reader.c.obj
+[67/87] Linking C static library esp-idf/pm_apps_system/libpm_apps_system.a
+[68/87] Linking C static library esp-idf/pm_apps_tools/libpm_apps_tools.a
+[69/87] Linking C static library esp-idf/pm_apps_intel/libpm_apps_intel.a
+[70/87] Linking C static library esp-idf/pm_apps_games/libpm_apps_games.a
+[71/87] Linking C static library esp-idf/pm_apps_media/libpm_apps_media.a
+[72/87] Linking C static library esp-idf/pm_apps_comms/libpm_apps_comms.a
+[73/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_nfc_emulate.c.obj
+[74/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_amiibo.c.obj
+[75/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_secondary_scan.c.obj
+[76/87] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_nfc_clone.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_nfc_clone.c:18:20: warning: 'TAG' defined but not used [-Wunused-variable]
+   18 | static const char* TAG = "PM_NFC_CLONE";
+      |                    ^~~
+[77/87] Performing build step for 'bootloader'
+[1/1] cd /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/bootloader/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x2000 /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/bootloader/bootloader.bin
+Bootloader binary size 0x59c0 bytes. 0x640 bytes (7%) free.
+[78/87] No install step for 'bootloader'
+[79/87] Linking C static library esp-idf/pm_apps_cyber/libpm_apps_cyber.a
+[80/87] Completed 'bootloader'
+[81/87] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/pm_launcher.c.obj
+[82/87] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:133:13: warning: '_on_status' defined but not used [-Wunused-function]
+  133 | static void _on_status(bool wifi, bool ble, int nets, int devs, uint32_t up) {
+      |             ^~~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:129:13: warning: '_on_ready' defined but not used [-Wunused-function]
+  129 | static void _on_ready(const char* firmware, const char* version) {
+      |             ^~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:123:13: warning: '_on_pkt' defined but not used [-Wunused-function]
+  123 | static void _on_pkt(const char* frame_type, const char* src, int rssi) {
+      |             ^~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:116:13: warning: '_on_gps' defined but not used [-Wunused-function]
+  116 | static void _on_gps(double lat, double lng, double alt,
+      |             ^~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:107:13: warning: '_on_probe' defined but not used [-Wunused-function]
+  107 | static void _on_probe(const char* mac, const char* ssid, int rssi,
+      |             ^~~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:96:13: warning: '_on_ble' defined but not used [-Wunused-function]
+   96 | static void _on_ble(const char* mac, const char* name, int rssi,
+      |             ^~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:86:13: warning: '_on_wifi' defined but not used [-Wunused-function]
+   86 | static void _on_wifi(const char* mac, const char* ssid, int rssi,
+      |             ^~~~~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/main/main.c:62:13: warning: '_boot_visual_probe' defined but not used [-Wunused-function]
+   62 | static void _boot_visual_probe(bool on) {
+      |             ^~~~~~~~~~~~~~~~~~
+[83/87] Linking C static library esp-idf/main/libmain.a
+[84/87] Generating esp-idf/esp_system/ld/sections.ld
+[85/87] Linking CXX executable pisces_moon_p4.elf
+[86/87] Generating binary image from built executable
+esptool.py v4.12.dev1
+Creating esp32p4 image...
+Merged 3 ELF sections
+Successfully created esp32p4 image.
+Generated /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/pisces_moon_p4.bin
+[87/87] cd /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/partition_table/partition-table.bin /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/pisces_moon_p4.bin
+pisces_moon_p4.bin binary size 0x1d3de0 bytes. Smallest app partition is 0x600000 bytes. 0x42c220 bytes (70%) free.

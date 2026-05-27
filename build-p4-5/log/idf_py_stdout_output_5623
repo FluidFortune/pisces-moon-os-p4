@@ -1,0 +1,40 @@
+Command: ninja all
+[1/13] Performing build step for 'bootloader'
+[1/1] cd /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/bootloader/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x2000 /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/bootloader/bootloader.bin
+Bootloader binary size 0x59c0 bytes. 0x640 bytes (7%) free.
+[2/13] No install step for 'bootloader'
+[3/13] Completed 'bootloader'
+[4/13] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/pm_launcher.c.obj
+[5/13] Building C object esp-idf/pm_ui/CMakeFiles/__idf_pm_ui.dir/pm_ui.c.obj
+[6/13] Linking C static library esp-idf/pm_ui/libpm_ui.a
+[7/13] Building C object esp-idf/pm_apps_cyber/CMakeFiles/__idf_pm_apps_cyber.dir/pm_app_wardrive.c.obj
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c:721:42: warning: '_stat' defined but not used [-Wunused-function]
+  721 | static lv_obj_t* __attribute__((unused)) _stat(lv_obj_t* parent, const char* label, lv_color_t accent) {
+      |                                          ^~~~~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c: In function '_render':
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c:607:47: warning: '%s' directive output may be truncated writing up to 15 bytes into a region of size between 1 and 40 [-Wformat-truncation=]
+  607 |         snprintf(buf, sizeof(buf), "session_%s%s",
+      |                                               ^~
+/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/components/pm_apps/pm_apps_cyber/pm_app_wardrive.c:607:9: note: 'snprintf' output between 9 and 63 bytes into a destination of size 48
+  607 |         snprintf(buf, sizeof(buf), "session_%s%s",
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  608 |                   s_session_label,
+      |                   ~~~~~~~~~~~~~~~~
+  609 |                   s_csv_fallback
+      |                   ~~~~~~~~~~~~~~
+  610 |                     ? (s_csv_live_paused ? " (CSV paused)" : " (CSV fallback)")
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  611 |                     : "");
+      |                     ~~~~~
+[8/13] Linking C static library esp-idf/pm_apps_cyber/libpm_apps_cyber.a
+[9/13] Linking C static library esp-idf/main/libmain.a
+[10/13] Generating esp-idf/esp_system/ld/sections.ld
+[11/13] Linking CXX executable pisces_moon_p4.elf
+[12/13] Generating binary image from built executable
+esptool.py v4.12.dev1
+Creating esp32p4 image...
+Merged 3 ELF sections
+Successfully created esp32p4 image.
+Generated /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/pisces_moon_p4.bin
+[13/13] cd /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/partition_table/partition-table.bin /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build-p4-5/pisces_moon_p4.bin
+pisces_moon_p4.bin binary size 0x22e270 bytes. Smallest app partition is 0x600000 bytes. 0x3d1d90 bytes (64%) free.
