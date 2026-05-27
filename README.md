@@ -6,93 +6,256 @@ Contributions: see CLA.md
 fluidfortune.com
 -->
 
-# Pisces Moon OS — v1.2.0-alpha "Pisces Moon P4"
+# Pisces Moon OS
 
-A general-purpose, hackable operating system for the **ELECROW CrowPanel
-Advanced 7" ESP32-P4 HMI** (SKU DHE04107D), with a dedicated **ESP32-C6**
-coprocessor running an always-on radio capture daemon ("Ghost Engine").
+**A modular operating system for ESP32 hardware.**
+
+Pisces Moon OS is open-source firmware (AGPL-3.0-or-later) that runs on a
+host MCU, auto-detects whatever modules are attached, and exposes a
+uniform capability surface to applications. Plug in an NFC reader, a
+LoRa transceiver, a second radio coprocessor, a camera — apps see the
+new capabilities appear; unplug them, apps see them disappear. The OS
+never crashes because a module is missing.
+
+This is the **Pisces Moon P4** branch (v1.2.0-alpha), the dual-MCU
+implementation targeting boards with an ESP32-P4 application processor
+and an ESP32-C6 always-on radio coprocessor.
+
+**Status:** Alpha — full firmware tree builds, hardware bring-up
+pending on bench.
 
 **Repo:** github.com/FluidFortune/PiscesMoon
-**Web:** fluidfortune.com
+**Web:** [fluidfortune.com](https://fluidfortune.com)
 **License:** AGPL-3.0-or-later
-**Status:** Alpha (full firmware tree built, hardware bring-up pending)
+**Contributors:** see [CLA.md](CLA.md)
 
 ---
 
-## What is this?
+## Why modular
 
-Pisces Moon is a 49-app desktop-style OS that runs on a 7-inch touchscreen
-device about the size of a paperback book. It does:
+Every existing ESP32 OS we've seen ties itself to a single board. Plug
+that exact board in, flash the firmware, it works. Plug in any
+*variation* of that board — a different revision, a missing peripheral,
+an added peripheral — and the firmware either silently breaks or
+crashes on boot.
 
-- **Tools** — clock, calculator (with subnet calculator mode), notepad, calendar, drawing
-- **Intel** — terminal, AI chat (Gemini), reference docs, baseball scores, hiking trails, SSH client
-- **Games** — Snake, Pac-Man, Galaga, Chess, Doom, SimCity, Retro ELF launcher
-- **Media** — audio player and recorder
-- **Comms** — GPS, WiFi, Bluetooth, LoRa voice, mesh messenger (Meshtastic LongFast), voice terminal
-- **Cyber** — wardriving with SQLite session DB, Bluetooth radar, packet sniffer, beacon spotter, network scanner, hash tool, BLE GATT explorer, WPA handshake collector, RF spectrum analyzer, probe intelligence, offline packet analysis, BLE/USB/WiFi Ducky
-- **System** — about, files, file manager, ELF browser, gamepad pairing, Bridge console, MicroPython, **C6 Ghost firmware flasher**
+We watched this play out with Kode Dot. Their hardware is modular by
+design; their software pretends it isn't. The expansion slots have no
+published pinout because there's no software contract that says how a
+module identifies itself, what it offers, or how an app should find it.
 
-The whole thing is open-source under AGPL-3.0-or-later. Every header
-file has a copyright stamp and SPDX identifier.
+Pisces Moon takes the opposite stance.
 
----
+**Apps don't ask "does this board have WiFi?" Apps ask: *"is a WiFi peer
+available?"*** The peer registry answers. If something is plugged in, it
+registers. If it's unplugged, it withdraws. Apps query by capability,
+not by hardware.
 
-## The architectural distinction
+This means the same firmware runs on:
 
-The killer-feature framing is **Ghost Engine on its own MCU**.
+- An ESP32-P4 board with one C6 and nothing else attached
+- The same board with an NFC reader plugged into the C6's UART
+- The same board with a T-Beam Supreme S3 wired to the GPIO header for
+  secondary radios
+- The same board with a wireless slot module installed
+- All of the above simultaneously
+- A future Kode Dot board with whatever modules they ultimately expose
 
-The CrowPanel Advanced 7" has two ESP32 chips on one board: a powerful
-**ESP32-P4** for the UI and applications, and a small **ESP32-C6**
-dedicated to wireless. Pisces Moon uses this split deliberately:
-
-- The P4 runs the UI, apps, GPS, audio, LoRa, and SD storage
-- The C6 runs custom firmware that wardrives **continuously** —
-  scanning WiFi and BLE, decoding packets, collecting EAPOL handshakes —
-  regardless of what the P4 is doing
-- The two chips talk over UART using a JSON-framed bridge protocol with
-  25+ commands
-
-On the older S3 platform the Ghost Engine had to share cycles with games
-and the UI. On the P4/C6 platform, it doesn't. Open Doom; the C6 is still
-wardriving. Reboot the P4; the C6 keeps going.
-
-This is the project's primary distinctive claim and a major part of why
-the AGPL matters: an always-on, dedicated, non-stoppable radio MCU is a
-specific architectural choice, and the AGPL ensures derivative work on
-this stack stays open.
+No conditional compilation. No board profiles. No "if-CrowPanel" code.
+The OS auto-detects, registers, and routes.
 
 ---
 
-## Specs
+## Reference chassis: ELECROW CrowPanel Advanced 7"
 
-| | |
-|---|---|
-| **Board** | ELECROW CrowPanel Advanced 7" ESP32-P4 HMI (DHE04107D V1.0) |
-| **Main MCU** | ESP32-P4, dual-core RISC-V LX9 @ 360 MHz |
-| **Coprocessor** | ESP32-C6-MINI-1 (WiFi 6 / BLE 5 / 802.15.4) |
-| **RAM** | 32 MB PSRAM |
-| **Flash** | 16 MB |
-| **Display** | 7" IPS 1024×600, MIPI-DSI, ILI9881C panel |
-| **Touch** | GT911 capacitive |
-| **Audio** | NS4168 codec, dual speakers, PDM microphone |
-| **Storage** | MicroSD via SDIO 1-bit |
-| **GPS** | Beitian BN-180 on UART1 |
-| **Wireless slot** | SX1262 / nRF24 / ESP32-H2 / ESP32-C6 / Wi-Fi HaLow (auto-detect) |
-| **Camera** | MIPI-CSI port (no app yet) |
-| **Power** | USB-C, lithium battery JST |
-| **Buttons** | RESET, BOOT |
+The first supported board is the ELECROW CrowPanel Advanced 7" HMI
+(SKU DHE04107D V1.0). It's a $46 ESP32-P4 development board with a
+7" 1024×600 touchscreen, an onboard C6 coprocessor, and several
+modular expansion points.
+
+### Permanent fixtures (always present)
+
+- **ESP32-P4** (dual-core RISC-V LX9 @ 360 MHz, 32 MB PSRAM, 16 MB flash)
+- **ESP32-C6-MINI-1** coprocessor (WiFi 6 / BLE 5 / 802.15.4) — runs
+  the always-on Ghost Engine radio firmware
+- **Beitian BN-180 GPS** — wired P4-direct to UART1 on the 2×12 header
+- **1024×600 MIPI-DSI panel** + GT911 capacitive touch
+- **NS4168 stereo codec** + dual speakers + PDM microphone
+- **MicroSD via SDIO**
+
+### Modular peers (optional, hot-pluggable, auto-detected)
+
+| Peer | Detection | Capabilities |
+|---|---|---|
+| Wireless slot module | SPI signature probe | SX1262 LoRa, nRF24 2.4 GHz, ESP32-H2 Thread/Zigbee, ESP32-C6 slot variant, Wi-Fi HaLow |
+| PN532 NFC reader | C6 UART1 probe (HSU mode) | NFC read, write, emulate, MIFARE Classic, NTAG, Amiibo |
+| T-Beam Supreme S3 | P4 UART2 ping-handshake (IO25/IO27) | Secondary WiFi, secondary BLE, primary LoRa (when slot empty) |
+| CSI camera | MIPI-CSI bus probe | Viewfinder, snapshot, barcode/QR decode |
+| BLE HID device | C6 BLE central pairing | Gamepad input, keyboard input |
+
+---
+
+## Routing rules
+
+When multiple peers offer the same capability, the registry chooses
+based on the **role** the caller requested.
+
+```
+WiFi scan / BLE scan:
+    PRIMARY    → ESP32-C6 (always-on Ghost Engine, never stops)
+    SECONDARY  → T-Beam Supreme S3 (if connected)
+    ANY        → whichever is available
+
+LoRa transmit / receive:
+    PRIMARY    → wireless slot SX1262 (if installed)
+    FALLBACK   → T-Beam Supreme S3 LoRa (if T-Beam connected, no slot)
+    UNAVAILABLE if neither
+
+NFC read / write / emulate:
+    PRIMARY    → PN532 on C6 UART1 (if connected)
+    UNAVAILABLE otherwise
+
+GPS fix:
+    PRIMARY    → BN-180 P4-direct (always — permanent fixture)
+
+Camera (snapshot / barcode / viewfinder):
+    PRIMARY    → CSI camera on CIS-CAM connector
+    UNAVAILABLE otherwise
+
+Input (gamepad / keyboard):
+    PRIMARY    → paired BLE HID device via C6
+    FALLBACK   → on-screen virtual gamepad (always available)
+    FALLBACK   → on-screen QWERTY overlay (always available)
+```
+
+The **secondary** role enables parallel ops. While the C6 wardrives
+continuously, an app can ask for `wifi_scan` with role `SECONDARY` and
+get a T-Beam handle to scan in parallel — without interrupting the
+canonical capture log.
+
+---
+
+## What's in the box (this branch)
+
+This repository (`pisces-moon-p4/`) is the application processor
+firmware. The companion C6 coprocessor firmware lives at
+`pisces-moon-c6/` (separate ESP-IDF project, shipped in the same
+release).
+
+A third tree (`pisces-moon-tbeam-s3/`) for the optional T-Beam Supreme
+S3 secondary radio peer is **defined but not yet implemented**; Phase
+15 lands the P4-side protocol and stub, with the actual T-Beam firmware
+deferred to Phase 16.
+
+```
+pisces-moon-p4/                P4 firmware (this repo)
+├── main/                      app_main, init sequence, app registration
+├── components/
+│   ├── pm_hal/                low-level helpers (logging, SPI Treaty, NVS)
+│   ├── pm_bsp/                MIPI-DSI panel + GT911 touch + LVGL plumbing
+│   ├── pm_ui/                 widget kit + on-screen keyboard + virtual gamepad
+│   ├── pm_input/              unified input dispatcher (touch + BT HID + virtual)
+│   ├── pm_peer/               MODULAR PEER REGISTRY — the OS spine
+│   ├── pm_app_iface/          pm_app_t struct, category enum
+│   ├── pm_audio/              NS4168 codec + I2S + PDM mic
+│   ├── pm_nosql/              key-value store on SD
+│   ├── pm_sqlite/             wardrive session DB
+│   ├── pm_gps_state/          shared GPS fix cache
+│   ├── pm_gps_uart/           P4-direct NMEA parser (BN-180)
+│   ├── pm_radio/              wireless slot abstraction + auto-detect
+│   ├── pm_lora/               SX1262 backend (RadioLib wrapper, only C++ TU)
+│   ├── pm_nfc/                PN532 via C6 bridge (Phase 15)
+│   ├── pm_camera/             CSI camera component (Phase 15)
+│   ├── pm_tbeam/              T-Beam Supreme S3 peer (Phase 15 skeleton)
+│   ├── pm_c6_bridge/          UART bridge to the C6
+│   ├── pm_c6_programmer/      C6 firmware flasher (future-board support)
+│   └── pm_apps/               56 apps across 7 categories
+│       ├── system/   (9)
+│       ├── tools/    (6, +1 Phase 15: QR scanner)
+│       ├── intel/    (7)
+│       ├── games/    (7)
+│       ├── media/    (3, +1 Phase 15: camera)
+│       ├── comms/    (6)
+│       └── cyber/    (19, +5 Phase 15: 4 NFC apps + secondary scan)
+├── partitions.csv
+├── sdkconfig.defaults
+├── CMakeLists.txt
+├── README.md                  this file
+├── CHANGELOG_v1_2_0_alpha.md
+├── CHANGELOG_v1_2_0_phase15.md
+├── CLA.md
+├── LICENSE
+└── docs/
+    ├── ARCHITECTURE.md
+    ├── PiscesMoon_P4_BringUp_Guide.docx
+    └── PiscesMoon_OS_Architecture_Reference.docx
+
+pisces-moon-c6/                C6 Ghost Engine + sensor coprocessor firmware
+├── main/
+│   ├── ghost_main.c
+│   ├── ghost_bridge.c         JSON command dispatch
+│   ├── ghost_wifi.c           WiFi scanner + STA
+│   ├── ghost_ble.c            BLE scanner
+│   ├── ghost_promisc.c        802.11 monitor mode
+│   ├── ghost_http.c           HTTP proxy
+│   ├── ghost_hid.c            BLE HID peripheral (keyboard out)
+│   ├── ghost_hid_host.c       BLE HID central (gamepad/keyboard in)
+│   ├── ghost_ble_gatt.c       BLE GATT central
+│   ├── ghost_netscan.c        ARP-sweep host discovery
+│   ├── ghost_rfspectrum.c     channel utilization
+│   ├── ghost_wpa_hs.c         EAPOL handshake collector
+│   ├── ghost_wifi_ducky.c     captive AP + form server
+│   ├── ghost_nfc.c            PN532 driver on UART1 (Phase 15)
+│   └── ghost_gps.c            legacy GPS (deprecated; P4 reads direct)
+└── ...
+```
+
+---
+
+## Apps
+
+56 apps across 7 categories. The Phase 15 additions are marked.
+
+### SYSTEM (9)
+About · Files · File Manager · ELF Browser · Gamepad pairing · Bridge
+console · MicroPython · System info · **C6 Flasher**
+
+### TOOLS (6)
+Notepad · Calculator (with subnet calculator mode) · Clock + stopwatch
+· Calendar · Etch (drawing) · **Camera QR scanner** *(Phase 15)*
+
+### INTEL (7)
+Terminal · Gemini Log · Ref Med · Ref Surv · Baseball Live (MLB) ·
+Trails (hiking POI/heat-map) · SSH client
+
+### GAMES (7)
+Snake · Pac-Man · Galaga · Chess · Doom · SimCity · Retro ELF launcher
+
+### MEDIA (3)
+Audio Player (WAV/MP3) · Audio Recorder (PDM mic) · **Camera (viewfinder
++ snapshot)** *(Phase 15)*
+
+### COMMS (6)
+GPS · WiFi · Bluetooth · LoRa Voice (push-to-talk) · Mesh Messenger
+(Meshtastic LongFast) · Voice Terminal
+
+### CYBER (19)
+Wardrive (SQLite session DB) · BT Radar · Packet Sniffer · Beacon
+Spotter · Network Scanner · Hash Tool · BLE GATT Explorer · WPA
+Handshake · RF Spectrum · Probe Intel · Offline Packet Analysis · BLE
+Ducky · USB Ducky · WiFi Ducky · **NFC Reader** · **NFC Clone** · **NFC
+Emulate** · **Amiibo** · **Secondary Scan** *(Phase 15: T-Beam-routed
+WiFi/BLE scan that runs alongside C6 wardrive)*
 
 ---
 
 ## Build
 
-This is an ESP-IDF v5.4 project. **You need ESP-IDF installed** —
-either via the official Espressif VS Code extension (recommended) or
-from the command line.
+ESP-IDF v5.4.x project. The bring-up guide
+(`docs/PiscesMoon_P4_BringUp_Guide.docx`) covers toolchain install
+step-by-step.
 
-The bring-up guide (`docs/PiscesMoon_P4_BringUp_Guide.docx`) walks
-through this in detail. Short version:
-
+**Quick version (CLI):**
 ```bash
 . $IDF_PATH/export.sh
 cd pisces-moon-p4
@@ -101,195 +264,87 @@ idf.py build
 idf.py -p /dev/ttyUSB0 flash monitor
 ```
 
-For VS Code users:
+**VS Code:**
 1. Install the Espressif ESP-IDF extension
-2. Run "ESP-IDF: Configure ESP-IDF Extension" — pick EXPRESS and v5.4.x
-3. File → Open Folder → select `pisces-moon-p4/`
-4. Bottom toolbar: set target to `esp32p4`, pick serial port
-5. Run "ESP-IDF: Build, Flash and start a Monitor"
+2. "ESP-IDF: Configure ESP-IDF Extension" → EXPRESS → v5.4.x
+3. Open `pisces-moon-p4/` as a folder
+4. Set target to `esp32p4`, pick serial port
+5. "ESP-IDF: Build, Flash and start a Monitor"
 
-The first build pulls ~4 GB of toolchain and managed components and
-takes 5–10 minutes. After that, incremental builds are ~30 seconds.
+First build pulls ~4 GB of toolchain + managed components (5–10 min).
+Incremental builds run in ~30 seconds.
 
 ### C6 firmware
 
-The C6 firmware in `pisces-moon-c6/` builds the same way targeting
-`esp32c6`. **Getting it onto the chip** is harder — see "C6 firmware
-flash" below.
-
----
-
-## Repository layout
-
+Build separately, targeting `esp32c6`:
+```bash
+cd pisces-moon-c6
+idf.py set-target esp32c6
+idf.py build
 ```
-pisces-moon-p4/
-├── main/                             P4 firmware entry point
-│   ├── main.c                        app_main(), init sequence
-│   ├── pm_launcher.c                 LVGL launcher
-│   ├── pm_apps_register.c            registers all 49 apps
-│   ├── CMakeLists.txt
-│   ├── idf_component.yml             managed components (LVGL, RadioLib, ...)
-│   └── ...
-├── components/                       OS subsystems, each its own ESP-IDF component
-│   ├── pm_hal/                       low-level HAL (SPI Treaty, time, NVS, CRC, log)
-│   ├── pm_bsp/                       MIPI-DSI + GT911 + LVGL plumbing
-│   ├── pm_ui/                        Pisces UI kit (theme + widgets)
-│   ├── pm_app_iface/                 pm_app_t struct, category enum
-│   ├── pm_audio/                     NS4168 + I2S + PDM mic
-│   ├── pm_nosql/                     simple KV store on SD
-│   ├── pm_sqlite/                    wardrive session DB
-│   ├── pm_gps_state/                 shared GPS cache
-│   ├── pm_gps_uart/                  P4-direct NMEA parser
-│   ├── pm_radio/                     wireless slot abstraction + auto-detect
-│   ├── pm_lora/                      SX1262 backend (RadioLib wrapper)
-│   ├── pm_c6_bridge/                 UART bridge to the C6
-│   ├── pm_c6_programmer/             C6 firmware flasher (SDIO bootloader)
-│   └── pm_apps/                      All 49 apps, grouped by category
-│       ├── system/   (9 apps)
-│       ├── tools/    (5 apps)
-│       ├── intel/    (7 apps)
-│       ├── games/    (7 apps)
-│       ├── media/    (2 apps)
-│       ├── comms/    (6 apps)
-│       └── cyber/    (14 apps)
-├── partitions.csv
-├── sdkconfig.defaults
-├── CMakeLists.txt
-├── README.md                         (this file)
-├── CHANGELOG_v1_2_0_alpha.md         this release
-├── CLA.md                            contributor license agreement
-├── LICENSE                           AGPL-3.0-or-later (full text)
-└── docs/
-    ├── PiscesMoon_P4_BringUp_Guide.docx
-    └── PiscesMoon_OS_Architecture_Reference.docx
 
-pisces-moon-c6/                       C6 Ghost Engine firmware (separate project)
-├── main/
-│   ├── ghost_main.c
-│   ├── ghost_bridge.c                cJSON command dispatcher
-│   ├── ghost_wifi.c                  WiFi scanner + STA control
-│   ├── ghost_ble.c                   BLE scanner
-│   ├── ghost_promisc.c               802.11 monitor mode
-│   ├── ghost_http.c                  HTTP proxy with base64 response
-│   ├── ghost_hid.c                   BLE HID keyboard
-│   ├── ghost_ble_gatt.c              BLE GATT central
-│   ├── ghost_netscan.c               ARP-sweep host discovery
-│   ├── ghost_rfspectrum.c            channel utilization sweep
-│   ├── ghost_wpa_hs.c                EAPOL handshake collector
-│   ├── ghost_wifi_ducky.c            captive AP + form server
-│   ├── ghost_gps.c                   GPS reader (legacy, see note)
-│   └── CMakeLists.txt
-├── partitions.csv
-├── sdkconfig.defaults
-└── CMakeLists.txt
-```
+**Flashing it onto the C6** is done via the **external UART1 connector**
+on the top-right of the CrowPanel board (labeled "UART1" on the silkscreen
+— routes directly to the C6's console UART). Use esptool with a USB-to-TTL
+adapter. The board does not need to be disassembled; soldering is not
+required.
+
+The `pm_c6_programmer` component implements an alternate SDIO-based
+flasher path for **future boards** that don't expose the C6 console
+externally. On the CrowPanel Advanced 7", UART1 + esptool is the
+supported path.
 
 ---
 
 ## What works today
 
 - ✅ Builds clean against ESP-IDF v5.4.x with managed components
-- ✅ Boots into launcher within ~2 seconds of reset
-- ✅ MIPI-DSI panel, GT911 touch, backlight all controlled
-- ✅ All 49 apps loadable, real LVGL screens, navigable
+- ✅ Boots into launcher within ~2 seconds
+- ✅ All 56 apps registered and loadable
+- ✅ MIPI-DSI panel + GT911 touch + backlight PWM
 - ✅ GPS lock once BN-180 sees the sky
-- ✅ SD wardrive writes `/sd/sessions/session_*.db`
-- ✅ Wireless slot auto-detect (NONE if empty, SX1262 or nRF24 if present)
-- ✅ Audio amp control (Codec2 voice path pending)
-
----
+- ✅ Wardrive writes `/sd/sessions/session_*.db`
+- ✅ Wireless slot auto-detect (NONE / SX1262 / nRF24)
+- ✅ Modular peer registry with C6 + BN-180 always registered
+- ✅ PN532 NFC detection over C6 bridge (when present)
+- ✅ Camera component skeleton ready (esp_video integration ahead)
+- ✅ T-Beam peer skeleton ready (T-Beam firmware ahead)
+- ✅ On-screen keyboard + virtual gamepad widgets
+- ✅ BLE HID host on C6 (gamepad pairing)
 
 ## What's pending
 
-- C6 SDIO flasher transport (protocol layer is complete, transport stubbed)
-- Codec2 encoder/decoder for `lora_voice`
-- WPA hccapx binary assembly (frames are collected; binary format needs writing)
-- NimBLE GATT central plumbing in `ghost_ble_gatt`
-- TinyUSB HID descriptors in `usb_ducky`
-- 44 of 49 apps use a default-screen template (functional; per-app polish ahead)
-- Hardware bring-up validation against the actual board
-
-See `CHANGELOG_v1_2_0_alpha.md` for full status.
-
----
-
-## C6 firmware flash
-
-Custom Ghost Engine firmware on the C6 is the project's central
-distinguishing feature, and **getting it onto the chip is the hardest
-remaining problem**.
-
-The board does not expose the C6 console pins externally, so direct
-USB-to-serial flashing isn't an option without soldering. The path
-forward is **P4-mediated SDIO flashing**: the P4 acts as the programmer,
-drives the C6's BOOT/EN pins via SDIO sideband, and pushes firmware
-blocks using the ESP serial bootloader protocol tunneled through SDIO.
-
-The protocol layer is implemented in `pm_c6_programmer.c` (SLIP framing,
-command structure, SYNC handshake, FLASH_BEGIN/DATA/END streaming). The
-SDIO transport itself (`_sdio_send` / `_sdio_recv`) is currently stubbed
-and is the Phase 14 priority.
-
-A C6 Flasher app exists in the SYSTEM category and provides the UI
-(file picker for `/sd/ghost/*.bin`, progress bar, phase tracking).
-Once the transport is brought up, flashing the C6 will be a button tap.
-
----
-
-## Hardware notes
-
-This firmware targets the CrowPanel Advanced 7" SKU DHE04107D V1.0
-specifically. Pin numbers are verified from the ELECROW wiki and
-Lesson 14 — see the changelog for the full pin map.
-
-GPS wiring: the BN-180 connects to the 2×12 GPIO breakout header on
-the left strip — pin 1 = 3V3, pin 4 = GND, pin 5 = IO2 (GPS TX → P4 RX),
-pin 6 = IO3 (P4 TX → GPS RX, mostly unused).
-
-The wireless module slot accepts ELECROW's interchangeable carriers:
-SX1262 (LoRa, $6.55), nRF24 ($3.50), ESP32-H2, ESP32-C6 slot variant,
-or Wi-Fi HaLow. SX1262 and nRF24 auto-detect via SPI signature probe
-at boot.
-
-The Waveshare Core1262-HF module does **not** fit the slot — buy
-ELECROW's own SX1262 carrier instead.
-
----
-
-## Contributing
-
-Pull requests welcome. By submitting, you agree to the terms in
-`CLA.md`. The project is AGPL-3.0-or-later; if you fork and run a
-service from the fork, the AGPL requires you to publish the source.
-
-If you're new to embedded development and want to help, the most
-accessible work is **per-app UI polish**: 44 of 49 apps currently use
-the default-screen template and would benefit from custom LVGL
-screens. The pattern is documented in `pm_ui.h` and four reference
-apps (clock, calculator, wifi, wardrive) demonstrate the kit.
-
-If you have hardware experience, the highest-impact pending work is
-the C6 SDIO transport in `components/pm_c6_programmer/`.
+- Hardware bring-up validation on the actual bench
+- T-Beam Supreme S3 peer firmware (Phase 16)
+- Full `pm_camera` driver using `esp_video` managed component
+- Several apps still on default-screen template (per-app UI polish)
+- Codec2 voice encoder for `lora_voice`
+- WPA hccapx binary assembly
+- NimBLE GATT central plumbing finalization
 
 ---
 
 ## License
 
-AGPL-3.0-or-later. See `LICENSE` for the full text.
+AGPL-3.0-or-later. See `LICENSE`.
 
 In short: free to use, modify, and distribute. If you run a network
 service based on this code, you must release your modified source.
-Every source file carries an SPDX header identifying the license.
+Every source file carries an SPDX header.
+
+Contributions require the CLA in `CLA.md`. By submitting a pull
+request, you agree to license your contribution under the project's
+license.
 
 ---
 
 ## Credits
 
-**Eric Becker** / **Fluid Fortune** — design, architecture, S3 lineage,
-Ghost Engine concept, hardware integration.
+**Eric Becker** / **Fluid Fortune** — design, architecture, modular
+peer system, hardware integration, all of the above.
 
-Built on the work of the Espressif ESP-IDF team, the LVGL project, the
-RadioLib project (Jan Gromeš), the SQLite project (siara-cc port), and
-the broader ESP32 community.
+Built on the work of the Espressif ESP-IDF team, the LVGL project,
+RadioLib (Jan Gromeš), siara-cc/sqlite3, and the broader ESP32
+community. Hardware reference: the ELECROW CrowPanel Advanced 7" team.
 
-fluidfortune.com
+[fluidfortune.com](https://fluidfortune.com)

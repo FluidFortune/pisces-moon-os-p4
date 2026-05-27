@@ -13,10 +13,11 @@
 #     - LVGL fonts / icons / theme assets
 #     - Doom WAD / SimCity terrain (if loaded internally vs SD)
 # - littlefs (1MB) for app-managed config / state.
+# - coredump (256KB) for no-UART panic capture.
 # - nvs (24KB) for system NVS namespace use.
 #
-# Total: 0x10000 + 0x600000 + 0x800000 + 0x100000 + 0x6000 = 0xF06000
-# (fits in 16MB with headroom for bootloader and partition table)
+# Highest used address: 0xF50000
+# (fits in 16MB with 0xB0000 bytes free above the coredump partition)
 #
 # Name,      Type,  SubType,   Offset,    Size
 nvs,         data,  nvs,       0x9000,    0x6000
@@ -24,3 +25,4 @@ phy_init,    data,  phy,       0xf000,    0x1000
 factory,     app,   factory,   0x10000,   0x600000
 storage,     data,  fat,       0x610000,  0x800000
 littlefs,    data,  spiffs,    0xE10000,  0x100000
+coredump,    data,  coredump,  0xF10000,  0x40000
