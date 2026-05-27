@@ -10,18 +10,18 @@ if(NOT EXISTS "/Users/eric/.espressif/v5.5.3/esp-idf/components/bootloader/subpr
   file(MAKE_DIRECTORY "/Users/eric/.espressif/v5.5.3/esp-idf/components/bootloader/subproject")
 endif()
 file(MAKE_DIRECTORY
-  "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader"
-  "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader-prefix"
-  "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader-prefix/tmp"
-  "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader-prefix/src/bootloader-stamp"
-  "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader-prefix/src"
-  "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader-prefix/src/bootloader-stamp"
+  "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader"
+  "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader-prefix"
+  "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader-prefix/tmp"
+  "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader-prefix/src/bootloader-stamp"
+  "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader-prefix/src"
+  "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader-prefix/src/bootloader-stamp"
 )
 
 set(configSubDirs )
 foreach(subDir IN LISTS configSubDirs)
-    file(MAKE_DIRECTORY "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
+    file(MAKE_DIRECTORY "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
 endforeach()
 if(cfgdir)
-  file(MAKE_DIRECTORY "/Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader-prefix/src/bootloader-stamp${cfgdir}") # cfgdir has leading slash
+  file(MAKE_DIRECTORY "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader-prefix/src/bootloader-stamp${cfgdir}") # cfgdir has leading slash
 endif()

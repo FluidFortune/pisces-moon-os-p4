@@ -1,4 +1,4 @@
-/* * Data converted from /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from /Users/eric/Documents/GitHub/pisces-moon-os-p4/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 #if !defined (__APPLE__) && !defined (__linux__)

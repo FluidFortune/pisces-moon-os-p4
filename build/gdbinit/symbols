@@ -13,8 +13,8 @@ end
 
 # Load bootloader symbols
 set confirm off
-    add-symbol-file /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/bootloader/bootloader.elf
+    add-symbol-file /Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/bootloader.elf
 set confirm on
 
 # Load application symbols
-file /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4/build/pisces_moon_p4.elf
+file /Users/eric/Documents/GitHub/pisces-moon-os-p4/build/pisces_moon_p4.elf

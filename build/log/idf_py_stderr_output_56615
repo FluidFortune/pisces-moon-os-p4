@@ -1,0 +1,27 @@
+Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python3 -DESP_PLATFORM=1 -DCCACHE_ENABLE=0 /Users/eric/Documents/GitHub/pisces-moon-os-p4
+CMake Error at build/toolchain/toolchain-esp32p4.cmake:2 (include):
+  include could not find requested file:
+
+    /Users/eric/.espressif/v5.5.3/esp-idf/tools/cmake/toolchain.cmake
+Call Stack (most recent call first):
+  build/CMakeFiles/4.3.0/CMakeSystem.cmake:6 (include)
+  /Users/eric/.espressif/v5.5.3/esp-idf/tools/cmake/project.cmake:590 (__project)
+  CMakeLists.txt:39 (project)
+
+
+CMake Error at /Users/eric/.espressif/v5.5.3/esp-idf/tools/cmake/tool_version_check.cmake:36 (message):
+
+
+  Tool doesn't match supported version from list ['esp-14.2.0_20251107']:
+  /Users/eric/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/bin/riscv32-esp-elf-gcc
+
+  Please try to run 'idf.py fullclean' to solve it.
+
+Call Stack (most recent call first):
+  /Users/eric/.espressif/v5.5.3/esp-idf/components/esp_common/project_include.cmake:10 (check_expected_tool_version)
+  /Users/eric/.espressif/v5.5.3/esp-idf/tools/cmake/build.cmake:469 (include)
+  /Users/eric/.espressif/v5.5.3/esp-idf/tools/cmake/build.cmake:720 (__build_process_project_includes)
+  /Users/eric/.espressif/v5.5.3/esp-idf/tools/cmake/project.cmake:741 (idf_build_process)
+  CMakeLists.txt:39 (project)
+
+

@@ -26,6 +26,9 @@ idf_component_register(
         pm_audio
         pm_gps_state
         pm_gps_uart
+        pm_input
+        pm_peer
+        pm_cardputer_i2c
         esp_event
         esp_wifi
         espressif__esp_lvgl_port

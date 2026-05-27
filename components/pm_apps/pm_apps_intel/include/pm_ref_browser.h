@@ -27,10 +27,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include "lvgl.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 #define PM_REF_MAX_RESULTS  128
 #define PM_REF_ID_SIZE       24
@@ -80,6 +82,16 @@ bool              pm_ref_browser_card_visible(const pm_ref_browser_t* b);
 // Card scroll
 int               pm_ref_browser_card_scroll(const pm_ref_browser_t* b);
 void              pm_ref_browser_card_scroll_set(pm_ref_browser_t* b, int y);
+
+// Build a complete reference browser screen using pm_app_layout.
+// Returns the root screen (caller assigns to its s_screen and loads).
+// The browser remains owned by the caller — destroy with
+// pm_ref_browser_destroy() at app deinit.
+lv_obj_t* pm_ref_browser_build_screen(pm_ref_browser_t* b);
+
+// Refresh the on-screen list to match current browser state.
+// Called after refresh() or filter changes.
+void pm_ref_browser_sync_ui(pm_ref_browser_t* b);
 
 #ifdef __cplusplus
 }

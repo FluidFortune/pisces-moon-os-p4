@@ -251,7 +251,7 @@ WiFi/BLE scan that runs alongside C6 wardrive)*
 
 ## Build
 
-ESP-IDF v5.4.x project. The bring-up guide
+ESP-IDF v5.5.3 project. The bring-up guide
 (`docs/PiscesMoon_P4_BringUp_Guide.docx`) covers toolchain install
 step-by-step.
 
@@ -266,7 +266,7 @@ idf.py -p /dev/ttyUSB0 flash monitor
 
 **VS Code:**
 1. Install the Espressif ESP-IDF extension
-2. "ESP-IDF: Configure ESP-IDF Extension" → EXPRESS → v5.4.x
+2. "ESP-IDF: Configure ESP-IDF Extension" → EXPRESS → v5.5.3
 3. Open `pisces-moon-p4/` as a folder
 4. Set target to `esp32p4`, pick serial port
 5. "ESP-IDF: Build, Flash and start a Monitor"
@@ -298,7 +298,7 @@ supported path.
 
 ## What works today
 
-- ✅ Builds clean against ESP-IDF v5.4.x with managed components
+- ✅ Builds clean against ESP-IDF v5.5.3 with managed components
 - ✅ Boots into launcher within ~2 seconds
 - ✅ All 56 apps registered and loadable
 - ✅ MIPI-DSI panel + GT911 touch + backlight PWM

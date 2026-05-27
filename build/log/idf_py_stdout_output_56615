@@ -1,0 +1,38 @@
+Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python3 -DESP_PLATFORM=1 -DCCACHE_ENABLE=0 /Users/eric/Documents/GitHub/pisces-moon-os-p4
+-- Pisces Moon board profile: elecrow_p4_7
+-- Component directory /Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_apps does not contain a CMakeLists.txt file. No component will be added
+-- Minimal build - OFF
+-- Building ESP-IDF components for target esp32p4
+NOTICE: Current idf-component-manager default lock file version is 2.0.0, but found 3.0.0 in /Users/eric/Documents/GitHub/pisces-moon-os-p4/dependencies.lock. Recreating lock file with the current version.
+NOTICE: 
+Following dependencies have new versions available:
+Dependency "espressif/esp_lvgl_port": "2.7.2" -> "2.8.0~1"
+Dependency "jgromes/radiolib": "7.6.0" -> "7.7.0"
+Consider running "idf.py update-dependencies" to update your lock file.
+NOTICE: Updating lock file at /Users/eric/Documents/GitHub/pisces-moon-os-p4/dependencies.lock
+NOTICE: Processing 13 dependencies:
+NOTICE: [1/13] espressif/cmake_utilities (0.5.3)
+NOTICE: [2/13] espressif/eppp_link (1.1.5)
+NOTICE: [3/13] espressif/esp_hosted (2.12.7)
+NOTICE: [4/13] espressif/esp_lcd_ek79007 (1.0.4)
+NOTICE: [5/13] espressif/esp_lcd_touch (1.2.1)
+NOTICE: [6/13] espressif/esp_lcd_touch_gt911 (1.2.0~2)
+NOTICE: [7/13] espressif/esp_lvgl_port (2.7.2)
+NOTICE: [8/13] espressif/esp_serial_slave_link (1.1.2)
+NOTICE: [9/13] espressif/esp_wifi_remote (1.5.1)
+NOTICE: [10/13] espressif/wifi_remote_over_eppp (0.3.2)
+NOTICE: [11/13] jgromes/radiolib (7.6.0)
+NOTICE: [12/13] lvgl/lvgl (9.4.0)
+NOTICE: [13/13] idf (5.5.3)
+-- Using new driver components (IDF >= 5.0)
+-- ESP-TEE is currently supported only on the esp32c6;esp32h2;esp32c5 SoCs
+-- Project sdkconfig file /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig
+Loading defaults file /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults...
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults:63 CONFIG_NEWLIB_NANO_FORMAT was replaced with CONFIG_LIBC_NEWLIB_NANO_FORMAT 
+warning: unknown kconfig symbol 'FATFS_LONG_FILENAMES' assigned to 'y' in /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults
+warning: unknown kconfig symbol 'FATFS_DEFAULT_CODEPAGE' assigned to '437' in /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults
+warning: unknown kconfig symbol 'LV_COLOR_16_SWAP' assigned to 'n' in /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults
+warning: unknown kconfig symbol 'LV_DISP_DEF_REFR_PERIOD' assigned to '16' in /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults
+warning: unknown kconfig symbol 'LV_INDEV_DEF_READ_PERIOD' assigned to '20' in /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults
+warning: unknown kconfig symbol 'LV_USE_OS' assigned to 'LV_OS_FREERTOS' in /Users/eric/Documents/GitHub/pisces-moon-os-p4/sdkconfig.defaults
+-- Configuring incomplete, errors occurred!

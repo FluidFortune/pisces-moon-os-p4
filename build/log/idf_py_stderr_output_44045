@@ -1,1 +1,0 @@
-Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python -DESP_PLATFORM=1 -DCCACHE_ENABLE=0 /Users/eric/workspace/PiscesMoon-alpha-1.2.0/pisces-moon-p4

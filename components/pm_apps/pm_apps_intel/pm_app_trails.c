@@ -4,7 +4,12 @@
 // Contributions: see CLA.md
 // fluidfortune.com
 
-
+// ============================================================
+//  pm_app_trails.c — Hiking trail POI/heat-map reference
+//
+//  Thin wrapper around pm_ref_browser. Data at /sd/data/trails/.
+//  Gemini fetch path stubbed pending C6 http_post.
+// ============================================================
 
 #include "pm_app_trails.h"
 #include "pm_ref_browser.h"
@@ -14,19 +19,11 @@
 
 static const char* TAG = "PM_TRAILS";
 static pm_ref_browser_t* s_browser = NULL;
+static lv_obj_t* s_screen = NULL;
 
 void pm_app_trails_fetch(const char* name_and_region) {
     if (!name_and_region) return;
     pm_log_w(TAG, "fetch '%s' — needs C6 http_post transport", name_and_region);
-    // Same shape as pm_app_baseball_fetch — Gemini structured JSON request
-    // through C6 once http_post lands.
-}
-
-static lv_obj_t* s_default_screen = NULL;
-
-static void _build_screen(void) {
-    s_default_screen = pm_ui_default_screen("TRAILS",
-        "TRAILS app — UI ready");
 }
 
 static void _init(void) {
@@ -36,17 +33,25 @@ static void _init(void) {
         .allow_fetch = true,
     };
     s_browser = pm_ref_browser_create(&cfg);
-    _build_screen();
 }
 
 static void _enter(void) {
-    if (s_default_screen) lv_screen_load(s_default_screen);
+    if (!s_screen && s_browser) {
+        pm_ref_browser_refresh(s_browser);
+        s_screen = pm_ref_browser_build_screen(s_browser);
+    } else if (s_browser) {
+        pm_ref_browser_refresh(s_browser);
+        pm_ref_browser_sync_ui(s_browser);
+    }
+    if (s_screen) lv_screen_load(s_screen);
     pm_log_i(TAG, "enter");
-    if (s_browser) pm_ref_browser_refresh(s_browser);
 }
 
 static void _exit_(void)  { pm_log_i(TAG, "exit"); }
-static void _deinit(void) { if (s_browser) { pm_ref_browser_destroy(s_browser); s_browser = NULL; } }
+static void _deinit(void) {
+    if (s_browser) { pm_ref_browser_destroy(s_browser); s_browser = NULL; }
+    s_screen = NULL;
+}
 
 static const pm_app_t _APP = {
     .id           = "trails",

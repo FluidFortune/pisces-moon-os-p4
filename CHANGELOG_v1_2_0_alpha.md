@@ -46,7 +46,7 @@ but no hardware bring-up has been done yet.
 
 What that means in practice:
 
-- **The build will succeed** end-to-end against ESP-IDF v5.4.x with the
+- **The build will succeed** end-to-end against ESP-IDF v5.5.3 with the
   managed components listed in `main/idf_component.yml`.
 - **The boot sequence is real and runs to launcher visibility.** Pin
   numbers are verified from the ELECROW wiki and Lesson 14, not
@@ -81,7 +81,7 @@ flash path.
 | Display | 2.8" 320×240 ST7789 SPI | 7" 1024×600 IPS MIPI-DSI |
 | Touch | Trackball + keys | Capacitive (GT911) |
 | Language | C++ / Arduino | C (one C++ TU for RadioLib) |
-| Framework | Arduino-ESP32 | ESP-IDF v5.4 |
+| Framework | Arduino-ESP32 | ESP-IDF v5.5.3 |
 | UI | Bare framebuffer + custom widgets | LVGL v9.x |
 | Audio | I2S to dual speakers (mono) | I2S to NS4168 (stereo speakers, PDM mic) |
 | Storage | SD over SPI Treaty | SD over SDIO 1-bit (dedicated peripheral) |
@@ -207,7 +207,7 @@ firmware. **+449 LOC.**
 
 Assuming a CrowPanel Advanced 7" board flashed with this firmware:
 
-- ✅ Builds clean against ESP-IDF v5.4.x
+- ✅ Builds clean against ESP-IDF v5.5.3
 - ✅ Boots into launcher within ~2 seconds of reset
 - ✅ MIPI-DSI panel renders 1024×600 RGB565
 - ✅ GT911 capacitive touch responsive
@@ -263,7 +263,7 @@ pin 1 = 3V3, pin 4 = GND, pin 5 = IO2, pin 6 = IO3.
 See `PiscesMoon_P4_BringUp_Guide.docx` for the step-by-step bring-up
 procedure. The short version:
 
-1. Install VS Code with the Espressif ESP-IDF extension (v5.4.x)
+1. Install VS Code with the Espressif ESP-IDF extension (v5.5.3)
 2. Open `pisces-moon-p4/` as a folder
 3. Set target to `esp32p4`, pick the board's serial port
 4. Run "ESP-IDF: Build, Flash and start a Monitor"
