@@ -4,6 +4,7 @@
 # Contributions: see CLA.md
 # fluidfortune.com
 
+
 idf_component_register(
     SRCS
         "main.c"
@@ -14,7 +15,14 @@ idf_component_register(
     REQUIRES
         nvs_flash
         esp_system
+        esp_event
+        esp_netif
+        esp_wifi
+        bt
+        espressif__esp_hosted
+        espressif__esp_lvgl_port
         freertos
+        pm_board
         pm_hal
         pm_bsp
         pm_ui
@@ -25,8 +33,14 @@ idf_component_register(
         pm_gps_state
         pm_gps_uart
         pm_radio
+        pm_peer
+        pm_tbeam
+        pm_nfc
+        pm_camera
+        pm_input
         pm_lora
         pm_sqlite
+        pm_boot
         pm_apps_system
         pm_apps_tools
         pm_apps_intel

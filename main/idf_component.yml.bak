@@ -20,7 +20,7 @@ dependencies:
     version: "^1.2.0"
   jgromes/radiolib:
     version: "^7.2.1"        # SX1262 driver
-  espressif/esp_hosted:
-    version: "*"              # C6 WiFi/BT over SDIO (stock slave fw)
-  espressif/esp_wifi_remote:
-    version: "*"              # WiFi API shim required by esp_hosted
+#  espressif/esp_hosted:
+#    version: "*"              # C6 WiFi/BT over SDIO (stock slave fw)
+#  espressif/esp_wifi_remote:
+#    version: "*"              # WiFi API shim required by esp_hosted

@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_apps_register.c — Central app registration
 //
@@ -29,6 +30,7 @@
 
 // TOOLS
 #include "pm_app_notepad.h"
+#include "pm_app_keytest.h"
 #include "pm_app_calculator.h"
 #include "pm_app_clock.h"
 #include "pm_app_calendar.h"
@@ -55,6 +57,7 @@
 // MEDIA
 #include "pm_app_audio_player.h"
 #include "pm_app_audio_recorder.h"
+#include "pm_app_camera.h"           // Phase 15
 
 // COMMS
 #include "pm_app_gps.h"
@@ -64,8 +67,13 @@
 #include "pm_app_mesh_messenger.h"
 #include "pm_app_voice_terminal.h"
 
+// TOOLS — Phase 15 additions
+#include "pm_app_camera_qr.h"
+
 // CYBER
 #include "pm_app_wardrive.h"
+#include "pm_app_silas_creek.h"
+#include "pm_app_clinician.h"
 #include "pm_app_bt_radar.h"
 #include "pm_app_pkt_sniffer.h"
 #include "pm_app_beacon.h"
@@ -79,6 +87,12 @@
 #include "pm_app_ble_ducky.h"
 #include "pm_app_usb_ducky.h"
 #include "pm_app_wifi_ducky.h"
+// CYBER — Phase 15 additions
+#include "pm_app_nfc_reader.h"
+#include "pm_app_nfc_clone.h"
+#include "pm_app_nfc_emulate.h"
+#include "pm_app_amiibo.h"
+#include "pm_app_secondary_scan.h"
 
 #define REGISTER_IF(getter) \
     do { const pm_app_t* a = (getter); if (a) pm_app_register(a); } while (0)
@@ -97,12 +111,14 @@ void main_register_apps(void) {
     REGISTER_IF(pm_app_bridge());
     REGISTER_IF(pm_app_c6_flasher());
 
-    // TOOLS (5)
+    // TOOLS (6 + 1 Phase 15)
     REGISTER_IF(pm_app_notepad());
+    REGISTER_IF(pm_app_keytest());
     REGISTER_IF(pm_app_calculator());
     REGISTER_IF(pm_app_clock());
     REGISTER_IF(pm_app_calendar());
     REGISTER_IF(pm_app_etch());
+    REGISTER_IF(pm_app_camera_qr());        // Phase 15
 
     // INTEL (7)
     REGISTER_IF(pm_app_terminal());
@@ -122,9 +138,10 @@ void main_register_apps(void) {
     REGISTER_IF(pm_app_simcity());
     REGISTER_IF(pm_app_retro_elf());
 
-    // MEDIA (2)
+    // MEDIA (2 + 1 Phase 15)
     REGISTER_IF(pm_app_audio_player());
     REGISTER_IF(pm_app_audio_recorder());
+    REGISTER_IF(pm_app_camera());           // Phase 15
 
     // COMMS (6)
     REGISTER_IF(pm_app_gps());
@@ -134,8 +151,10 @@ void main_register_apps(void) {
     REGISTER_IF(pm_app_mesh_messenger());
     REGISTER_IF(pm_app_voice_terminal());
 
-    // CYBER (14)
+    // CYBER (14 + 5 Phase 15)
     REGISTER_IF(pm_app_wardrive());
+    REGISTER_IF(pm_app_silas_creek());
+    REGISTER_IF(pm_app_clinician());
     REGISTER_IF(pm_app_bt_radar());
     REGISTER_IF(pm_app_pkt_sniffer());
     REGISTER_IF(pm_app_beacon());
@@ -149,6 +168,11 @@ void main_register_apps(void) {
     REGISTER_IF(pm_app_ble_ducky());
     REGISTER_IF(pm_app_usb_ducky());
     REGISTER_IF(pm_app_wifi_ducky());
+    REGISTER_IF(pm_app_nfc_reader());       // Phase 15
+    REGISTER_IF(pm_app_nfc_clone());        // Phase 15
+    REGISTER_IF(pm_app_nfc_emulate());      // Phase 15
+    REGISTER_IF(pm_app_amiibo());           // Phase 15
+    REGISTER_IF(pm_app_secondary_scan());   // Phase 15
 
-    pm_log_i("PM_APPS", "all 49 apps registered");
+    pm_log_i("PM_APPS", "app registration complete: %d apps", pm_app_count());
 }
