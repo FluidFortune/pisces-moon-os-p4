@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_ui.c — Pisces UI Kit implementation
 // ============================================================
@@ -125,7 +126,7 @@ lv_obj_t* pm_ui_screen(void) {
 // ─────────────────────────────────────────────
 static void _back_default_cb(lv_event_t* e) {
     (void)e;
-    pm_launcher_show();   // back to launcher
+    pm_launcher_back_from_app();   // leave foreground app, then return
 }
 
 lv_obj_t* pm_ui_titlebar(lv_obj_t* parent, const char* title,
@@ -444,3 +445,202 @@ void pm_ui_default_screen_set_status(lv_obj_t* scr, const char* text) {
     lv_obj_t* lab = _find_status_label(scr);
     if (lab) lv_label_set_text(lab, text ? text : "");
 }
+
+// ─────────────────────────────────────────────
+//  On-screen QWERTY keyboard
+// ─────────────────────────────────────────────
+//
+// Wraps LVGL's lv_keyboard. We theme it Pisces and also fan
+// each keystroke into the pm_input dispatcher so apps that
+// want raw keys (terminal, ssh) can subscribe.
+//
+#include "pm_input.h"
+
+struct pm_ui_keyboard_s {
+    lv_obj_t* kb;
+    lv_obj_t* attached_ta;
+};
+
+static void _kb_event_cb(lv_event_t* e) {
+    lv_obj_t*    kb   = lv_event_get_target(e);
+    lv_event_code_t c = lv_event_get_code(e);
+    if (c == LV_EVENT_VALUE_CHANGED) {
+        uint32_t btn_id = lv_keyboard_get_selected_button(kb);
+        if (btn_id == LV_BUTTONMATRIX_BUTTON_NONE) return;
+        const char* txt = lv_keyboard_get_button_text(kb, btn_id);
+        if (!txt || !*txt) return;
+        // Map LVGL "special" labels to pm_input codes
+        pm_input_event_t ev = {
+            .kind      = PM_INPUT_KEY,
+            .source    = PM_INPUT_SRC_VIRTUAL_KEYBOARD,
+            .down      = true,
+            .timestamp = pm_millis(),
+        };
+        if      (!strcmp(txt, LV_SYMBOL_BACKSPACE)) ev.code = PM_KEY_BACKSPACE;
+        else if (!strcmp(txt, LV_SYMBOL_NEW_LINE))  ev.code = PM_KEY_ENTER;
+        else if (!strcmp(txt, LV_SYMBOL_OK))        ev.code = PM_KEY_ENTER;
+        else if (!strcmp(txt, LV_SYMBOL_CLOSE))     ev.code = PM_KEY_ESC;
+        else if (!strcmp(txt, " "))                  ev.code = PM_KEY_SPACE;
+        else if (txt[0] && !txt[1])                  ev.code = (uint32_t)txt[0];
+        else return;     // multi-char labels (shift/abc) — handled by LVGL
+        pm_input_post(&ev);
+        ev.down = false;
+        pm_input_post(&ev);
+    }
+}
+
+pm_ui_keyboard_t* pm_ui_keyboard_create(lv_obj_t* parent) {
+    pm_ui_theme_init();
+    pm_ui_keyboard_t* k = (pm_ui_keyboard_t*)pm_psram_calloc(1, sizeof(*k));
+    if (!k) return NULL;
+    k->kb = lv_keyboard_create(parent);
+    lv_obj_set_size(k->kb, LV_PCT(100), LV_PCT(40));
+    lv_obj_align(k->kb, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_set_style_bg_color   (k->kb, PM_C_BG_2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(k->kb, PM_C_BORDER, LV_PART_MAIN);
+    lv_obj_set_style_border_width(k->kb, 1, LV_PART_MAIN);
+    lv_obj_set_style_bg_color   (k->kb, PM_C_BG_3, LV_PART_ITEMS);
+    lv_obj_set_style_text_color (k->kb, PM_C_FG,    LV_PART_ITEMS);
+    lv_obj_set_style_radius     (k->kb, 4,          LV_PART_ITEMS);
+    lv_obj_add_event_cb(k->kb, _kb_event_cb, LV_EVENT_VALUE_CHANGED, k);
+    lv_obj_add_flag(k->kb, LV_OBJ_FLAG_HIDDEN);   // hidden until shown
+    return k;
+}
+
+void pm_ui_keyboard_attach(pm_ui_keyboard_t* k, lv_obj_t* ta) {
+    if (!k) return;
+    k->attached_ta = ta;
+    lv_keyboard_set_textarea(k->kb, ta);
+}
+
+void pm_ui_keyboard_show(pm_ui_keyboard_t* k) {
+    if (!k) return;
+    lv_obj_clear_flag(k->kb, LV_OBJ_FLAG_HIDDEN);
+}
+
+void pm_ui_keyboard_hide(pm_ui_keyboard_t* k) {
+    if (!k) return;
+    lv_obj_add_flag(k->kb, LV_OBJ_FLAG_HIDDEN);
+}
+
+lv_obj_t* pm_ui_keyboard_obj(pm_ui_keyboard_t* k) { return k ? k->kb : NULL; }
+
+// ─────────────────────────────────────────────
+//  On-screen virtual gamepad
+// ─────────────────────────────────────────────
+//
+// Touch events on each zone post pm_input events. Press = down=true,
+// release = down=false, so games can implement hold-to-walk.
+//
+struct pm_ui_gamepad_s {
+    lv_obj_t* container;
+};
+
+typedef struct {
+    pm_input_kind_t kind;
+    uint32_t        code;
+} zone_meta_t;
+
+static void _gp_zone_evt(lv_event_t* e) {
+    lv_event_code_t c = lv_event_get_code(e);
+    zone_meta_t* m = (zone_meta_t*)lv_event_get_user_data(e);
+    if (!m) return;
+    pm_input_event_t ev = {
+        .kind      = m->kind,
+        .code      = m->code,
+        .source    = PM_INPUT_SRC_VIRTUAL_GAMEPAD,
+        .down      = (c == LV_EVENT_PRESSED),
+        .timestamp = pm_millis(),
+    };
+    if (c == LV_EVENT_PRESSED || c == LV_EVENT_RELEASED) {
+        pm_input_post(&ev);
+    }
+}
+
+static lv_obj_t* _gp_make_zone(lv_obj_t* parent, const char* label,
+                                 lv_color_t accent,
+                                 pm_input_kind_t kind, uint32_t code) {
+    lv_obj_t* z = lv_obj_create(parent);
+    lv_obj_remove_style_all(z);
+    lv_obj_set_size(z, 70, 70);
+    lv_obj_set_style_bg_color   (z, PM_C_BG_3, 0);
+    lv_obj_set_style_bg_opa     (z, LV_OPA_COVER, 0);
+    lv_obj_set_style_radius     (z, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_border_color(z, accent, 0);
+    lv_obj_set_style_border_width(z, 2, 0);
+    lv_obj_add_flag(z, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_t* lbl = lv_label_create(z);
+    lv_label_set_text(lbl, label);
+    lv_obj_set_style_text_color(lbl, accent, 0);
+    lv_obj_center(lbl);
+    zone_meta_t* m = (zone_meta_t*)pm_psram_calloc(1, sizeof(*m));
+    if (m) { m->kind = kind; m->code = code; }
+    lv_obj_add_event_cb(z, _gp_zone_evt, LV_EVENT_PRESSED,  m);
+    lv_obj_add_event_cb(z, _gp_zone_evt, LV_EVENT_RELEASED, m);
+    return z;
+}
+
+pm_ui_gamepad_t* pm_ui_gamepad_create(lv_obj_t* parent) {
+    pm_ui_theme_init();
+    pm_ui_gamepad_t* g = (pm_ui_gamepad_t*)pm_psram_calloc(1, sizeof(*g));
+    if (!g) return NULL;
+    g->container = lv_obj_create(parent);
+    lv_obj_remove_style_all(g->container);
+    lv_obj_set_size(g->container, LV_PCT(100), 200);
+    lv_obj_align(g->container, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_set_style_bg_color(g->container, PM_C_BG, 0);
+    lv_obj_set_style_bg_opa  (g->container, LV_OPA_70, 0);
+    lv_obj_set_style_pad_all (g->container, 10, 0);
+    lv_obj_clear_flag(g->container, LV_OBJ_FLAG_SCROLLABLE);
+
+    // Left side: d-pad cross (3x3 grid with center empty)
+    lv_obj_t* dpad = lv_obj_create(g->container);
+    lv_obj_remove_style_all(dpad);
+    lv_obj_set_size(dpad, 220, 180);
+    lv_obj_align(dpad, LV_ALIGN_LEFT_MID, 0, 0);
+    lv_obj_clear_flag(dpad, LV_OBJ_FLAG_SCROLLABLE);
+
+    lv_obj_t* up    = _gp_make_zone(dpad, LV_SYMBOL_UP,    PM_C_ACCENT, PM_INPUT_DPAD, PM_DPAD_UP);
+    lv_obj_t* down  = _gp_make_zone(dpad, LV_SYMBOL_DOWN,  PM_C_ACCENT, PM_INPUT_DPAD, PM_DPAD_DOWN);
+    lv_obj_t* left  = _gp_make_zone(dpad, LV_SYMBOL_LEFT,  PM_C_ACCENT, PM_INPUT_DPAD, PM_DPAD_LEFT);
+    lv_obj_t* right = _gp_make_zone(dpad, LV_SYMBOL_RIGHT, PM_C_ACCENT, PM_INPUT_DPAD, PM_DPAD_RIGHT);
+    lv_obj_align(up,    LV_ALIGN_TOP_MID,    0, 0);
+    lv_obj_align(down,  LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_align(left,  LV_ALIGN_LEFT_MID,   0, 0);
+    lv_obj_align(right, LV_ALIGN_RIGHT_MID,  0, 0);
+
+    // Right side: A/B/X/Y diamond
+    lv_obj_t* btns = lv_obj_create(g->container);
+    lv_obj_remove_style_all(btns);
+    lv_obj_set_size(btns, 220, 180);
+    lv_obj_align(btns, LV_ALIGN_RIGHT_MID, 0, 0);
+    lv_obj_clear_flag(btns, LV_OBJ_FLAG_SCROLLABLE);
+
+    lv_obj_t* y = _gp_make_zone(btns, "Y", PM_C_ACCENT_2, PM_INPUT_BUTTON, PM_BTN_Y);
+    lv_obj_t* a = _gp_make_zone(btns, "A", PM_C_OK,       PM_INPUT_BUTTON, PM_BTN_A);
+    lv_obj_t* b = _gp_make_zone(btns, "B", PM_C_ERR,      PM_INPUT_BUTTON, PM_BTN_B);
+    lv_obj_t* x = _gp_make_zone(btns, "X", PM_C_WARN,     PM_INPUT_BUTTON, PM_BTN_X);
+    lv_obj_align(y, LV_ALIGN_TOP_MID,    0, 0);
+    lv_obj_align(a, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_align(b, LV_ALIGN_RIGHT_MID,  0, 0);
+    lv_obj_align(x, LV_ALIGN_LEFT_MID,   0, 0);
+
+    // Middle: Start/Select strip
+    lv_obj_t* sel = _gp_make_zone(g->container, "SEL", PM_C_FG_DIM, PM_INPUT_BUTTON, PM_BTN_SELECT);
+    lv_obj_t* sta = _gp_make_zone(g->container, "STA", PM_C_FG_DIM, PM_INPUT_BUTTON, PM_BTN_START);
+    lv_obj_set_size(sel, 50, 30);
+    lv_obj_set_size(sta, 50, 30);
+    lv_obj_align(sel, LV_ALIGN_CENTER, -30, 0);
+    lv_obj_align(sta, LV_ALIGN_CENTER,  30, 0);
+
+    lv_obj_add_flag(g->container, LV_OBJ_FLAG_HIDDEN);
+    return g;
+}
+
+void pm_ui_gamepad_show(pm_ui_gamepad_t* g) {
+    if (g) lv_obj_clear_flag(g->container, LV_OBJ_FLAG_HIDDEN);
+}
+void pm_ui_gamepad_hide(pm_ui_gamepad_t* g) {
+    if (g) lv_obj_add_flag(g->container, LV_OBJ_FLAG_HIDDEN);
+}
+lv_obj_t* pm_ui_gamepad_obj(pm_ui_gamepad_t* g) { return g ? g->container : NULL; }

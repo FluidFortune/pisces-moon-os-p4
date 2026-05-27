@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_radio.c — Auto-detect and dispatch
 //
@@ -65,11 +66,51 @@ static pm_radio_kind_t   s_kind        = PM_RADIO_NONE;
 static SemaphoreHandle_t s_handle_mtx  = NULL;
 static const char*       s_holder      = "(none)";
 static spi_device_handle_t s_probe_dev = NULL;
+static bool             s_spi_bus_owned = false;
 
 // ─────────────────────────────────────────────
 //  SPI helper for probes (separate device handle from the
 //  backend's; we release it after detection completes).
+//
+//  Probes own the SPI2 bus only for the duration of detection.
+//  Once we hand off to a backend (pm_lora / pm_nrf24), the
+//  backend's RadioLib EspHal driver takes the bus over. We
+//  release our handle before backend init so EspHal can claim
+//  the bus cleanly.
+//
+//  Note: if a backend has ALREADY initialized the SPI bus on
+//  some earlier path, spi_bus_initialize returns ESP_ERR_INVALID_STATE,
+//  which we treat as "bus is already up, fine to add devices."
 // ─────────────────────────────────────────────
+static esp_err_t _probe_spi_bus_init(void) {
+    spi_bus_config_t bus_cfg = {
+        .mosi_io_num     = PM_RADIO_PIN_SPI_MOSI,
+        .miso_io_num     = PM_RADIO_PIN_SPI_MISO,
+        .sclk_io_num     = PM_RADIO_PIN_SPI_SCK,
+        .quadwp_io_num   = -1,
+        .quadhd_io_num   = -1,
+        .max_transfer_sz = 4096,
+    };
+    esp_err_t err = spi_bus_initialize(SPI2_HOST, &bus_cfg, SPI_DMA_CH_AUTO);
+    if (err == ESP_OK) {
+        s_spi_bus_owned = true;
+        return ESP_OK;
+    }
+    if (err == ESP_ERR_INVALID_STATE) {
+        // Bus already initialized by someone else (probably fine)
+        s_spi_bus_owned = false;
+        return ESP_OK;
+    }
+    return err;
+}
+
+static void _probe_spi_bus_done(void) {
+    if (s_spi_bus_owned) {
+        spi_bus_free(SPI2_HOST);
+        s_spi_bus_owned = false;
+    }
+}
+
 static esp_err_t _probe_spi_init(int cs_pin) {
     spi_device_interface_config_t cfg = {
         .clock_speed_hz = 1 * 1000 * 1000,    // 1 MHz: slow + safe
@@ -222,7 +263,22 @@ pm_radio_kind_t pm_radio_init_auto(void) {
 
     ESP_LOGI(TAG, "Probing wireless module slot…");
 
-    if (_probe_sx1262()) {
+    // Bring up the SPI bus for probing. Probes own it; once we hand
+    // off to a backend we release it so the backend (RadioLib EspHal)
+    // can manage the bus itself.
+    if (_probe_spi_bus_init() != ESP_OK) {
+        ESP_LOGW(TAG, "SPI bus init for probe failed — assuming no radio");
+        s_kind = PM_RADIO_NONE;
+        return s_kind;
+    }
+
+    bool sx_present = _probe_sx1262();
+    bool nrf_present = false;
+    if (!sx_present) nrf_present = _probe_nrf24();
+
+    _probe_spi_bus_done();    // release bus before backend init
+
+    if (sx_present) {
         if (pm_lora_backend_init()) {
             s_kind = PM_RADIO_SX1262;
             ESP_LOGI(TAG, "→ %s ready", pm_radio_name(s_kind));
@@ -231,7 +287,7 @@ pm_radio_kind_t pm_radio_init_auto(void) {
         ESP_LOGW(TAG, "SX1262 detected but backend init failed");
     }
 
-    if (_probe_nrf24()) {
+    if (nrf_present) {
         if (pm_nrf24_backend_init()) {
             s_kind = PM_RADIO_NRF24;
             ESP_LOGI(TAG, "→ %s ready", pm_radio_name(s_kind));

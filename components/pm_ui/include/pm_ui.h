@@ -4,6 +4,9 @@
 // Contributions: see CLA.md
 // fluidfortune.com
 
+#include "pm_ui_p4.h"
+
+
 
 // ============================================================
 //  pm_ui.h — Pisces UI Kit
@@ -136,3 +139,38 @@ lv_obj_t* pm_ui_default_screen(const char* app_title,
 // Update the status text on a default screen. The screen must
 // have been created via pm_ui_default_screen().
 void      pm_ui_default_screen_set_status(lv_obj_t* scr, const char* text);
+
+// ── On-screen QWERTY keyboard ───────────────────────────────
+//
+// Wraps LVGL's built-in lv_keyboard with the Pisces palette.
+// Apps call pm_ui_keyboard_attach(text_area) to bind it to a
+// text widget; pm_ui_keyboard_show()/hide() controls visibility.
+//
+// In addition to LVGL's direct text-area binding, every key
+// press is also posted to the pm_input dispatcher so non-LVGL
+// consumers (terminal apps, voice_terminal command parser) can
+// receive keystrokes.
+typedef struct pm_ui_keyboard_s pm_ui_keyboard_t;
+
+pm_ui_keyboard_t* pm_ui_keyboard_create(lv_obj_t* parent);
+void              pm_ui_keyboard_attach(pm_ui_keyboard_t* k, lv_obj_t* text_area);
+void              pm_ui_keyboard_show  (pm_ui_keyboard_t* k);
+void              pm_ui_keyboard_hide  (pm_ui_keyboard_t* k);
+lv_obj_t*         pm_ui_keyboard_obj   (pm_ui_keyboard_t* k);
+
+// ── On-screen virtual gamepad ───────────────────────────────
+//
+// Eight tap zones: a 4-way d-pad on the left and four buttons
+// (A/B/X/Y) on the right, with optional Start/Select strip in
+// the middle. Each tap posts to the pm_input dispatcher.
+//
+// Layout: a horizontal flex container 100% wide, ~180 px tall,
+// placed at the bottom of a game screen. Games that build
+// their screens with the kit get this for free by calling
+// pm_ui_gamepad_create(screen).
+typedef struct pm_ui_gamepad_s pm_ui_gamepad_t;
+
+pm_ui_gamepad_t* pm_ui_gamepad_create(lv_obj_t* parent);
+void             pm_ui_gamepad_show  (pm_ui_gamepad_t* g);
+void             pm_ui_gamepad_hide  (pm_ui_gamepad_t* g);
+lv_obj_t*        pm_ui_gamepad_obj   (pm_ui_gamepad_t* g);

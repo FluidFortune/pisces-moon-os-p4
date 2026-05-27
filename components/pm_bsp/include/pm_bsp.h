@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_bsp.h — Board Support Package for ELECROW CrowPanel
 //                Advanced 7" ESP32-P4 HMI
@@ -39,22 +40,24 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include "esp_err.h"
+#include "pm_board.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // ── Display geometry ─────────────────────────────────────────
-#define PM_LCD_H_RES         1024
-#define PM_LCD_V_RES         600
-#define PM_LCD_BIT_PER_PIXEL 16   // RGB565
+#define PM_LCD_H_RES         PM_BOARD_LCD_H_RES
+#define PM_LCD_V_RES         PM_BOARD_LCD_V_RES
+#define PM_LCD_BIT_PER_PIXEL PM_BOARD_LCD_BIT_PER_PIXEL   // RGB565
 
 // ── MIPI-DSI defaults (ESP32-P4 reference) ───────────────────
 // num_data_lanes   = 2 (P4 supports up to 2)
 // lane_bit_rate    = 1000 Mbps  (well within 480..1500 envelope)
 // pixel clock      = ~52 MHz   (1024 + h_porch * 600 + v_porch * 60Hz)
-#define PM_MIPI_LANE_BITRATE_MBPS   1000
+#define PM_MIPI_LANE_BITRATE_MBPS   PM_BOARD_MIPI_LANE_BITRATE_MBPS
 
 // ── Pin map (VERIFIED — ELECROW wiki Lesson 14 + main wiki) ──
 //
@@ -113,6 +116,18 @@ struct _lv_display_t;
 struct _lv_indev_t;
 struct _lv_display_t* pm_bsp_lvgl_display(void);
 struct _lv_indev_t*   pm_bsp_lvgl_touch(void);
+
+// Shared I2C1 bus helper for low-duty modular peers on the external
+// connector. The GT911 touch controller also lives on this bus, so callers
+// should keep transactions short and probe only at boot unless they own a
+// specific external module mode.
+esp_err_t pm_bsp_i2c_transmit(uint8_t addr,
+                              const uint8_t* tx, size_t tx_len,
+                              int timeout_ms);
+esp_err_t pm_bsp_i2c_transmit_receive(uint8_t addr,
+                                      const uint8_t* tx, size_t tx_len,
+                                      uint8_t* rx, size_t rx_len,
+                                      int timeout_ms);
 
 #ifdef __cplusplus
 }

@@ -5,19 +5,18 @@
 // fluidfortune.com
 
 
+
 // ============================================================
-//  pm_gps_uart.h — P4-direct GPS reader
+//  pm_gps_uart.h — P4-direct GPS reader (parked)
 //
-//  Reads NMEA from the BN-180 GPS module wired to the P4's
-//  2×12 GPIO header (left strip pins 5/6 = IO2/IO3). Parses
-//  $GPRMC and $GPGGA sentences, feeds pm_gps_state directly.
+//  Optional bench path for a BN-180 GPS module wired directly to
+//  the P4. Normal board profiles use the Cardputer ADV UART1 header
+//  bridge for GPS/radio/keyboard expansion instead.
 //
-//  Architecture rationale:
-//    Originally GPS was routed via the C6 Ghost Engine, which
-//    parsed NMEA and shipped fixes over the bridge UART. With
-//    Eric's actual board the GPS sits on the P4 side, so we
-//    skip the C6 hop entirely. The C6 stays focused on radio
-//    work; GPS is independent of C6 firmware status.
+//  Architecture note:
+//    The IO52 local GPS experiment stays in-tree on UART4 so it can
+//    be re-enabled by setting PM_BOARD_LOCAL_GPS_UART=1 in the active
+//    board profile. It is intentionally disabled for standard builds.
 //
 //  Boot sequence:
 //    1. pm_gps_uart_init()  — UART setup, task spawn
@@ -42,15 +41,14 @@
 extern "C" {
 #endif
 
-// ── Pin map (ELECROW DHE04107D, 2×12 GPIO header left strip) ─
-// Confirmed by Eric from the silkscreen photo:
-//   pin 1 = 3V3   (GPS VCC)
-//   pin 4 = GND
-//   pin 5 = IO2   (GPS TX → P4 RX)
-//   pin 6 = IO3   (P4 TX → GPS RX, used only for AT config)
-#define PM_GPS_UART_NUM     1            // P4 UART1 (free per board map)
-#define PM_GPS_PIN_RX       2
-#define PM_GPS_PIN_TX       3
+// ── Pin map ─────────────────────────────────────────────────
+// Current hardware test rig powers the BN-180 from 5V because this
+// Beitian variant appears unstable from the CrowPanel 3V3 rail.
+// Moving to the 5V row shifts the GPS TX lead to IO52 on Eric's board.
+// GPS is used receive-only; there is no paired TX/probe pin in this setup.
+#define PM_GPS_UART_NUM     4            // P4 UART4; UART1 belongs to Cardputer
+#define PM_GPS_PIN_RX       52
+#define PM_GPS_PIN_TX       (-1)
 #define PM_GPS_BAUD         9600         // BN-180 default
 
 // Init UART, register sentences with parser, spawn read task.
@@ -63,6 +61,9 @@ typedef struct {
     uint32_t sentences_bad;  // checksum failed or malformed
     uint32_t fixes_valid;    // RMC sentences with status='A'
     uint32_t fixes_invalid;  // RMC sentences with status='V'
+    uint8_t  active_rx_pin;  // current UART RX GPIO
+    bool     using_swapped_pins;
+    uint32_t active_baud;    // current UART baud
 } pm_gps_uart_stats_t;
 
 void pm_gps_uart_stats(pm_gps_uart_stats_t* out);

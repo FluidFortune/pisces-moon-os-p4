@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_radio_nrf24.cpp — nRF24L01+ backend
 //
@@ -76,7 +77,7 @@ static void _rx_task_fn(void* arg) {
         if (!s_radio || !s_rx_cb) continue;
 
         size_t plen = 0;
-        int    state;
+        int    state = RADIOLIB_ERR_SPI_CMD_FAILED;
         PM_SPI_TAKE("nrf24_rx") {
             plen  = s_radio->getPacketLength();
             if (plen > sizeof(buf)) plen = sizeof(buf);
@@ -110,11 +111,11 @@ bool pm_nrf24_backend_init(void) {
                                        RADIOLIB_NC,
                                        PM_RADIO_PIN_CTL_C));  // CE
 
-    int rc;
+    int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
     PM_SPI_TAKE("nrf24_init") {
         // begin(freq_MHz, dataRate_kbps, power_dBm, address_len, payload_size)
         // Channel 76 = 2476 MHz; 1 Mbps; 0 dBm power.
-        rc = s_radio->begin(2476.0f, 1000, 0, 5, 32);
+        rc = s_radio->begin(2476.0f, 1000, 0, 5);
         if (rc == RADIOLIB_ERR_NONE) {
             // Set both TX and RX address pipes to our PISCE prefix
             s_radio->setTransmitPipe(s_addr);
@@ -142,9 +143,9 @@ pm_radio_status_t pm_nrf24_backend_tx(const uint8_t* buf, size_t len,
     if (!buf || len == 0)  return PM_RADIO_BAD_PARAM;
     if (len > 32)          return PM_RADIO_BAD_PARAM;
 
-    int rc;
+    int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
     PM_SPI_TAKE("nrf24_tx") {
-        rc = s_radio->transmit(buf, len);
+        rc = s_radio->transmit((const char*)buf, (uint8_t)len);
         if (s_rx_cb) s_radio->startReceive();
     } PM_SPI_GIVE();
     if (rc != RADIOLIB_ERR_NONE) return PM_RADIO_TX_FAIL;
@@ -157,7 +158,7 @@ pm_radio_status_t pm_nrf24_backend_set_rx_cb(pm_radio_rx_cb_t cb, void* user) {
     s_rx_cb   = cb;
     s_rx_user = user;
     if (cb) {
-        int rc;
+        int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
         PM_SPI_TAKE("nrf24_rx_arm") { rc = s_radio->startReceive(); } PM_SPI_GIVE();
         return rc == RADIOLIB_ERR_NONE ? PM_RADIO_OK : PM_RADIO_ERR;
     } else {

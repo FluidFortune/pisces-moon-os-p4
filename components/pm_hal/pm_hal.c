@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_hal.c — Hardware Abstraction Layer implementation
 //
@@ -47,6 +48,7 @@
 #include "esp_vfs.h"
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
+#include "sd_pwr_ctrl_by_on_chip_ldo.h"
 #include "driver/sdmmc_host.h"
 
 static const char* TAG = "PM_HAL";
@@ -56,8 +58,19 @@ pm_mutex_t pm_spi_treaty = NULL;
 
 static bool        s_sd_mounted = false;
 static sdmmc_card_t* s_sd_card  = NULL;
+static sd_pwr_ctrl_handle_t s_sd_pwr_ctrl = NULL;
 
 #define SD_MOUNT_POINT  "/sd"
+
+// CrowPanel/P4 SD card path: SDMMC Slot 0. The soldered C6 ESP-Hosted
+// transport occupies SDMMC Slot 1, so the two controllers must be kept
+// explicit instead of relying on SDMMC_SLOT_CONFIG_DEFAULT().
+#define PM_SDMMC_SLOT              SDMMC_HOST_SLOT_0
+#define PM_SDMMC_CLK_GPIO          GPIO_NUM_43
+#define PM_SDMMC_CMD_GPIO          GPIO_NUM_44
+#define PM_SDMMC_D0_GPIO           GPIO_NUM_39
+#define PM_SDMMC_FREQ_KHZ          10000
+#define PM_SDMMC_PWR_LDO_CHAN      4
 
 // ─────────────────────────────────────────────────────────────
 //  Logging
@@ -332,17 +345,52 @@ bool pm_sd_mounted(void) {
     return s_sd_mounted;
 }
 
+static void _sd_release_power_ctrl(void) {
+    if (s_sd_pwr_ctrl) {
+        esp_err_t err = sd_pwr_ctrl_del_on_chip_ldo(s_sd_pwr_ctrl);
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "SD LDO power control release failed: %s", esp_err_to_name(err));
+        }
+        s_sd_pwr_ctrl = NULL;
+    }
+}
+
+static bool _sd_attach_power_ctrl(sdmmc_host_t* host) {
+    if (!host) return false;
+
+    if (s_sd_pwr_ctrl) {
+        host->pwr_ctrl_handle = s_sd_pwr_ctrl;
+        return true;
+    }
+
+    sd_pwr_ctrl_ldo_config_t ldo_config = {
+        .ldo_chan_id = PM_SDMMC_PWR_LDO_CHAN,
+    };
+
+    esp_err_t err = sd_pwr_ctrl_new_on_chip_ldo(&ldo_config, &s_sd_pwr_ctrl);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "SD LDO power control unavailable: %s", esp_err_to_name(err));
+        return false;
+    }
+
+    host->pwr_ctrl_handle = s_sd_pwr_ctrl;
+    return true;
+}
+
 bool pm_sd_mount(void) {
     if (s_sd_mounted) return true;
 
-    // Configuration is stub — actual GPIO pins TBD from Eagle schematic.
-    // The CrowPanel exposes onboard MicroSD; the slot is wired but the
-    // exact host (SDMMC vs SPI) needs hardware confirmation.
-    //
-    // Default assumption: SDMMC 1-line mode for first bring-up.
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
+    host.slot = PM_SDMMC_SLOT;
+    host.max_freq_khz = PM_SDMMC_FREQ_KHZ;
+    _sd_attach_power_ctrl(&host);
+
     sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
-    slot_config.width = 1;     // 1-bit mode for compatibility
+    slot_config.width = 1;
+    slot_config.clk = PM_SDMMC_CLK_GPIO;
+    slot_config.cmd = PM_SDMMC_CMD_GPIO;
+    slot_config.d0 = PM_SDMMC_D0_GPIO;
+    slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = false,
@@ -354,11 +402,15 @@ bool pm_sd_mount(void) {
                                              &host, &slot_config,
                                              &mount_config, &s_sd_card);
     if (err != ESP_OK) {
-        ESP_LOGW(TAG, "SD mount failed: %s", esp_err_to_name(err));
+        ESP_LOGW(TAG, "SD mount failed: %s (slot=%d clk=%d cmd=%d d0=%d width=1 freq=%dkHz)",
+                 esp_err_to_name(err), PM_SDMMC_SLOT, PM_SDMMC_CLK_GPIO,
+                 PM_SDMMC_CMD_GPIO, PM_SDMMC_D0_GPIO, PM_SDMMC_FREQ_KHZ);
+        _sd_release_power_ctrl();
         return false;
     }
     s_sd_mounted = true;
     ESP_LOGI(TAG, "SD card mounted at %s", SD_MOUNT_POINT);
+    sdmmc_card_print_info(stdout, s_sd_card);
     return true;
 }
 
@@ -367,6 +419,7 @@ void pm_sd_unmount(void) {
     esp_vfs_fat_sdcard_unmount(SD_MOUNT_POINT, s_sd_card);
     s_sd_card = NULL;
     s_sd_mounted = false;
+    _sd_release_power_ctrl();
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_c6_bridge.c — UART receiver, JSON parser, dispatcher
 //
@@ -21,6 +22,8 @@
 
 #include "pm_c6_bridge.h"
 #include "pm_hal.h"
+#include "pm_input.h"
+#include "pm_nfc.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -167,10 +170,9 @@ static void _dispatch_event(cJSON* root) {
         }
     }
     else if (strcmp(event, "gps") == 0) {
-        // NOTE: As of Phase 13, GPS is read directly by the P4
-        // (pm_gps_uart). The C6 firmware no longer emits gps
-        // events. We keep this handler so that legacy/test C6
-        // builds can still feed pm_gps_state if encountered.
+        // Legacy/test C6 builds can still feed pm_gps_state here.
+        // Standard P4 builds now source GPS from the Cardputer ADV
+        // UART1 header bridge; the IO52 UART4 reader is opt-in only.
         if (s_cb.on_gps) {
             s_cb.on_gps(
                 _js_dbl(root, "lat",   0.0),
@@ -208,6 +210,72 @@ static void _dispatch_event(cJSON* root) {
     }
     else if (strcmp(event, "pong") == 0) {
         ESP_LOGI(TAG, "C6 pong");
+    }
+    // ── Phase 14: BLE HID host events (input layer) ──────
+    else if (strcmp(event, "gamepad_event") == 0) {
+        // {"event":"gamepad_event","btn":N,"dpad":bitmask,
+        //  "down":bool,"name":"..."}
+        int btn  = _js_int(root, "btn",  -1);
+        int dpad = _js_int(root, "dpad",  0);
+        bool dn  = _js_bool(root, "down", false);
+        pm_input_event_t ev = {
+            .source    = PM_INPUT_SRC_BT_GAMEPAD,
+            .down      = dn,
+            .timestamp = (uint32_t)pm_millis(),
+        };
+        if (btn >= 0) {
+            ev.kind = PM_INPUT_BUTTON;
+            ev.code = (uint32_t)btn;
+        } else {
+            ev.kind = PM_INPUT_DPAD;
+            ev.code = (uint32_t)dpad;
+        }
+        pm_input_post(&ev);
+    }
+    else if (strcmp(event, "keyboard_event") == 0) {
+        // {"event":"keyboard_event","code":N,"down":bool,"mods":N,"name":"..."}
+        int  code = _js_int (root, "code", 0);
+        bool dn   = _js_bool(root, "down", false);
+        pm_input_event_t ev = {
+            .kind      = PM_INPUT_KEY,
+            .code      = (uint32_t)code,
+            .source    = PM_INPUT_SRC_BT_KEYBOARD,
+            .down      = dn,
+            .timestamp = (uint32_t)pm_millis(),
+        };
+        pm_input_post(&ev);
+    }
+    else if (strcmp(event, "hid_paired") == 0) {
+        const char* kind = _js_str(root, "kind", "");
+        const char* name = _js_str(root, "name", "");
+        if (!strcmp(kind, "gamepad"))
+            pm_input_set_bt_gamepad_connected(true, name);
+        else if (!strcmp(kind, "keyboard"))
+            pm_input_set_bt_keyboard_connected(true, name);
+    }
+    else if (strcmp(event, "hid_unpaired") == 0) {
+        const char* kind = _js_str(root, "kind", "");
+        if (!strcmp(kind, "gamepad"))
+            pm_input_set_bt_gamepad_connected(false, NULL);
+        else if (!strcmp(kind, "keyboard"))
+            pm_input_set_bt_keyboard_connected(false, NULL);
+    }
+    // ── Phase 15: NFC events from PN532 (via C6) ─────────
+    else if (strcmp(event, "nfc_present") == 0) {
+        pm_nfc_on_present(_js_str(root, "fw", ""));
+    }
+    else if (strcmp(event, "nfc_absent") == 0) {
+        pm_nfc_on_absent();
+    }
+    else if (strcmp(event, "nfc_seen") == 0) {
+        pm_nfc_on_seen(_js_str(root, "uid",  ""),
+                        _js_str(root, "type", "iso14443a"),
+                        _js_int(root, "sak", 0));
+    }
+    else if (strcmp(event, "nfc_data") == 0) {
+        pm_nfc_on_data(_js_str(root, "uid",  ""),
+                        _js_int(root, "block", 0),
+                        _js_str(root, "data", ""));
     }
     else {
         ESP_LOGD(TAG, "unhandled event '%s'", event);

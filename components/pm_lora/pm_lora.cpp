@@ -5,6 +5,7 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_lora.cpp — RadioLib SX1262 wrapper
 //
@@ -91,7 +92,7 @@ static void _rx_task_fn(void* arg) {
         if (!s_radio || !s_rx_cb) continue;
 
         size_t plen = 0;
-        int    state;
+        int    state = RADIOLIB_ERR_SPI_CMD_FAILED;
         PM_SPI_TAKE("lora_rx") {
             plen = s_radio->getPacketLength();
             if (plen > sizeof(buf)) plen = sizeof(buf);
@@ -154,7 +155,7 @@ pm_lora_status_t pm_lora_init(void) {
                                        PM_LORA_PIN_RST,
                                        PM_LORA_PIN_BUSY));
 
-    int rc;
+    int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
     PM_SPI_TAKE("lora_init") {
         rc = _apply_mesh();    // Default to mesh on boot
     } PM_SPI_GIVE();
@@ -178,7 +179,7 @@ bool pm_lora_is_initialized(void) { return s_inited; }
 
 pm_lora_status_t pm_lora_set_mode_voice(void) {
     if (!s_inited) return PM_LORA_NOT_INIT;
-    int rc;
+    int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
     PM_SPI_TAKE("lora_mode_v") { rc = _apply_voice(); } PM_SPI_GIVE();
     if (rc != RADIOLIB_ERR_NONE) {
         ESP_LOGW(TAG, "voice mode failed: %d", rc);
@@ -190,7 +191,7 @@ pm_lora_status_t pm_lora_set_mode_voice(void) {
 
 pm_lora_status_t pm_lora_set_mode_mesh(void) {
     if (!s_inited) return PM_LORA_NOT_INIT;
-    int rc;
+    int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
     PM_SPI_TAKE("lora_mode_m") { rc = _apply_mesh(); } PM_SPI_GIVE();
     if (rc != RADIOLIB_ERR_NONE) {
         ESP_LOGW(TAG, "mesh mode failed: %d", rc);
@@ -223,7 +224,7 @@ void pm_lora_give(void) {
 // ── Frequency ───────────────────────────────────────────────
 pm_lora_status_t pm_lora_set_freq_mhz(float mhz) {
     if (!s_inited) return PM_LORA_NOT_INIT;
-    int rc;
+    int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
     PM_SPI_TAKE("lora_freq") { rc = s_radio->setFrequency(mhz); } PM_SPI_GIVE();
     return rc == RADIOLIB_ERR_NONE ? PM_LORA_OK : PM_LORA_ERR;
 }
@@ -234,7 +235,7 @@ pm_lora_status_t pm_lora_tx(const uint8_t* buf, size_t len, uint32_t timeout_ms)
     if (!s_inited)         return PM_LORA_NOT_INIT;
     if (!buf || len == 0)  return PM_LORA_ERR;
 
-    int rc;
+    int rc = RADIOLIB_ERR_SPI_CMD_FAILED;
     PM_SPI_TAKE("lora_tx") {
         rc = s_radio->transmit(buf, len);
         if (s_rx_cb) s_radio->startReceive();   // resume RX after TX
@@ -252,7 +253,7 @@ pm_lora_status_t pm_lora_set_rx_cb(pm_lora_rx_cb_t cb, void* user) {
     s_rx_cb   = cb;
     s_rx_user = user;
     if (cb) {
-        int rc;
+        int rc = RADIOLIB_ERR_NONE;
         PM_SPI_TAKE("lora_rx_arm") { rc = s_radio->startReceive(); } PM_SPI_GIVE();
         return rc == RADIOLIB_ERR_NONE ? PM_LORA_OK : PM_LORA_ERR;
     } else {

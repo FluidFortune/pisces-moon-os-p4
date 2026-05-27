@@ -5,19 +5,15 @@
 // fluidfortune.com
 
 
+
 // ============================================================
 //  pm_gps_state.h — Shared GPS state cache
 //
-//  GPS is read directly by the P4 (pm_gps_uart) from the
-//  Beitian BN-180 module wired to GPIO header IO2/IO3. The
-//  parser pushes fixes into this cache. Any app that needs
-//  GPS reads from here — wardrive, gps_app, trails (for nearby
-//  search), bridge_app status, etc.
-//
-//  (Earlier architecture routed GPS through the C6 bridge.
-//  Eric's actual board has GPS wired to the P4 side, so we
-//  parse on the P4 directly. The cache contract is unchanged;
-//  only the writer moved.)
+//  GPS writers push fixes into this cache. The default P4 path
+//  is the Cardputer ADV UART1 header bridge; the older P4-direct
+//  BN-180 UART reader remains available for bench experiments.
+//  Any app that needs GPS reads from here — wardrive, gps_app,
+//  trails (for nearby search), bridge_app status, etc.
 //
 //  Last-update timestamp lets apps detect stale data.
 //

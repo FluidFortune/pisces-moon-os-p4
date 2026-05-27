@@ -5,8 +5,9 @@
 // fluidfortune.com
 
 
+
 // ============================================================
-//  pm_bsp.c — ELECROW CrowPanel Advanced 7" BSP
+//  pm_bsp.c — ELECROW CrowPanel Advanced P4 BSP
 //
 //  Written against the published ESP-IDF reference drivers:
 //    - esp_lcd MIPI-DSI bus + DPI panel
@@ -37,13 +38,14 @@
 
 #include "esp_check.h"
 #include "esp_log.h"
+#include "esp_ldo_regulator.h"
 #include "esp_err.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_mipi_dsi.h"
 
 // Managed components (idf_component.yml dependencies)
-#include "esp_lcd_ili9881c.h"      // ILI9881C 1024x600 panel
+#include "esp_lcd_ek79007.h"      // EK79007 MIPI-DSI panel (ELECROW)
 #include "esp_lcd_touch.h"
 #include "esp_lcd_touch_gt911.h"
 #include "esp_lvgl_port.h"
@@ -127,10 +129,28 @@ static esp_err_t _i2c_init(void) {
 }
 
 // ─────────────────────────────────────────────
-//  MIPI-DSI bus + panel (ILI9881C @ 1024×600)
+//  MIPI-DSI bus + panel
 // ─────────────────────────────────────────────
 static esp_err_t _display_init(void) {
-    ESP_LOGI(TAG, "MIPI-DSI bus + ILI9881C panel init");
+    ESP_LOGI(TAG, "MIPI-DSI bus + EK79007 panel init (%s)", PM_BOARD_PANEL_DETAIL);
+
+    // ─── MIPI-DSI PHY rail (LDO_VO3 @ 2500mV → VDD_MIPI_DPHY) ───
+    // MUST run before esp_lcd_new_dsi_bus(). Without this, the
+    // DSI PHY has no voltage, init silently fails, chip panics
+    // before USB-Serial-JTAG enumerates. Reference: ELECROW
+    // factory firmware bsp_enable_dsi_phy_power().
+    static esp_ldo_channel_handle_t s_dsi_phy_ldo = NULL;
+    if (s_dsi_phy_ldo == NULL) {
+        esp_ldo_channel_config_t ldo_cfg = {
+            .chan_id    = 3,        // LDO_VO3 routes to VDD_MIPI_DPHY
+            .voltage_mv = 2500,
+        };
+        ESP_RETURN_ON_ERROR(
+            esp_ldo_acquire_channel(&ldo_cfg, &s_dsi_phy_ldo),
+            TAG, "acquire LDO_VO3 for DSI PHY");
+        ESP_LOGI(TAG, "MIPI-DSI PHY rail powered (LDO_VO3 @ 2500mV)");
+    }
+
 
     esp_lcd_dsi_bus_config_t bus_cfg = {
         .bus_id             = 0,
@@ -149,28 +169,27 @@ static esp_err_t _display_init(void) {
     ESP_RETURN_ON_ERROR(esp_lcd_new_panel_io_dbi(s_dsi_bus, &dbi_cfg, &s_dbi_io),
                           TAG, "new_panel_io_dbi");
 
-    // DPI (pixel data plane). Timings here are the standard
-    // 1024×600 60Hz numbers used by ESP-BSP reference boards.
+    // DPI (pixel data plane). Timings come from the selected board profile.
     esp_lcd_dpi_panel_config_t dpi_cfg = {
         .virtual_channel    = 0,
         .dpi_clk_src        = MIPI_DSI_DPI_CLK_SRC_DEFAULT,
-        .dpi_clock_freq_mhz = 52,
+        .dpi_clock_freq_mhz = PM_BOARD_DPI_CLK_MHZ,
         .pixel_format       = LCD_COLOR_PIXEL_FORMAT_RGB565,
         .num_fbs            = 1,
         .video_timing = {
             .h_size            = PM_LCD_H_RES,
             .v_size            = PM_LCD_V_RES,
-            .hsync_pulse_width = 10,
-            .hsync_back_porch  = 160,
-            .hsync_front_porch = 160,
-            .vsync_pulse_width = 1,
-            .vsync_back_porch  = 23,
-            .vsync_front_porch = 12,
+            .hsync_pulse_width = PM_BOARD_HSYNC_PW,
+            .hsync_back_porch  = PM_BOARD_HSYNC_BP,
+            .hsync_front_porch = PM_BOARD_HSYNC_FP,
+            .vsync_pulse_width = PM_BOARD_VSYNC_PW,
+            .vsync_back_porch  = PM_BOARD_VSYNC_BP,
+            .vsync_front_porch = PM_BOARD_VSYNC_FP,
         },
         .flags.use_dma2d    = true,
     };
 
-    esp_lcd_panel_ili9881c_vendor_config_t vendor = {
+    ek79007_vendor_config_t vendor = {
         .mipi_config = {
             .dsi_bus    = s_dsi_bus,
             .dpi_config = &dpi_cfg,
@@ -182,12 +201,11 @@ static esp_err_t _display_init(void) {
         .bits_per_pixel = PM_LCD_BIT_PER_PIXEL,
         .vendor_config  = &vendor,
     };
-    ESP_RETURN_ON_ERROR(esp_lcd_new_panel_ili9881c(s_dbi_io, &panel_cfg, &s_panel),
-                          TAG, "new_panel_ili9881c");
+    ESP_RETURN_ON_ERROR(esp_lcd_new_panel_ek79007(s_dbi_io, &panel_cfg, &s_panel),
+                          TAG, "new_panel_ek79007");
 
     ESP_RETURN_ON_ERROR(esp_lcd_panel_reset(s_panel), TAG, "panel_reset");
     ESP_RETURN_ON_ERROR(esp_lcd_panel_init (s_panel), TAG, "panel_init");
-    ESP_RETURN_ON_ERROR(esp_lcd_panel_disp_on_off(s_panel, true), TAG, "panel_on");
 
     return ESP_OK;
 }
@@ -231,15 +249,16 @@ static esp_err_t _touch_init(void) {
 static esp_err_t _lvgl_init(void) {
     ESP_LOGI(TAG, "LVGL port init");
 
-    const lvgl_port_cfg_t lvgl_cfg = ESP_LVGL_PORT_INIT_CONFIG();
+    lvgl_port_cfg_t lvgl_cfg = ESP_LVGL_PORT_INIT_CONFIG();
+    lvgl_cfg.task_affinity = 1;  // UI Core per Pisces Moon P4 core convention
     ESP_RETURN_ON_ERROR(lvgl_port_init(&lvgl_cfg), TAG, "lvgl_port_init");
 
     // Register the MIPI-DSI panel as an LVGL display.
     const lvgl_port_display_cfg_t disp_cfg = {
         .io_handle    = s_dbi_io,
         .panel_handle = s_panel,
-        .buffer_size  = PM_LCD_H_RES * 100,   // 100 lines × 1024 × 2 = 200KB
-        .double_buffer = true,
+        .buffer_size  = PM_LCD_H_RES * PM_LCD_V_RES,   // FULL SCREEN — 1.2MB in PSRAM (ELECROW pattern)
+        .double_buffer = false,
         .hres         = PM_LCD_H_RES,
         .vres         = PM_LCD_V_RES,
         .monochrome   = false,
@@ -256,9 +275,7 @@ static esp_err_t _lvgl_init(void) {
     };
 
     const lvgl_port_display_dsi_cfg_t dsi_cfg = {
-        .flags = {
-            .use_dma2d = true,
-        },
+        .flags = { 0 },
     };
 
     s_lvgl_disp = lvgl_port_add_disp_dsi(&disp_cfg, &dsi_cfg);
@@ -283,7 +300,7 @@ static esp_err_t _lvgl_init(void) {
 //  Public API
 // ─────────────────────────────────────────────
 esp_err_t pm_bsp_init(void) {
-    ESP_LOGI(TAG, "BSP init…");
+    ESP_LOGI(TAG, "BSP init: %s", PM_BOARD_NAME);
     ESP_RETURN_ON_ERROR(_backlight_init(), TAG, "backlight");
     pm_bsp_set_backlight(0);    // dark until first frame ready
 
@@ -293,7 +310,7 @@ esp_err_t pm_bsp_init(void) {
     ESP_RETURN_ON_ERROR(_lvgl_init(),    TAG, "lvgl");
 
     pm_bsp_set_backlight(80);    // up after init succeeds
-    ESP_LOGI(TAG, "BSP ready: %dx%d MIPI-DSI + GT911", PM_LCD_H_RES, PM_LCD_V_RES);
+    ESP_LOGI(TAG, "BSP ready: %s MIPI-DSI + GT911", PM_BOARD_PANEL_DETAIL);
     return ESP_OK;
 }
 
@@ -311,3 +328,39 @@ void pm_bsp_start_lvgl_tick_task(void) {
 
 lv_display_t* pm_bsp_lvgl_display(void) { return s_lvgl_disp; }
 lv_indev_t*   pm_bsp_lvgl_touch(void)   { return s_lvgl_indev; }
+
+static esp_err_t _i2c_temp_device(uint8_t addr,
+                                  i2c_master_dev_handle_t* out) {
+    if (!s_i2c_bus || !out) return ESP_ERR_INVALID_STATE;
+    i2c_device_config_t dev_cfg = {
+        .dev_addr_length = I2C_ADDR_BIT_LEN_7,
+        .device_address = addr,
+        .scl_speed_hz = PM_I2C_FREQ_HZ,
+    };
+    return i2c_master_bus_add_device(s_i2c_bus, &dev_cfg, out);
+}
+
+esp_err_t pm_bsp_i2c_transmit(uint8_t addr,
+                              const uint8_t* tx, size_t tx_len,
+                              int timeout_ms) {
+    if (!tx || tx_len == 0) return ESP_ERR_INVALID_ARG;
+    i2c_master_dev_handle_t dev = NULL;
+    esp_err_t err = _i2c_temp_device(addr, &dev);
+    if (err != ESP_OK) return err;
+    err = i2c_master_transmit(dev, tx, tx_len, timeout_ms);
+    i2c_master_bus_rm_device(dev);
+    return err;
+}
+
+esp_err_t pm_bsp_i2c_transmit_receive(uint8_t addr,
+                                      const uint8_t* tx, size_t tx_len,
+                                      uint8_t* rx, size_t rx_len,
+                                      int timeout_ms) {
+    if (!tx || tx_len == 0 || !rx || rx_len == 0) return ESP_ERR_INVALID_ARG;
+    i2c_master_dev_handle_t dev = NULL;
+    esp_err_t err = _i2c_temp_device(addr, &dev);
+    if (err != ESP_OK) return err;
+    err = i2c_master_transmit_receive(dev, tx, tx_len, rx, rx_len, timeout_ms);
+    i2c_master_bus_rm_device(dev);
+    return err;
+}
