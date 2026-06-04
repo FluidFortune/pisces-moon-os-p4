@@ -13,6 +13,7 @@ idf_component_register(
         "pm_app_lora_voice.c"
         "pm_app_mesh_messenger.c"
         "pm_app_voice_terminal.c"
+        "pm_app_weather.c"
     INCLUDE_DIRS "include"
     REQUIRES
         pm_ui
@@ -31,6 +32,8 @@ idf_component_register(
         pm_cardputer_i2c
         esp_event
         esp_wifi
+        esp_http_client
+        esp-tls
         espressif__esp_lvgl_port
         json
 )

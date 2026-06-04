@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "pisces_moon_p4",
-    "project_version":    "edab062-dirty",
+    "project_version":    "6a5a23da-dirty",
     "project_path":       "/Users/eric/Documents/GitHub/pisces-moon-os-p4",
     "idf_path":           "/Users/eric/.espressif/v5.5.3/esp-idf",
     "build_dir":          "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build",
@@ -1550,7 +1550,7 @@
             "dir": "/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_apps/pm_apps_comms",
             "type": "LIBRARY",
             "lib": "__idf_pm_apps_comms",
-            "reqs": [ "pm_ui", "lvgl__lvgl", "pm_radio", "pm_lora", "pm_hal", "pm_app_iface", "pm_c6_bridge", "pm_nosql", "pm_audio", "pm_gps_state", "pm_gps_uart", "esp_event", "esp_wifi", "espressif__esp_lvgl_port", "json" ],
+            "reqs": [ "pm_ui", "lvgl__lvgl", "pm_radio", "pm_lora", "pm_hal", "pm_app_iface", "pm_c6_bridge", "pm_nosql", "pm_audio", "pm_gps_state", "pm_gps_uart", "pm_input", "pm_peer", "pm_cardputer_i2c", "esp_event", "esp_wifi", "espressif__esp_lvgl_port", "json" ],
             "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
@@ -1945,7 +1945,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/esp-idf/pm_ui/libpm_ui.a",
-            "sources": [ "/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_ui/pm_ui.c" ],
+            "sources": [ "/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_ui/pm_ui.c", "/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_ui/pm_app_layout.c" ],
             "include_dirs": [ "include" ]
         },
         "protobuf-c": {
@@ -3606,7 +3606,7 @@
             "prefix": "idf",
             "dir": "/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_apps/pm_apps_comms",
             "lib": "__idf_pm_apps_comms",
-            "reqs": [ "pm_ui", "lvgl__lvgl", "pm_radio", "pm_lora", "pm_hal", "pm_app_iface", "pm_c6_bridge", "pm_nosql", "pm_audio", "pm_gps_state", "pm_gps_uart", "esp_event", "esp_wifi", "espressif__esp_lvgl_port", "json" ],
+            "reqs": [ "pm_ui", "lvgl__lvgl", "pm_radio", "pm_lora", "pm_hal", "pm_app_iface", "pm_c6_bridge", "pm_nosql", "pm_audio", "pm_gps_state", "pm_gps_uart", "pm_input", "pm_peer", "pm_cardputer_i2c", "esp_event", "esp_wifi", "espressif__esp_lvgl_port", "json" ],
             "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],

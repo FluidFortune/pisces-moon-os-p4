@@ -1,0 +1,123 @@
+Command: ninja flash
+[1/10] Performing build step for 'bootloader'
+[1/1] cd /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/bootloader/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x2000 /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/bootloader/bootloader.bin
+Bootloader binary size 0x59c0 bytes. 0x640 bytes (7%) free.
+[2/10] No install step for 'bootloader'
+[3/10] Completed 'bootloader'
+[4/10] Building C object esp-idf/pm_ui/CMakeFiles/__idf_pm_ui.dir/pm_ui.c.obj
+[5/10] Linking C static library esp-idf/pm_ui/libpm_ui.a
+[6/10] Generating esp-idf/esp_system/ld/sections.ld
+[7/10] Linking CXX executable pisces_moon_p4.elf
+[8/10] Generating binary image from built executable
+esptool.py v4.12.dev1
+Creating esp32p4 image...
+Merged 3 ELF sections
+Successfully created esp32p4 image.
+Generated /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/pisces_moon_p4.bin
+[9/10] cd /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/partition_table/partition-table.bin /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/pisces_moon_p4.bin
+pisces_moon_p4.bin binary size 0x238700 bytes. Smallest app partition is 0x600000 bytes. 0x3c7900 bytes (63%) free.
+[9/10] cd /Users/eric/.espressif/v5.5.3/esp-idf/components/esptool_py && /opt/homebrew/bin/cmake -D IDF_PATH=/Users/eric/.espressif/v5.5.3/esp-idf -D "SERIAL_TOOL=/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python;;/Users/eric/.espressif/v5.5.3/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32p4" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex -P /Users/eric/.espressif/v5.5.3/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32p4 -p /dev/cu.wchusbserial110 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 16MB 0x2000 bootloader/bootloader.bin 0x10000 pisces_moon_p4.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.12.dev1
+Serial port /dev/cu.wchusbserial110
+Connecting....
+Chip is ESP32-P4 (revision v1.3)
+Features: High-Performance MCU
+Crystal is 40MHz
+MAC: e8:f6:0a:e0:19:c5
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00002000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x00248fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 22976 bytes to 14268...
+Writing at 0x00002000... (100 %)
+Wrote 22976 bytes (14268 compressed) at 0x00002000 in 0.6 seconds (effective 309.4 kbit/s)...
+Hash of data verified.
+Compressed 2328320 bytes to 1179211...
+Writing at 0x00010000... (1 %)
+Writing at 0x0001ea50... (2 %)
+Writing at 0x0002a5b5... (4 %)
+Writing at 0x00037080... (5 %)
+Writing at 0x00045641... (6 %)
+Writing at 0x00051148... (8 %)
+Writing at 0x00060725... (9 %)
+Writing at 0x0006803a... (11 %)
+Writing at 0x00070791... (12 %)
+Writing at 0x000794b2... (13 %)
+Writing at 0x00084a6d... (15 %)
+Writing at 0x000924e1... (16 %)
+Writing at 0x000a0f49... (18 %)
+Writing at 0x000ab1b5... (19 %)
+Writing at 0x000b1c7c... (20 %)
+Writing at 0x000b8eb3... (22 %)
+Writing at 0x000c0ea7... (23 %)
+Writing at 0x000cb096... (25 %)
+Writing at 0x000d4850... (26 %)
+Writing at 0x000dc859... (27 %)
+Writing at 0x000e3bc9... (29 %)
+Writing at 0x000eb28e... (30 %)
+Writing at 0x000f31de... (31 %)
+Writing at 0x000fa457... (33 %)
+Writing at 0x00101a1e... (34 %)
+Writing at 0x001089a8... (36 %)
+Writing at 0x0010eaee... (37 %)
+Writing at 0x0011513f... (38 %)
+Writing at 0x0011c97f... (40 %)
+Writing at 0x001227f4... (41 %)
+Writing at 0x00128ae0... (43 %)
+Writing at 0x0012eb99... (44 %)
+Writing at 0x00134c26... (45 %)
+Writing at 0x0013e042... (47 %)
+Writing at 0x00145e46... (48 %)
+Writing at 0x0014c004... (50 %)
+Writing at 0x0015211f... (51 %)
+Writing at 0x00158306... (52 %)
+Writing at 0x0015e478... (54 %)
+Writing at 0x0016415a... (55 %)
+Writing at 0x00169e28... (56 %)
+Writing at 0x0016f44e... (58 %)
+Writing at 0x001750e0... (59 %)
+Writing at 0x0017b0d5... (61 %)
+Writing at 0x00180a08... (62 %)
+Writing at 0x001865be... (63 %)
+Writing at 0x0018c238... (65 %)
+Writing at 0x00192288... (66 %)
+Writing at 0x00199bf4... (68 %)
+Writing at 0x001a096f... (69 %)
+Writing at 0x001a7a62... (70 %)
+Writing at 0x001aeaca... (72 %)
+Writing at 0x001b57a5... (73 %)
+Writing at 0x001bd4d2... (75 %)
+Writing at 0x001c4ba0... (76 %)
+Writing at 0x001cbdfd... (77 %)
+Writing at 0x001d2f70... (79 %)
+Writing at 0x001dab8c... (80 %)
+Writing at 0x001e27c9... (81 %)
+Writing at 0x001ea5e1... (83 %)
+Writing at 0x001f2421... (84 %)
+Writing at 0x001f97ea... (86 %)
+Writing at 0x00201273... (87 %)
+Writing at 0x00208f95... (88 %)
+Writing at 0x0020f8e7... (90 %)
+Writing at 0x00215790... (91 %)
+Writing at 0x0021b298... (93 %)
+Writing at 0x0022248e... (94 %)
+Writing at 0x0022954b... (95 %)
+Writing at 0x00230510... (97 %)
+Writing at 0x0023762c... (98 %)
+Writing at 0x0023e82e... (100 %)
+Wrote 2328320 bytes (1179211 compressed) at 0x00010000 in 28.7 seconds (effective 648.5 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 152...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (152 compressed) at 0x00008000 in 0.1 seconds (effective 487.7 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

@@ -9,6 +9,8 @@ idf_component_register(
     SRCS
         "pm_ui.c"
         "pm_app_layout.c"
+        "pm_cyber.c"
+        "pm_stub_app.c"
     INCLUDE_DIRS "include"
     REQUIRES
         pm_board

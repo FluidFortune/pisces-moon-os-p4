@@ -28,6 +28,13 @@ static const char* TAG = "PM_PEER";
 
 #define MAX_PEERS 16
 #define MAX_CAPS_PER_PEER 12
+#define PEER_RES_GENERIC      (1u << 0)
+#define PEER_RES_BLE          (1u << 1)
+#define PEER_RES_LORA         (1u << 2)
+#define PEER_RES_WIFI_SCAN    (1u << 3)
+#define PEER_RES_WIFI_CAPTURE (1u << 4)
+#define PEER_RES_GPS          (1u << 5)
+#define PEER_RES_KEYBOARD     (1u << 6)
 
 // ── Peer struct (internal) ──────────────────────────────────
 struct pm_peer_s {
@@ -37,7 +44,7 @@ struct pm_peer_s {
     const char*      caps[MAX_CAPS_PER_PEER + 1]; // NULL-terminated
     int              cap_count;
     bool             is_primary;
-    bool             held_exclusive;
+    uint32_t         held_mask;
 };
 
 static struct pm_peer_s s_peers[MAX_PEERS];
@@ -108,6 +115,39 @@ static const char* CAPS_CARDPUTER_I2C[] = {
     NULL,
 };
 
+static bool _cardputer_live_cap(const char* cap) {
+    if (!cap || !pm_cardputer_i2c_link_seen()) return false;
+
+    uint32_t caps = pm_cardputer_i2c_caps();
+    if (strcmp(cap, "gps_remote") == 0 ||
+        strcmp(cap, "gps_status") == 0) {
+        return (caps & PM_CARDPUTER_CAP_GPS) != 0;
+    }
+    if (strcmp(cap, "lora_tx") == 0 ||
+        strcmp(cap, "lora_rx") == 0 ||
+        strcmp(cap, "lora_mesh") == 0) {
+        return (caps & PM_CARDPUTER_CAP_LORA) != 0;
+    }
+    if (strcmp(cap, "wifi_scan") == 0) {
+        return (caps & PM_CARDPUTER_CAP_WIFI_SCAN) != 0;
+    }
+    if (strcmp(cap, "wifi_capture") == 0 ||
+        strcmp(cap, "wifi_promisc") == 0) {
+        return (caps & PM_CARDPUTER_CAP_WIFI_PROMISC) != 0;
+    }
+    if (strcmp(cap, "ble_scan") == 0 ||
+        strcmp(cap, "ble_gatt") == 0) {
+        return (caps & PM_CARDPUTER_CAP_BLE) != 0;
+    }
+    if (strcmp(cap, "keyboard_hid") == 0) {
+        return (caps & PM_CARDPUTER_CAP_KEYBOARD) != 0;
+    }
+    if (strcmp(cap, "s3_module") == 0) {
+        return true;
+    }
+    return false;
+}
+
 // ─────────────────────────────────────────────
 //  Registration helpers
 // ─────────────────────────────────────────────
@@ -163,6 +203,7 @@ void pm_peer_announce(pm_peer_kind_t kind, const char* name,
     struct pm_peer_s* p = _find_by_kind(kind);
     if (!p) p = _alloc_slot();
     if (!p) { pm_log_w(TAG, "registry full, can't add %s", _kind_name(kind)); return; }
+    bool was_active = p->active;
 
     p->active = true;
     p->kind   = kind;
@@ -181,7 +222,7 @@ void pm_peer_announce(pm_peer_kind_t kind, const char* name,
                   || (PM_BOARD_CARDPUTER_RADIO_BRIDGE &&
                       kind == PM_PEER_KIND_CARDPUTER_I2C);
 
-    if (p->active && _find_by_kind(kind) == p) s_peer_count++;
+    if (!was_active) s_peer_count++;
 
     pm_log_i(TAG, "+ peer registered: %s (%d capabilities)",
              p->name, p->cap_count);
@@ -199,8 +240,8 @@ void pm_peer_withdraw(pm_peer_kind_t kind) {
 // ─────────────────────────────────────────────
 //  Public API — auto-detect at boot
 // ─────────────────────────────────────────────
-int pm_peer_init_auto(void) {
-    pm_log_i(TAG, "Probing peers (modular auto-detect)…");
+int pm_peer_init_base(void) {
+    pm_log_i(TAG, "Initializing base peer registry");
     memset(s_peers, 0, sizeof(s_peers));
     s_peer_count = 0;
 
@@ -209,6 +250,21 @@ int pm_peer_init_auto(void) {
     //    if/when the PN532 announces itself.
     pm_peer_announce(PM_PEER_KIND_C6_GHOST,
                       "C6 Ghost Engine", CAPS_C6_BASE);
+#if PM_BOARD_CARDPUTER_RADIO_BRIDGE
+    // The P4 board profiles use the Cardputer UART header as the default
+    // GPS/radio companion. Arm the UART early, but capability lookups below
+    // only return it after a real HELLO has arrived.
+    if (pm_cardputer_i2c_init_auto()) {
+        pm_peer_announce(PM_PEER_KIND_CARDPUTER_I2C,
+                         "Cardputer ADV UART Module",
+                         CAPS_CARDPUTER_I2C);
+    }
+#endif
+    return s_peer_count;
+}
+
+int pm_peer_probe_optional(void) {
+    pm_log_i(TAG, "Probing optional peers (modular auto-detect)");
 
     // 2. Slot module — pm_radio's auto-detect already ran. If it
     //    found something, register it here.
@@ -236,19 +292,32 @@ int pm_peer_init_auto(void) {
                           "CSI Camera", CAPS_CAMERA);
     }
 
-    // 5. Cardputer ADV companion module over the external I2C bus.
-    //    Boot probe only; absence is normal and quiet.
+    // 5. Cardputer ADV companion module. UART profiles arm this in
+    //    base init; non-UART profiles can still probe the I2C register API.
+#if PM_BOARD_CARDPUTER_RADIO_BRIDGE
+    if (!pm_cardputer_i2c_present() && pm_cardputer_i2c_init_auto()) {
+        pm_peer_announce(PM_PEER_KIND_CARDPUTER_I2C,
+                         "Cardputer ADV UART Module",
+                         CAPS_CARDPUTER_I2C);
+    }
+#else
     if (pm_cardputer_i2c_init_auto()) {
         pm_peer_announce(PM_PEER_KIND_CARDPUTER_I2C,
                          "Cardputer ADV I2C Module",
                          CAPS_CARDPUTER_I2C);
     }
+#endif
 
     // 6. NFC and BT-HID peers come and go via bridge events;
     //    not probed here.
 
     pm_log_i(TAG, "%d peers ready", s_peer_count);
     return s_peer_count;
+}
+
+int pm_peer_init_auto(void) {
+    pm_peer_init_base();
+    return pm_peer_probe_optional();
 }
 
 // ─────────────────────────────────────────────
@@ -261,6 +330,33 @@ static bool _peer_has_cap(const struct pm_peer_s* p, const char* cap) {
     return false;
 }
 
+static uint32_t _peer_resource_mask(const char* cap) {
+    if (!cap) return PEER_RES_GENERIC;
+    if (strncmp(cap, "ble_", 4) == 0) return PEER_RES_BLE;
+    if (strncmp(cap, "lora_", 5) == 0) return PEER_RES_LORA;
+    if (strcmp(cap, "wifi_scan") == 0) return PEER_RES_WIFI_SCAN;
+    if (strcmp(cap, "wifi_capture") == 0 ||
+        strcmp(cap, "wifi_promisc") == 0) return PEER_RES_WIFI_CAPTURE;
+    if (strncmp(cap, "gps_", 4) == 0) return PEER_RES_GPS;
+    if (strncmp(cap, "keyboard_", 9) == 0 ||
+        strcmp(cap, "keyboard_hid") == 0) return PEER_RES_KEYBOARD;
+    return PEER_RES_GENERIC;
+}
+
+static bool _peer_resource_available(const struct pm_peer_s* p,
+                                     const char* cap) {
+    if (!p) return false;
+    return (p->held_mask & _peer_resource_mask(cap)) == 0;
+}
+
+static bool _peer_cap_ready(const struct pm_peer_s* p, const char* cap) {
+    if (!p || !cap) return false;
+    if (p->kind == PM_PEER_KIND_CARDPUTER_I2C) {
+        return _cardputer_live_cap(cap);
+    }
+    return true;
+}
+
 static struct pm_peer_s* _find_ble_scan_preferred(void) {
     struct pm_peer_s* cardputer = NULL;
     struct pm_peer_s* tbeam = NULL;
@@ -268,11 +364,13 @@ static struct pm_peer_s* _find_ble_scan_preferred(void) {
 
     for (int i = 0; i < MAX_PEERS; i++) {
         struct pm_peer_s* p = &s_peers[i];
-        if (!p->active || p->held_exclusive) continue;
+        if (!p->active) continue;
+        if (!_peer_resource_available(p, "ble_scan")) continue;
         if (!_peer_has_cap(p, "ble_scan")) continue;
+        if (!_peer_cap_ready(p, "ble_scan")) continue;
 
         if (p->kind == PM_PEER_KIND_CARDPUTER_I2C) {
-            if (pm_cardputer_i2c_link_seen()) cardputer = p;
+            cardputer = p;
         } else if (p->kind == PM_PEER_KIND_TBEAM_S3) {
             tbeam = p;
         } else if (p->kind == PM_PEER_KIND_C6_GHOST) {
@@ -290,7 +388,7 @@ pm_peer_t* pm_peer_find(const char* capability, pm_peer_role_t role) {
         role != PM_PEER_ROLE_SECONDARY) {
         struct pm_peer_s* preferred = _find_ble_scan_preferred();
         if (preferred && role == PM_PEER_ROLE_EXCLUSIVE) {
-            preferred->held_exclusive = true;
+            preferred->held_mask |= _peer_resource_mask(capability);
         }
         if (preferred) return preferred;
     }
@@ -301,7 +399,9 @@ pm_peer_t* pm_peer_find(const char* capability, pm_peer_role_t role) {
     for (int i = 0; i < MAX_PEERS; i++) {
         struct pm_peer_s* p = &s_peers[i];
         if (!p->active) continue;
+        if (!_peer_resource_available(p, capability)) continue;
         if (!_peer_has_cap(p, capability)) continue;
+        if (!_peer_cap_ready(p, capability)) continue;
         if (p->is_primary) {
             if (!primary) primary = p;
         } else {
@@ -313,8 +413,8 @@ pm_peer_t* pm_peer_find(const char* capability, pm_peer_role_t role) {
         case PM_PEER_ROLE_PRIMARY:   return primary;
         case PM_PEER_ROLE_SECONDARY: return secondary;
         case PM_PEER_ROLE_EXCLUSIVE:
-            if (primary && !primary->held_exclusive) {
-                primary->held_exclusive = true;
+            if (primary && _peer_resource_available(primary, capability)) {
+                primary->held_mask |= _peer_resource_mask(capability);
                 return primary;
             }
             return NULL;
@@ -325,7 +425,11 @@ pm_peer_t* pm_peer_find(const char* capability, pm_peer_role_t role) {
 }
 
 void pm_peer_release(pm_peer_t* p) {
-    if (p) p->held_exclusive = false;
+    if (p) p->held_mask = 0;
+}
+
+void pm_peer_release_cap(pm_peer_t* p, const char* capability) {
+    if (p) p->held_mask &= ~_peer_resource_mask(capability);
 }
 
 // ─────────────────────────────────────────────

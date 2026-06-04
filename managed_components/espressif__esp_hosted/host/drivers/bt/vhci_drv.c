@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "esp_err.h"
 #include "esp_hosted_transport.h"
 #include "esp_hosted_os_abstraction.h"
 #include "transport_drv.h"
@@ -151,7 +152,10 @@ H_WEAK_REF int hci_rx_handler(uint8_t *buf, size_t buf_len)
 #if H_BT_ENABLE_LL_INIT
 void ble_transport_ll_init(void)
 {
-	ESP_ERROR_CHECK(transport_drv_reconfigure());
+	esp_err_t err = transport_drv_reconfigure();
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "transport reconfigure failed: %s", esp_err_to_name(err));
+	}
 }
 
 void ble_transport_ll_deinit(void)
@@ -241,7 +245,10 @@ H_WEAK_REF int hci_rx_handler(uint8_t *buf, size_t buf_len)
 
 void hosted_hci_bluedroid_open(void)
 {
-	ESP_ERROR_CHECK(transport_drv_reconfigure());
+	esp_err_t err = transport_drv_reconfigure();
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "transport reconfigure failed: %s", esp_err_to_name(err));
+	}
 }
 
 void hosted_hci_bluedroid_close(void)

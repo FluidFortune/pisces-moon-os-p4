@@ -7,6 +7,7 @@
 /** Includes **/
 #include <inttypes.h>
 
+#include "esp_err.h"
 #include "esp_wifi.h"
 #include "transport_drv.h"
 #include "esp_hosted_transport.h"
@@ -111,11 +112,14 @@ void set_transport_state(uint8_t state)
 	transport_driver_event_handler(state);
 }
 
-static void transport_drv_init(void)
+static esp_err_t transport_drv_init(void)
 {
 	bus_handle = bus_init_internal();
 	ESP_LOGD(TAG, "Bus handle: %p", bus_handle);
-	assert(bus_handle);
+	if (!bus_handle) {
+		ESP_LOGE(TAG, "bus init failed");
+		return ESP_FAIL;
+	}
 #if H_NETWORK_SPLIT_ENABLED
 	ESP_LOGI(TAG, "Network split enabled. Port ranges- Host:TCP(%d-%d), UDP(%d-%d), Slave:TCP(%d-%d), UDP(%d-%d)",
 		H_HOST_TCP_LOCAL_PORT_RANGE_START, H_HOST_TCP_LOCAL_PORT_RANGE_END,
@@ -124,6 +128,7 @@ static void transport_drv_init(void)
 		H_SLAVE_UDP_REMOTE_PORT_RANGE_START, H_SLAVE_UDP_REMOTE_PORT_RANGE_END);
 #endif
 	hci_drv_init();
+	return ESP_OK;
 }
 
 esp_err_t teardown_transport(void)
@@ -152,7 +157,10 @@ esp_err_t teardown_transport(void)
 esp_err_t setup_transport(void(*esp_hosted_up_cb)(void))
 {
 	g_h.funcs->_h_hosted_init_hook();
-	transport_drv_init();
+	esp_err_t err = transport_drv_init();
+	if (err != ESP_OK) {
+		return err;
+	}
 	transport_esp_hosted_up_cb = esp_hosted_up_cb;
 
 	return ESP_OK;
@@ -429,7 +437,10 @@ transport_channel_t *transport_drv_add_channel(void *api_chan,
 	ESP_LOGD(TAG, "Adding channel IF[%u]: S[%u] Tx[%p] Rx[%p]", if_type, secure, tx, rx);
 	transport_channel_t *channel = NULL;
 
-	ESP_ERROR_CHECK(if_type >= ESP_MAX_IF);
+	if (if_type >= ESP_MAX_IF) {
+		ESP_LOGE(TAG, "%s fail: invalid IF[%u]", __func__, if_type);
+		return NULL;
+	}
 
 	if (!tx || !rx) {
 		ESP_LOGE(TAG, "%s fail for IF[%u]: tx or rx is NULL", __func__, if_type );
@@ -642,7 +653,7 @@ static esp_err_t get_chip_str_from_id(int chip_id, char* chip_str)
 	return ret;
 }
 
-static void verify_host_config_for_slave(uint8_t chip_type)
+static esp_err_t verify_host_config_for_slave(uint8_t chip_type)
 {
 	uint8_t exp_chip_id = 0xff;
 
@@ -676,13 +687,13 @@ static void verify_host_config_for_slave(uint8_t chip_type)
 	if (chip_type!=exp_chip_id) {
 		char exp_str[20] = {0};
 		get_chip_str_from_id(exp_chip_id, exp_str);
-		ESP_LOGE(TAG, "Identified slave [%s] != Expected [%s]\n\t\trun 'idf.py menuconfig' at host to reselect the slave?\n\t\tAborting.. ", slave_str, exp_str);
-		g_h.funcs->_h_sleep(10);
-		assert(0!=0);
+		ESP_LOGE(TAG, "Identified slave [%s] != Expected [%s]; hosted transport will stay offline", slave_str, exp_str);
+		return ESP_FAIL;
 	} else {
 		ESP_LOGI(TAG, "Identified slave [%s]", slave_str);
 		check_if_max_freq_used(chip_type);
 	}
+	return ESP_OK;
 }
 
 /** return values:
@@ -841,7 +852,9 @@ static int process_init_event(uint8_t *evt_buf, uint16_t len)
 		} else if (*pos == ESP_PRIV_FIRMWARE_CHIP_ID) {
 			ESP_LOGI(TAG, "EVENT: %2x", *pos);
 			chip_type = *(pos+2);
-			verify_host_config_for_slave(chip_type);
+			if (verify_host_config_for_slave(chip_type) != ESP_OK) {
+				return ESP_FAIL;
+			}
 		} else if (*pos == ESP_PRIV_TEST_RAW_TP) {
 			ESP_LOGI(TAG, "EVENT: %2x", *pos);
 #if TEST_RAW_TP
@@ -875,8 +888,8 @@ static int process_init_event(uint8_t *evt_buf, uint16_t len)
 					host_sdio_mode ? "streaming" : "packet");
 
 			if (slave_sdio_mode && !host_sdio_mode) {
-				ESP_LOGE(TAG, "SDIO mode mismatch: slave is in streaming mode, but host is in packet mode. Aborting.");
-				assert(0);
+				ESP_LOGE(TAG, "SDIO mode mismatch: slave is in streaming mode, host is in packet mode");
+				return ESP_FAIL;
 			}
 #endif
 		} else {
@@ -937,9 +950,13 @@ static int process_init_event(uint8_t *evt_buf, uint16_t len)
 
 	transport_driver_event_handler(TRANSPORT_TX_ACTIVE);
 
-	ESP_ERROR_CHECK(send_slave_config(0, chip_type, raw_tp_config,
+	esp_err_t err = send_slave_config(0, chip_type, raw_tp_config,
 		H_WIFI_TX_DATA_THROTTLE_LOW_THRESHOLD,
-		H_WIFI_TX_DATA_THROTTLE_HIGH_THRESHOLD));
+		H_WIFI_TX_DATA_THROTTLE_HIGH_THRESHOLD);
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "send slave config failed: %s", esp_err_to_name(err));
+		return err;
+	}
 
 	transport_delayed_init();
 

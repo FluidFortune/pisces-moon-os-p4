@@ -450,9 +450,8 @@ void pm_ui_default_screen_set_status(lv_obj_t* scr, const char* text) {
 //  On-screen QWERTY keyboard
 // ─────────────────────────────────────────────
 //
-// Wraps LVGL's lv_keyboard. We theme it Pisces and also fan
-// each keystroke into the pm_input dispatcher so apps that
-// want raw keys (terminal, ssh) can subscribe.
+// Wraps LVGL's lv_keyboard. When attached to a textarea, LVGL owns text
+// insertion; otherwise keystrokes are fanned into pm_input for raw-key apps.
 //
 #include "pm_input.h"
 
@@ -464,7 +463,9 @@ struct pm_ui_keyboard_s {
 static void _kb_event_cb(lv_event_t* e) {
     lv_obj_t*    kb   = lv_event_get_target(e);
     lv_event_code_t c = lv_event_get_code(e);
+    pm_ui_keyboard_t* state = (pm_ui_keyboard_t*)lv_event_get_user_data(e);
     if (c == LV_EVENT_VALUE_CHANGED) {
+        if (state && state->attached_ta) return;
         uint32_t btn_id = lv_keyboard_get_selected_button(kb);
         if (btn_id == LV_BUTTONMATRIX_BUTTON_NONE) return;
         const char* txt = lv_keyboard_get_button_text(kb, btn_id);
@@ -483,8 +484,6 @@ static void _kb_event_cb(lv_event_t* e) {
         else if (!strcmp(txt, " "))                  ev.code = PM_KEY_SPACE;
         else if (txt[0] && !txt[1])                  ev.code = (uint32_t)txt[0];
         else return;     // multi-char labels (shift/abc) — handled by LVGL
-        pm_input_post(&ev);
-        ev.down = false;
         pm_input_post(&ev);
     }
 }

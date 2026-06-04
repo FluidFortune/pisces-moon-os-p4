@@ -127,10 +127,14 @@ static esp_err_t hosted_sdio_set_blocksize(sdmmc_card_t *card, uint8_t fn, uint1
 	uint8_t *bs_read_u8 = (uint8_t *) &bs_read;
 
 	// Set and read back block size
-	ESP_ERROR_CHECK(sdmmc_io_write_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEL, bs_u8[0], NULL));
-	ESP_ERROR_CHECK(sdmmc_io_write_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEH, bs_u8[1], NULL));
-	ESP_ERROR_CHECK(sdmmc_io_read_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEL, &bs_read_u8[0]));
-	ESP_ERROR_CHECK(sdmmc_io_read_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEH, &bs_read_u8[1]));
+	esp_err_t err = sdmmc_io_write_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEL, bs_u8[0], NULL);
+	if (err != ESP_OK) return err;
+	err = sdmmc_io_write_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEH, bs_u8[1], NULL);
+	if (err != ESP_OK) return err;
+	err = sdmmc_io_read_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEL, &bs_read_u8[0]);
+	if (err != ESP_OK) return err;
+	err = sdmmc_io_read_byte(card, SDIO_FUNC_0, offset + SD_IO_CCCR_BLKSIZEH, &bs_read_u8[1]);
+	if (err != ESP_OK) return err;
 	ESP_LOGI(TAG, "Function %d Blocksize: %d", fn, (unsigned int) bs_read);
 
 	if (bs_read == value)
@@ -191,29 +195,35 @@ static esp_err_t hosted_sdio_card_fn_init(sdmmc_card_t *card)
 	}
 
 	// get interrupt status
-	ESP_ERROR_CHECK(sdmmc_io_read_byte(card, SDIO_FUNC_0, SD_IO_CCCR_INT_ENABLE, &ie));
+	esp_err_t err = sdmmc_io_read_byte(card, SDIO_FUNC_0, SD_IO_CCCR_INT_ENABLE, &ie);
+	if (err != ESP_OK) return err;
 	ESP_LOGD(TAG, "IE: 0x%02x", ie);
 
 	// enable interrupts for function 1 and master enable
 	ie |= BIT(0) | FUNC1_EN_MASK;
-	ESP_ERROR_CHECK(sdmmc_io_write_byte(card, SDIO_FUNC_0, SD_IO_CCCR_INT_ENABLE, ie, NULL));
+	err = sdmmc_io_write_byte(card, SDIO_FUNC_0, SD_IO_CCCR_INT_ENABLE, ie, NULL);
+	if (err != ESP_OK) return err;
 
-	ESP_ERROR_CHECK(sdmmc_io_read_byte(card, SDIO_FUNC_0, SD_IO_CCCR_INT_ENABLE, &ie));
+	err = sdmmc_io_read_byte(card, SDIO_FUNC_0, SD_IO_CCCR_INT_ENABLE, &ie);
+	if (err != ESP_OK) return err;
 	ESP_LOGD(TAG, "IE: 0x%02x", ie);
 
 	// get bus width register
-	ESP_ERROR_CHECK(sdmmc_io_read_byte(card, SDIO_FUNC_0, SD_IO_CCCR_BUS_WIDTH, &bus_width));
+	err = sdmmc_io_read_byte(card, SDIO_FUNC_0, SD_IO_CCCR_BUS_WIDTH, &bus_width);
+	if (err != ESP_OK) return err;
 	ESP_LOGD(TAG, "BUS_WIDTH: 0x%02x", bus_width);
 
 	// skip enable of continuous SPI interrupts
 
 	// set FN0 block size to 512
 	bs = 512;
-	ESP_ERROR_CHECK(hosted_sdio_set_blocksize(card, SDIO_FUNC_0, bs));
+	err = hosted_sdio_set_blocksize(card, SDIO_FUNC_0, bs);
+	if (err != ESP_OK) return err;
 
 	// set FN1 block size to 512
 	bs = 512;
-	ESP_ERROR_CHECK(hosted_sdio_set_blocksize(card, SDIO_FUNC_1, bs));
+	err = hosted_sdio_set_blocksize(card, SDIO_FUNC_1, bs);
+	if (err != ESP_OK) return err;
 
 	return ESP_OK;
 }

@@ -45,6 +45,7 @@
 
 static const char* TAG = "PM_WARDRIVE";
 
+#define WD_WIFI_SCAN_OWNER "wardrive"
 #define SESSIONS_DIR "/sd/sessions"
 #define EXPORTS_DIR  "/sd/exports"
 #define WD_MAX_SCAN_RECORDS 64
@@ -75,7 +76,7 @@ static const char* TAG = "PM_WARDRIVE";
 #define WD_FONT_STAT (&lv_font_montserrat_24)
 #define WD_FONT_TEXT (&lv_font_montserrat_12)
 #define WD_FONT_LABEL (&lv_font_montserrat_10)
-#define WD_CENTER_TEXT "GPS / MAP"
+#define WD_CENTER_TEXT "GPS / SIGNAL"
 #else
 #define WD_LAYOUT_COMPACT 0
 #define WD_MAX_UI_NETWORK_ROWS 10
@@ -102,12 +103,13 @@ static const char* TAG = "PM_WARDRIVE";
 #define WD_FONT_STAT (&lv_font_montserrat_28)
 #define WD_FONT_TEXT (&lv_font_montserrat_14)
 #define WD_FONT_LABEL (&lv_font_montserrat_14)
-#define WD_CENTER_TEXT "MAP / VISUALIZATION - GPS required"
+#define WD_CENTER_TEXT "GPS / SIGNAL VIEW"
 #endif
 
 #define WD_MAX_UI_LOGS_PER_SCAN 4
 #define WD_MAX_UI_PENDING_LOGS (WD_MAX_UI_LOGS_PER_SCAN + 4)
 #define WD_SCAN_RESTART_DELAY_MS 2500
+#define WD_MAX_BLE_TRACKED 256
 
 typedef struct {
     char ssid[33];
@@ -137,6 +139,28 @@ static int s_wifi_total = 0;
 static int s_ble_total  = 0;
 static int s_probe_total = 0;
 static int s_pkt_total  = 0;
+static char s_ble_seen_macs[WD_MAX_BLE_TRACKED][18];
+static uint16_t s_ble_seen_count = 0;
+
+static void _reset_ble_window(void) {
+    s_ble_total = 0;
+    s_ble_seen_count = 0;
+    memset(s_ble_seen_macs, 0, sizeof(s_ble_seen_macs));
+}
+
+static bool _remember_ble_mac(const char* mac) {
+    if (!mac || !mac[0]) return false;
+    for (uint16_t i = 0; i < s_ble_seen_count; i++) {
+        if (strncmp(s_ble_seen_macs[i], mac, sizeof(s_ble_seen_macs[i])) == 0) {
+            return false;
+        }
+    }
+    if (s_ble_seen_count >= WD_MAX_BLE_TRACKED) return false;
+    snprintf(s_ble_seen_macs[s_ble_seen_count],
+             sizeof(s_ble_seen_macs[s_ble_seen_count]), "%s", mac);
+    s_ble_seen_count++;
+    return true;
+}
 
 // LVGL handles
 static lv_obj_t* s_net_list      = NULL;
@@ -174,6 +198,8 @@ void pm_app_wardrive_log(const char* timestamp, const char* type,
 void pm_app_wardrive_add_network(const char* ssid, const char* bssid,
                                   int rssi, int channel, const char* enc);
 static bool _ensure_scan_ui_mutex(void);
+static void _queue_status_log(const char* timestamp, const char* type,
+                              const char* content, uint32_t color_hex);
 
 static void _ensure_session_label(void) {
     if (s_session_label[0]) return;
@@ -273,6 +299,7 @@ static bool _csv_fallback_append_wifi(const char* bssid, const char* ssid,
 
 void pm_app_wardrive_on_wifi(const char* bssid, const char* ssid,
                               int rssi, int channel, const char* enc) {
+    if (!s_running) return;
     if (!bssid) return;
     s_wifi_total++;
     double lat, lng; _gps_now(&lat, &lng);
@@ -326,8 +353,9 @@ void pm_app_wardrive_on_wifi(const char* bssid, const char* ssid,
 
 void pm_app_wardrive_on_ble(const char* mac, const char* name,
                               int rssi, const char* addr_type, const char* mfg) {
+    if (!s_running) return;
     if (!mac) return;
-    s_ble_total++;
+    if (_remember_ble_mac(mac)) s_ble_total++;
     double lat, lng; _gps_now(&lat, &lng);
     uint32_t now = pm_millis();
 
@@ -375,6 +403,7 @@ void pm_app_wardrive_on_ble(const char* mac, const char* name,
 
 void pm_app_wardrive_on_probe(const char* mac, const char* ssid,
                                 int rssi, int count) {
+    if (!s_running) return;
     if (!mac) return;
     s_probe_total++;
     (void)count;
@@ -397,6 +426,7 @@ void pm_app_wardrive_on_probe(const char* mac, const char* ssid,
 }
 
 void pm_app_wardrive_on_pkt(const char* frame_type, const char* src, int rssi) {
+    if (!s_running) return;
     s_pkt_total++;
     if (!frame_type) return;
     double lat, lng; _gps_now(&lat, &lng);
@@ -452,6 +482,17 @@ static int s_last_pkt_total = -1;
 static char s_last_session_text[72] = "";
 static char s_last_gps_chip_text[16] = "";
 static char s_last_center_text[128] = "";
+
+static void _reset_capture_counters(void) {
+    s_wifi_total = 0;
+    s_probe_total = 0;
+    s_pkt_total = 0;
+    _reset_ble_window();
+    s_last_wifi_total = -1;
+    s_last_ble_total = -1;
+    s_last_probe_total = -1;
+    s_last_pkt_total = -1;
+}
 
 static void _label_set_text_changed(lv_obj_t* label, char* cache,
                                     size_t cache_len, const char* text) {
@@ -773,7 +814,11 @@ static void __attribute__((unused)) _export_cb(lv_event_t* e) {
     pm_app_wardrive_export_csv();
 }
 
-static void _map_cb(lv_event_t* e)      { (void)e; pm_log_i("WD", "map todo"); }
+static void _map_cb(lv_event_t* e) {
+    (void)e;
+    pm_log_i("WD", "GPS/signal panel active; map renderer not implemented");
+    _queue_status_log("GPS", "INFO", "map renderer not implemented", 0xf4a820);
+}
 static void _settings_cb(lv_event_t* e) { (void)e; pm_log_i("WD", "settings todo"); }
 static void _back_cb(lv_event_t* e)     { (void)e; pm_launcher_back_from_app(); }
 
@@ -909,7 +954,7 @@ static void _stop_ble_source(void) {
         pm_peer_call(s_ble_peer, "ble_scan_stop", NULL);
     }
     pm_log_i(TAG, "BLE source stopped on %s", pm_peer_name(s_ble_peer));
-    pm_peer_release(s_ble_peer);
+    pm_peer_release_cap(s_ble_peer, "ble_scan");
     s_ble_peer = NULL;
     s_ble_peer_started = false;
 }
@@ -929,7 +974,7 @@ static void _start_ble_source(void) {
         if (rc != 0) {
             pm_log_w(TAG, "Cardputer BLE start failed rc=%d", rc);
             _queue_status_log("BLE", "ERR", "Cardputer BLE start failed", 0xff3366);
-            pm_peer_release(s_ble_peer);
+            pm_peer_release_cap(s_ble_peer, "ble_scan");
             s_ble_peer = NULL;
             return;
         }
@@ -940,7 +985,7 @@ static void _start_ble_source(void) {
         if (rc != 0) {
             pm_log_w(TAG, "T-Beam BLE start failed rc=%d", rc);
             _queue_status_log("BLE", "ERR", "T-Beam BLE start failed", 0xff3366);
-            pm_peer_release(s_ble_peer);
+            pm_peer_release_cap(s_ble_peer, "ble_scan");
             s_ble_peer = NULL;
             return;
         }
@@ -978,6 +1023,8 @@ static void _poll_external_ble(void) {
 }
 
 static void _process_scan_done(void) {
+    if (!pm_wifi_scan_is_owner(WD_WIFI_SCAN_OWNER)) return;
+
     uint16_t found = 0;
     esp_err_t err = esp_wifi_scan_get_ap_num(&found);
     if (err != ESP_OK) {
@@ -989,8 +1036,10 @@ static void _process_scan_done(void) {
     uint16_t wanted = found;
     if (wanted > WD_MAX_SCAN_RECORDS) wanted = WD_MAX_SCAN_RECORDS;
     if (wanted == 0) {
+        s_wifi_total = 0;
         _queue_scan_results(NULL, 0, 0);
         esp_wifi_clear_ap_list();
+        _reset_ble_window();
         return;
     }
 
@@ -1017,7 +1066,7 @@ static void _process_scan_done(void) {
     }
     esp_wifi_clear_ap_list();
 
-    s_wifi_total += got;
+    s_wifi_total = found;
     _queue_scan_results(records, got, found);
     if (s_csv_live_paused) _queue_csv_pause_log();
 
@@ -1036,6 +1085,7 @@ static void _process_scan_done(void) {
         }
     }
     pm_psram_free(records);
+    _reset_ble_window();
 }
 
 static void _scan_worker_task(void* arg) {
@@ -1061,6 +1111,8 @@ static void _scan_worker_task(void* arg) {
             esp_err_t err = _start_wifi_scan();
             if (err != ESP_OK) {
                 s_running = false;
+                pm_wifi_scan_give(WD_WIFI_SCAN_OWNER);
+                _stop_ble_source();
                 _queue_status_log("SCAN", "ERR", esp_err_to_name(err), 0xff3366);
                 s_scan_visual_stop_pending = true;
             }
@@ -1090,6 +1142,7 @@ static void _wifi_event_handler(void* arg, esp_event_base_t base,
     (void)arg;
     (void)event_data;
     if (base != WIFI_EVENT || event_id != WIFI_EVENT_SCAN_DONE) return;
+    if (!pm_wifi_scan_is_owner(WD_WIFI_SCAN_OWNER)) return;
     if (!s_running || !s_scan_worker) return;
     xTaskNotifyGive(s_scan_worker);
 }
@@ -1109,6 +1162,14 @@ static void _register_wifi_events(void) {
 static void _start_cb(lv_event_t* e) {
     (void)e;
     if (s_running) return;
+    if (!pm_wifi_scan_take(WD_WIFI_SCAN_OWNER, 0)) {
+        char msg[80];
+        snprintf(msg, sizeof(msg), "scanner busy: %s", pm_wifi_scan_owner());
+        pm_log_w(TAG, "%s", msg);
+        _queue_status_log("SCAN", "BUSY", msg, 0xffcc00);
+        return;
+    }
+    _reset_capture_counters();
     s_running = true;
     pm_log_i("WARDRIVE", "scan start");
     _queue_status_log("SCAN", "SYS", "starting WiFi scan", 0x00ff88);
@@ -1119,6 +1180,7 @@ static void _start_cb(lv_event_t* e) {
     _ensure_scan_worker();
     if (!s_scan_worker) {
         s_running = false;
+        pm_wifi_scan_give(WD_WIFI_SCAN_OWNER);
         _queue_status_log("SCAN", "ERR", "scan worker create failed",
                           0xff3366);
         return;
@@ -1130,6 +1192,7 @@ static void _start_cb(lv_event_t* e) {
     esp_err_t err = _start_wifi_scan();
     if (err != ESP_OK) {
         s_running = false;
+        pm_wifi_scan_give(WD_WIFI_SCAN_OWNER);
         pm_log_w("WARDRIVE", "scan_start failed: %s", esp_err_to_name(err));
         _queue_status_log("SCAN", "ERR", esp_err_to_name(err), 0xff3366);
         if (s_rec_dot) {
@@ -1150,6 +1213,9 @@ static void _stop_cb(lv_event_t* e) {
     if (!s_running) return;
     s_running = false;
     pm_log_i("WARDRIVE", "scan stop");
+    if (s_scan_worker) xTaskNotifyGive(s_scan_worker);
+    esp_wifi_scan_stop();
+    pm_wifi_scan_give(WD_WIFI_SCAN_OWNER);
     if (s_rec_dot) {
         lv_obj_set_style_bg_color(s_rec_dot, lv_color_hex(0x2a5870), 0);
     }
@@ -1469,8 +1535,7 @@ static void _build_screen(void) {
     lv_obj_set_style_bg_color(center, WD_C_BG, 0);
     lv_obj_set_style_bg_opa(center, LV_OPA_COVER, 0);
 
-    // Center placeholder: "GPS LOCK FOR MAP VIEW"
-    // When GPS locks, replace with actual map/chart
+    // Center signal panel: GPS status now; map renderer can plug in later.
     lv_obj_t* center_placeholder = lv_label_create(center);
     lv_label_set_text(center_placeholder, WD_CENTER_TEXT);
     lv_obj_set_style_text_font(center_placeholder,
@@ -1550,7 +1615,7 @@ static void _build_screen(void) {
                                     lv_color_hex(0xff3366), _stop_cb);
     _make_action_btn(action_bar, LV_SYMBOL_UPLOAD " EXPORT",
                      lv_color_hex(0x00d4ff), _export_cb);
-    _make_action_btn(action_bar, LV_SYMBOL_GPS " MAP",
+    _make_action_btn(action_bar, LV_SYMBOL_GPS " GPS",
                      lv_color_hex(0xf4a820),
                      _map_cb);
     _make_action_btn(action_bar, LV_SYMBOL_SETTINGS,
@@ -1589,6 +1654,13 @@ static void _exit_(void) {
 }
 
 static void _deinit(void) {
+    if (s_running) {
+        s_running = false;
+        if (s_scan_worker) xTaskNotifyGive(s_scan_worker);
+        esp_wifi_scan_stop();
+        pm_wifi_scan_give(WD_WIFI_SCAN_OWNER);
+    }
+    _stop_ble_source();
     if (s_db) { pm_db_close(s_db); s_db = NULL; }
 }
 

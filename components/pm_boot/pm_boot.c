@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 #include "pm_boot.h"
+#include "pm_cyber.h"
 #include "esp_log.h"
 #include <stdio.h>
 #include <string.h>
@@ -19,6 +20,12 @@ static lv_obj_t* s_progress_bar  = NULL;
 static lv_obj_t* s_progress_lbl  = NULL;
 static lv_obj_t* s_splash_screen = NULL;
 static uint32_t  s_boot_start_ms = 0;
+
+// Rainbow splash title animation state. The cycle callback runs on
+// LVGL's anim tick during the splash hold, recoloring each character
+// from the cyber spectrum. Cleaned up in pm_boot_dismiss().
+static lv_obj_t* s_splash_rainbow_first = NULL;
+static int       s_splash_rainbow_count = 0;
 
 #define BOOT_BG          lv_color_hex(0x050a0e)
 #define BOOT_BG2         lv_color_hex(0x080f14)
@@ -223,82 +230,112 @@ void pm_boot_progress(int percent) {
     lvgl_port_unlock();
 }
 
+// Rainbow cycle animation callback. `var` is unused — we walk the
+// stored static handles. Called by LVGL's anim engine at the tick
+// rate set by lv_anim_set_duration / values.
+static void _splash_rainbow_anim_cb(void* var, int32_t v) {
+    (void)var;
+    if (s_splash_rainbow_first && s_splash_rainbow_count > 0) {
+        pm_cyber_rainbow_label_cycle(s_splash_rainbow_first,
+                                      s_splash_rainbow_count,
+                                      (int)v);
+    }
+}
+
 void pm_boot_splash_show(uint32_t duration_ms) {
     if (!lvgl_port_lock(0)) return;
+
+    // ── Screen base ─────────────────────────────────────────
     s_splash_screen = lv_obj_create(NULL);
     lv_obj_set_size(s_splash_screen, PM_BOARD_LCD_H_RES, PM_BOARD_LCD_V_RES);
-    lv_obj_set_style_bg_color(s_splash_screen, BOOT_BG, 0);
+    lv_obj_set_style_bg_color(s_splash_screen, PM_CYBER_C_BG, 0);
     lv_obj_set_style_bg_opa(s_splash_screen, LV_OPA_COVER, 0);
     lv_obj_set_style_pad_all(s_splash_screen, 0, 0);
     lv_obj_set_style_border_width(s_splash_screen, 0, 0);
     lv_obj_clear_flag(s_splash_screen, LV_OBJ_FLAG_SCROLLABLE);
 
-    lv_obj_t* frame = lv_obj_create(s_splash_screen);
-    lv_obj_remove_style_all(frame);
-    lv_obj_set_size(frame, PM_BOARD_LCD_H_RES - 44, PM_BOARD_LCD_V_RES - 44);
-    lv_obj_align(frame, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_style_bg_opa(frame, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_color(frame, lv_color_hex(0x00ff88), 0);
-    lv_obj_set_style_border_width(frame, 1, 0);
-    lv_obj_set_style_border_opa(frame, 80, 0);
-    lv_obj_set_style_radius(frame, 24, 0);
-    lv_obj_clear_flag(frame, LV_OBJ_FLAG_SCROLLABLE);
+    // ── Matrix-green PCB background (full screen) ───────────
+    pm_cyber_draw_pcb_bg(s_splash_screen,
+                          PM_BOARD_LCD_H_RES, PM_BOARD_LCD_V_RES);
 
-    lv_obj_t* inner = lv_obj_create(s_splash_screen);
-    lv_obj_remove_style_all(inner);
-    lv_obj_set_size(inner, PM_BOARD_LCD_H_RES - 64, PM_BOARD_LCD_V_RES - 64);
-    lv_obj_align(inner, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_style_bg_opa(inner, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_color(inner, lv_color_hex(0x00d4ff), 0);
-    lv_obj_set_style_border_width(inner, 1, 0);
-    lv_obj_set_style_border_opa(inner, 40, 0);
-    lv_obj_set_style_radius(inner, 20, 0);
-    lv_obj_clear_flag(inner, LV_OBJ_FLAG_SCROLLABLE);
+    // ── Resolution-conditional sizing ───────────────────────
+    // 7" (1024x600) gets more breathing room than 5" (800x480).
+#if PM_BOARD_LCD_H_RES >= 1000
+    int  chip_scale     = 4;
+    int  chip_offset_y  = -170;
+    int  title_offset_y = -20;
+    int  sub1_offset_y  = 80;
+    int  sub2_offset_y  = 112;
+    int  wm_offset_y    = -32;
+    const lv_font_t* title_font = &lv_font_montserrat_48;
+    const lv_font_t* sub_font   = &lv_font_montserrat_14;
+#else
+    int  chip_scale     = 3;
+    int  chip_offset_y  = -130;
+    int  title_offset_y = -10;
+    int  sub1_offset_y  = 64;
+    int  sub2_offset_y  = 92;
+    int  wm_offset_y    = -24;
+    const lv_font_t* title_font = &lv_font_montserrat_48;
+    const lv_font_t* sub_font   = &lv_font_montserrat_14;
+#endif
 
-    lv_obj_t* chip = lv_obj_create(s_splash_screen);
-    lv_obj_remove_style_all(chip);
-    lv_obj_set_size(chip, 96, 96);
-    lv_obj_align(chip, LV_ALIGN_CENTER, 0, -140);
-    lv_obj_set_style_bg_color(chip, BOOT_BG3, 0);
-    lv_obj_set_style_bg_opa(chip, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(chip, lv_color_hex(0x00ff88), 0);
-    lv_obj_set_style_border_width(chip, 2, 0);
-    lv_obj_set_style_radius(chip, 6, 0);
-    lv_obj_clear_flag(chip, LV_OBJ_FLAG_SCROLLABLE);
+    int cx = PM_BOARD_LCD_H_RES / 2;
+    int cy = PM_BOARD_LCD_V_RES / 2;
 
-    lv_obj_t* chip_lbl = lv_label_create(chip);
-    lv_label_set_text(chip_lbl, "P4");
-    lv_obj_set_style_text_font(chip_lbl, &lv_font_montserrat_28, 0);
-    lv_obj_set_style_text_color(chip_lbl, lv_color_hex(0x00d4ff), 0);
-    lv_obj_set_style_text_letter_space(chip_lbl, 4, 0);
-    lv_obj_center(chip_lbl);
+    // ── DIP chip icon above the title ───────────────────────
+    pm_cyber_draw_chip_icon(s_splash_screen, cx, cy + chip_offset_y, chip_scale);
 
-    lv_obj_t* title = lv_label_create(s_splash_screen);
-    lv_label_set_text(title, "PISCES MOON");
-    lv_obj_set_style_text_font(title, &lv_font_montserrat_48, 0);
-    lv_obj_set_style_text_color(title, lv_color_hex(0x00d4ff), 0);
-    lv_obj_set_style_text_letter_space(title, 12, 0);
-    lv_obj_align(title, LV_ALIGN_CENTER, 0, -30);
+    // ── Rainbow "PISCES MOON" title ─────────────────────────
+    // pm_cyber_rainbow_label creates a flex-row container inside
+    // s_splash_screen and returns the first character label.
+    // We align the row (the label's parent) to center.
+    static const char* k_title = "PISCES MOON";
+    lv_obj_t* first_char = pm_cyber_rainbow_label(s_splash_screen, k_title,
+                                                    title_font, 0);
+    if (first_char) {
+        lv_obj_t* row = lv_obj_get_parent(first_char);
+        if (row) {
+            lv_obj_set_style_pad_column(row, 4, 0);
+            lv_obj_align(row, LV_ALIGN_CENTER, 0, title_offset_y);
+        }
+        s_splash_rainbow_first = first_char;
+        s_splash_rainbow_count = (int)strlen(k_title);
 
+        // Animate: cycle the 8-color spectrum infinitely while the
+        // splash is on-screen. Each step shifts every character one
+        // color forward, producing a rolling rainbow.
+        lv_anim_t a;
+        lv_anim_init(&a);
+        lv_anim_set_var(&a, &s_splash_rainbow_first);
+        lv_anim_set_exec_cb(&a, _splash_rainbow_anim_cb);
+        lv_anim_set_values(&a, 0, 7);
+        lv_anim_set_duration(&a, 1200);
+        lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
+        lv_anim_start(&a);
+    }
+
+    // ── Subtitles (matrix green) ────────────────────────────
     lv_obj_t* t1 = lv_label_create(s_splash_screen);
     lv_label_set_text(t1, "Powered by Gemini.");
-    lv_obj_set_style_text_font(t1, &lv_font_montserrat_14, 0);
-    lv_obj_set_style_text_color(t1, BOOT_TEXT_BRIGHT, 0);
+    lv_obj_set_style_text_font(t1, sub_font, 0);
+    lv_obj_set_style_text_color(t1, PM_CYBER_C_MATRIX, 0);
     lv_obj_set_style_text_letter_space(t1, 2, 0);
-    lv_obj_align(t1, LV_ALIGN_CENTER, 0, 74);
+    lv_obj_align(t1, LV_ALIGN_CENTER, 0, sub1_offset_y);
 
     lv_obj_t* t2 = lv_label_create(s_splash_screen);
     lv_label_set_text(t2, "Limited only by your imagination.");
-    lv_obj_set_style_text_font(t2, &lv_font_montserrat_14, 0);
-    lv_obj_set_style_text_color(t2, BOOT_TEXT, 0);
-    lv_obj_align(t2, LV_ALIGN_CENTER, 0, 104);
+    lv_obj_set_style_text_font(t2, sub_font, 0);
+    lv_obj_set_style_text_color(t2, PM_CYBER_C_PAD, 0);
+    lv_obj_align(t2, LV_ALIGN_CENTER, 0, sub2_offset_y);
 
+    // ── Brand watermark (warm accent against the green) ─────
     lv_obj_t* wm = lv_label_create(s_splash_screen);
     lv_label_set_text(wm, "FLUID FORTUNE  /  fluidfortune.com");
     lv_obj_set_style_text_font(wm, &lv_font_montserrat_10, 0);
     lv_obj_set_style_text_color(wm, lv_color_hex(0xf4a820), 0);
     lv_obj_set_style_text_letter_space(wm, 3, 0);
-    lv_obj_align(wm, LV_ALIGN_BOTTOM_MID, 0, -32);
+    lv_obj_align(wm, LV_ALIGN_BOTTOM_MID, 0, wm_offset_y);
 
     lv_screen_load(s_splash_screen);
     lv_refr_now(NULL);
@@ -308,6 +345,12 @@ void pm_boot_splash_show(uint32_t duration_ms) {
 
 void pm_boot_dismiss(void) {
     if (!lvgl_port_lock(0)) return;
+    // Stop the rainbow animation before the screen disappears
+    // underneath it. lv_anim_delete tolerates a missing match.
+    lv_anim_delete(&s_splash_rainbow_first, _splash_rainbow_anim_cb);
+    s_splash_rainbow_first = NULL;
+    s_splash_rainbow_count = 0;
+
     lv_obj_t* active = lv_screen_active();
     if (s_splash_screen && s_splash_screen != active) {
         lv_obj_delete(s_splash_screen);

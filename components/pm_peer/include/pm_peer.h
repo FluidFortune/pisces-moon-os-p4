@@ -141,8 +141,14 @@ const char*    pm_peer_name(const pm_peer_t* p);
 
 // ── Init ─────────────────────────────────────────────────────
 //
-// Run at boot AFTER pm_hal_init and bridge init. Probes for all
-// optional modules. Returns the number of peers registered.
+// Run at boot AFTER pm_hal_init and bridge init. The base init registers
+// permanent OS peers immediately; optional probes can run later from the
+// service bring-up task so missing hardware never blocks first UI.
+int pm_peer_init_base(void);
+int pm_peer_probe_optional(void);
+
+// Compatibility helper: base init plus optional probes. Returns the
+// number of peers registered.
 //
 // The C6 Ghost Engine and BN-180 GPS are always registered as
 // they are permanent fixtures; they're added even if probe fails
@@ -154,14 +160,15 @@ int pm_peer_init_auto(void);
 // Find the best peer providing a given capability. Returns NULL
 // if no peer offers it. The role parameter tunes selection:
 //
-//   ANY        — first match; usually the primary
-//   PRIMARY    — strictly the primary provider
-//   SECONDARY  — strictly a non-primary provider
-//   EXCLUSIVE  — primary, AND register a hold
+//   ANY        — first non-held match for that resource class
+//   PRIMARY    — strictly the non-held primary provider for that resource
+//   SECONDARY  — strictly a non-held, non-primary provider for that resource
+//   EXCLUSIVE  — primary, AND register a hold for that resource class
 pm_peer_t* pm_peer_find(const char* capability, pm_peer_role_t role);
 
 // Release an exclusive hold previously obtained.
 void pm_peer_release(pm_peer_t* p);
+void pm_peer_release_cap(pm_peer_t* p, const char* capability);
 
 // ── Capability call ──────────────────────────────────────────
 //

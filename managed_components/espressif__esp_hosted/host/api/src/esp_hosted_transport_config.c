@@ -35,16 +35,20 @@ esp_hosted_transport_err_t esp_hosted_transport_set_default_config(void)
 	memset(&s_transport_config, 0, sizeof(s_transport_config));
 
 #if H_TRANSPORT_IN_USE == H_TRANSPORT_SDIO
-	ESP_ERROR_CHECK(esp_hosted_sdio_set_config(NULL));
+	esp_hosted_transport_err_t err = esp_hosted_sdio_set_config(NULL);
 #elif H_TRANSPORT_IN_USE == H_TRANSPORT_SPI_HD
-	ESP_ERROR_CHECK(esp_hosted_spi_hd_set_config(NULL));
+	esp_hosted_transport_err_t err = esp_hosted_spi_hd_set_config(NULL);
 #elif H_TRANSPORT_IN_USE == H_TRANSPORT_SPI
-	ESP_ERROR_CHECK(esp_hosted_spi_set_config(NULL));
+	esp_hosted_transport_err_t err = esp_hosted_spi_set_config(NULL);
 #elif H_TRANSPORT_IN_USE == H_TRANSPORT_UART
-	ESP_ERROR_CHECK(esp_hosted_uart_set_config(NULL));
+	esp_hosted_transport_err_t err = esp_hosted_uart_set_config(NULL);
 #else
 	return ESP_TRANSPORT_ERR_INVALID_STATE;
 #endif
+	if (err != ESP_TRANSPORT_OK) {
+		ESP_LOGE(TAG, "default transport config failed: %d", err);
+		return err;
+	}
 
 	return ESP_TRANSPORT_OK;
 }

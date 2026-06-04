@@ -12,6 +12,7 @@
 #include "hal/gpio_hal.h"
 #include "esp_timer.h"
 #include "esp_log.h"
+#include "esp_err.h"
 #include "soc/gpio_sig_map.h"
 #include "soc/rtc.h"
 #include "esp_system.h"
@@ -157,7 +158,13 @@ class EspHal : public RadioLibHal {
           .quadhd_io_num = -1,
           .max_transfer_sz = 0,
         };
-        ESP_ERROR_CHECK(spi_bus_initialize(spiHost, &bus_config, SPI_DMA_CH_AUTO));
+        esp_err_t err = spi_bus_initialize(spiHost, &bus_config, SPI_DMA_CH_AUTO);
+        if (err == ESP_OK) {
+          busInitializedByThis = true;
+        } else if (err != ESP_ERR_INVALID_STATE) {
+          ESP_LOGW("EspHal", "spi_bus_initialize failed: %s", esp_err_to_name(err));
+          return;
+        }
 
         spi_device_interface_config_t dev_config = {
           .mode = 0,
@@ -166,7 +173,16 @@ class EspHal : public RadioLibHal {
           .flags = 0,
           .queue_size = 1,
         };
-        ESP_ERROR_CHECK(spi_bus_add_device(spiHost, &dev_config, &spiHandle));
+        err = spi_bus_add_device(spiHost, &dev_config, &spiHandle);
+        if (err != ESP_OK) {
+          ESP_LOGW("EspHal", "spi_bus_add_device failed: %s", esp_err_to_name(err));
+          if (busInitializedByThis) {
+            spi_bus_free(spiHost);
+            busInitializedByThis = false;
+          }
+          spiHandle = NULL;
+          return;
+        }
         initialized = true;
       }
     }
@@ -174,12 +190,16 @@ class EspHal : public RadioLibHal {
     void spiBeginTransaction() {}
 
     void spiTransfer(uint8_t* out, size_t len, uint8_t* in) {
+      if (!initialized || !spiHandle || len == 0) { return; }
       spi_transaction_t t = {};
       t.length = 8 * len;
       t.rxlength = 8 * len;
       t.tx_buffer = out;
       t.rx_buffer = in;
-      ESP_ERROR_CHECK(spi_device_polling_transmit(spiHandle, &t));
+      esp_err_t err = spi_device_polling_transmit(spiHandle, &t);
+      if (err != ESP_OK) {
+        ESP_LOGW("EspHal", "spi transmit failed: %s", esp_err_to_name(err));
+      }
     }
 
     void spiEndTransaction() {}
@@ -187,7 +207,11 @@ class EspHal : public RadioLibHal {
     void spiEnd() {
       if (initialized) {
         spi_bus_remove_device(spiHandle);
-        spi_bus_free(spiHost);
+        spiHandle = NULL;
+        if (busInitializedByThis) {
+          spi_bus_free(spiHost);
+          busInitializedByThis = false;
+        }
         initialized = false;
       }
     }
@@ -199,6 +223,7 @@ class EspHal : public RadioLibHal {
     spi_host_device_t spiHost;
     spi_device_handle_t spiHandle = NULL;
     bool initialized = false;
+    bool busInitializedByThis = false;
 };
 
 #endif // ESP_HAL_H

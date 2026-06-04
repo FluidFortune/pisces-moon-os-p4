@@ -1,0 +1,59 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PM: Build 7-inch",
+      "type": "shell",
+      "command": "/bin/zsh",
+      "args": [
+        "-lc",
+        ". /Users/eric/.espressif/tools/activate_idf_v5.5.3.sh; /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/tools/idf.py -B build build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "PM: Flash+Monitor 7-inch",
+      "type": "shell",
+      "command": "/bin/zsh",
+      "args": [
+        "-lc",
+        "setopt NULL_GLOB; ports=(/dev/cu.wchusbserial* /dev/cu.usbserial* /dev/cu.usbmodem*); if (( ${#ports[@]} == 0 )); then echo 'No serial port found'; exit 1; fi; PORT=${ports[1]}; echo \"Using $PORT\"; . /Users/eric/.espressif/tools/activate_idf_v5.5.3.sh; /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/tools/idf.py -B build -p \"$PORT\" flash monitor"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "PM: Build 5-inch",
+      "type": "shell",
+      "command": "/bin/zsh",
+      "args": [
+        "-lc",
+        ". /Users/eric/.espressif/tools/activate_idf_v5.5.3.sh; PM_P4_BOARD=elecrow_p4_5 /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/tools/idf.py -B build-p4-5-codex build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "PM: Flash+Monitor 5-inch",
+      "type": "shell",
+      "command": "/bin/zsh",
+      "args": [
+        "-lc",
+        "setopt NULL_GLOB; ports=(/dev/cu.wchusbserial* /dev/cu.usbserial* /dev/cu.usbmodem*); if (( ${#ports[@]} == 0 )); then echo 'No serial port found'; exit 1; fi; PORT=${ports[1]}; echo \"Using $PORT\"; . /Users/eric/.espressif/tools/activate_idf_v5.5.3.sh; PM_P4_BOARD=elecrow_p4_5 /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/tools/idf.py -B build-p4-5-codex -p \"$PORT\" flash monitor"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$gcc"
+    }
+  ]
+}

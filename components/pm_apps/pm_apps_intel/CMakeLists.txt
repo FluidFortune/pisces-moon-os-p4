@@ -15,6 +15,7 @@ idf_component_register(
         "pm_app_baseball.c"
         "pm_app_trails.c"
         "pm_app_ssh.c"
+        "pm_app_rss.c"
     INCLUDE_DIRS "include"
     REQUIRES
         pm_ui
@@ -24,6 +25,9 @@ idf_component_register(
         pm_nosql
         pm_c6_bridge
         json
+        esp_wifi
+        esp_http_client
+        esp-tls
 )
 
 # Relax v5.5.3 strict warnings for this component.

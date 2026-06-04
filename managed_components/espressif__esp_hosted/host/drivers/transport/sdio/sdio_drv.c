@@ -74,6 +74,7 @@
 
 /** Includes **/
 #include "string.h"
+#include "esp_err.h"
 #include "sdio_drv.h"
 #include "sdio_reg.h"
 #include "serial_drv.h"
@@ -1067,15 +1068,33 @@ esp_netif_t * create_sta_netif_with_static_ip(void)
 		.stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA,
 	};
 	esp_netif_t *sta_netif = esp_netif_new(&cfg_sta);
-	assert(sta_netif);
+	if (!sta_netif) {
+		ESP_LOGE(TAG, "esp_netif_new failed");
+		return NULL;
+	}
 
 	ESP_LOGI(TAG, "Creating slave sta netif with static IP");
 
-	ESP_ERROR_CHECK(esp_netif_attach_wifi_station(sta_netif));
-	ESP_ERROR_CHECK(esp_wifi_set_default_wifi_sta_handlers());
+	esp_err_t err = esp_netif_attach_wifi_station(sta_netif);
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "attach wifi station failed: %s", esp_err_to_name(err));
+		esp_netif_destroy(sta_netif);
+		return NULL;
+	}
+	err = esp_wifi_set_default_wifi_sta_handlers();
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "set default wifi sta handlers failed: %s", esp_err_to_name(err));
+		esp_netif_destroy(sta_netif);
+		return NULL;
+	}
 
 	/* stop dhcpc */
-	ESP_ERROR_CHECK(esp_netif_dhcpc_stop(sta_netif));
+	err = esp_netif_dhcpc_stop(sta_netif);
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "dhcp client stop failed: %s", esp_err_to_name(err));
+		esp_netif_destroy(sta_netif);
+		return NULL;
+	}
 
 	return sta_netif;
 }
@@ -1084,10 +1103,20 @@ static esp_err_t create_static_netif(void)
 {
 	/* Only initialize networking stack if not already initialized */
 	if (!s_netif_sta) {
-		esp_netif_init();
-		esp_event_loop_create_default();
+		esp_err_t err = esp_netif_init();
+		if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
+			ESP_LOGE(TAG, "esp_netif_init failed: %s", esp_err_to_name(err));
+			return err;
+		}
+		err = esp_event_loop_create_default();
+		if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
+			ESP_LOGE(TAG, "event loop create failed: %s", esp_err_to_name(err));
+			return err;
+		}
 		s_netif_sta = create_sta_netif_with_static_ip();
-		assert(s_netif_sta);
+		if (!s_netif_sta) {
+			return ESP_FAIL;
+		}
 	}
 	return ESP_OK;
 }
@@ -1466,7 +1495,7 @@ void *bus_init_internal(void)
 	sdio_handle = g_h.funcs->_h_bus_init();
 	if (!sdio_handle) {
 		ESP_LOGE(TAG, "could not create sdio handle, exiting\n");
-		assert(sdio_handle);
+		return NULL;
 	}
 
 	// initialise double buffering structs

@@ -33,6 +33,7 @@
 
 static const char* TAG = "PM_CLIN";
 
+#define CL_WIFI_SCAN_OWNER "clinician"
 #define CL_MAX_RECORDS        320
 #define CL_MAX_SCAN_RECORDS    96
 #define CL_VISIBLE_ROWS        10
@@ -253,6 +254,8 @@ static esp_err_t _start_wifi_scan(void) {
 }
 
 static void _process_scan_done(void) {
+    if (!pm_wifi_scan_is_owner(CL_WIFI_SCAN_OWNER)) return;
+
     uint16_t found = 0;
     esp_err_t err = esp_wifi_scan_get_ap_num(&found);
     if (err != ESP_OK) {
@@ -313,6 +316,7 @@ static void _scan_worker_task(void* arg) {
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         if (!s_capture_pending) continue;
         _process_scan_done();
+        pm_wifi_scan_give(CL_WIFI_SCAN_OWNER);
     }
 }
 
@@ -321,6 +325,7 @@ static void _wifi_event_handler(void* arg, esp_event_base_t base,
     (void)arg;
     (void)event_data;
     if (base != WIFI_EVENT || event_id != WIFI_EVENT_SCAN_DONE) return;
+    if (!pm_wifi_scan_is_owner(CL_WIFI_SCAN_OWNER)) return;
     if (!s_capture_pending || !s_scan_worker) return;
     xTaskNotifyGive(s_scan_worker);
 }
@@ -495,8 +500,17 @@ static void _capture_cb(lv_event_t* e) {
     (void)e;
     if (s_capture_pending) return;
     if (!_ensure_state()) return;
+    if (!pm_wifi_scan_take(CL_WIFI_SCAN_OWNER, 0)) {
+        snprintf(s_status_line, sizeof(s_status_line),
+                 "scanner busy: %s", pm_wifi_scan_owner());
+        s_dirty = true;
+        return;
+    }
     _ensure_worker();
-    if (!s_scan_worker) return;
+    if (!s_scan_worker) {
+        pm_wifi_scan_give(CL_WIFI_SCAN_OWNER);
+        return;
+    }
     _register_wifi_events();
 
     s_capture_pending = true;
@@ -506,6 +520,7 @@ static void _capture_cb(lv_event_t* e) {
     esp_err_t err = _start_wifi_scan();
     if (err != ESP_OK) {
         s_capture_pending = false;
+        pm_wifi_scan_give(CL_WIFI_SCAN_OWNER);
         _copy_text(s_status_line, sizeof(s_status_line), esp_err_to_name(err));
         s_dirty = true;
     }
@@ -581,7 +596,10 @@ static void _report_cb(lv_event_t* e) {
 static void _back_cb(lv_event_t* e) {
     (void)e;
     s_capture_pending = false;
-    esp_wifi_scan_stop();
+    if (pm_wifi_scan_is_owner(CL_WIFI_SCAN_OWNER)) {
+        esp_wifi_scan_stop();
+        pm_wifi_scan_give(CL_WIFI_SCAN_OWNER);
+    }
     pm_launcher_show();
 }
 
@@ -845,7 +863,10 @@ static void _tick(uint32_t elapsed_ms) {
 
 static void _exit_(void) {
     s_capture_pending = false;
-    esp_wifi_scan_stop();
+    if (pm_wifi_scan_is_owner(CL_WIFI_SCAN_OWNER)) {
+        esp_wifi_scan_stop();
+        pm_wifi_scan_give(CL_WIFI_SCAN_OWNER);
+    }
     pm_log_i(TAG, "exit");
 }
 

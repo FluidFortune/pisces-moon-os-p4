@@ -59,6 +59,8 @@ pm_mutex_t pm_spi_treaty = NULL;
 static bool        s_sd_mounted = false;
 static sdmmc_card_t* s_sd_card  = NULL;
 static sd_pwr_ctrl_handle_t s_sd_pwr_ctrl = NULL;
+static SemaphoreHandle_t s_wifi_scan_guard = NULL;
+static char s_wifi_scan_owner[24] = "";
 
 #define SD_MOUNT_POINT  "/sd"
 
@@ -207,6 +209,63 @@ bool pm_mutex_take(pm_mutex_t m, uint32_t timeout_ms) {
 
 void pm_mutex_give(pm_mutex_t m) {
     if (m) xSemaphoreGive((SemaphoreHandle_t)m);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Hosted WiFi scan treaty
+// ─────────────────────────────────────────────────────────────
+static bool _wifi_scan_guard_ready(void) {
+    if (s_wifi_scan_guard) return true;
+    s_wifi_scan_guard = xSemaphoreCreateMutex();
+    if (!s_wifi_scan_guard) {
+        ESP_LOGW(TAG, "WiFi scan treaty mutex create failed");
+        return false;
+    }
+    return true;
+}
+
+static bool _same_scan_owner(const char* owner) {
+    return owner && s_wifi_scan_owner[0] &&
+           strncmp(s_wifi_scan_owner, owner, sizeof(s_wifi_scan_owner)) == 0;
+}
+
+bool pm_wifi_scan_take(const char* owner, uint32_t timeout_ms) {
+    if (!owner || !owner[0] || !_wifi_scan_guard_ready()) return false;
+    TickType_t ticks = (timeout_ms == UINT32_MAX)
+                           ? portMAX_DELAY
+                           : pdMS_TO_TICKS(timeout_ms);
+    if (xSemaphoreTake(s_wifi_scan_guard, ticks) != pdTRUE) return false;
+
+    bool ok = false;
+    if (!s_wifi_scan_owner[0] || _same_scan_owner(owner)) {
+        snprintf(s_wifi_scan_owner, sizeof(s_wifi_scan_owner), "%s", owner);
+        ok = true;
+    }
+    xSemaphoreGive(s_wifi_scan_guard);
+    return ok;
+}
+
+void pm_wifi_scan_give(const char* owner) {
+    if (!owner || !_wifi_scan_guard_ready()) return;
+    if (xSemaphoreTake(s_wifi_scan_guard, pdMS_TO_TICKS(50)) != pdTRUE) return;
+    if (_same_scan_owner(owner)) {
+        s_wifi_scan_owner[0] = 0;
+    }
+    xSemaphoreGive(s_wifi_scan_guard);
+}
+
+bool pm_wifi_scan_is_owner(const char* owner) {
+    if (!owner || !_wifi_scan_guard_ready()) return false;
+    bool ok = false;
+    if (xSemaphoreTake(s_wifi_scan_guard, pdMS_TO_TICKS(10)) == pdTRUE) {
+        ok = _same_scan_owner(owner);
+        xSemaphoreGive(s_wifi_scan_guard);
+    }
+    return ok;
+}
+
+const char* pm_wifi_scan_owner(void) {
+    return s_wifi_scan_owner[0] ? s_wifi_scan_owner : "";
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -433,8 +492,11 @@ void pm_hal_init(void) {
         pm_spi_treaty = pm_mutex_create();
         ESP_LOGI(TAG, "SPI Bus Treaty mutex created");
     }
+    (void)_wifi_scan_guard_ready();
 
     // SD mount is best-effort; absence is OK for early bring-up.
+    // Keep this before LVGL/touch starts so SDMMC/card-power setup cannot
+    // collide with GT911 reads from the LVGL task.
     pm_sd_mount();
 
     pm_chip_info_t info;

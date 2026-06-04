@@ -23,6 +23,8 @@
 #include "pm_hal.h"
 #include "pm_app.h"
 #include "pm_ui.h"
+#include "pm_cyber.h"
+#include "pm_board.h"
 #include "esp_lvgl_port.h"
 #include "lvgl.h"
 #include <stdbool.h>
@@ -30,6 +32,34 @@
 #include <stdio.h>
 
 static const char* TAG = "PM_LAUNCHER";
+
+// ────────────────────────────────────────────
+//  Cyberpunk tile sizing — adapts to 5"/7" panel
+//
+//  Categories: 3-across grid, ~3 rows for 7 tiles.
+//  Apps:       4-across grid, paged via vertical scroll.
+// ────────────────────────────────────────────
+#if PM_BOARD_LCD_H_RES <= 800
+#  define LAUNCHER_TILE_GAP        12
+#  define LAUNCHER_CAT_TILE_W      170
+#  define LAUNCHER_CAT_TILE_H      150
+#  define LAUNCHER_APP_TILE_W      150
+#  define LAUNCHER_APP_TILE_H      140
+#  define LAUNCHER_TITLE_FONT      (&lv_font_montserrat_18)
+#  define LAUNCHER_SUB_FONT        (&lv_font_montserrat_12)
+#  define LAUNCHER_HEADER_FONT     (&lv_font_montserrat_18)
+#  define LAUNCHER_TITLEBAR_H      38
+#else
+#  define LAUNCHER_TILE_GAP        18
+#  define LAUNCHER_CAT_TILE_W      220
+#  define LAUNCHER_CAT_TILE_H      200
+#  define LAUNCHER_APP_TILE_W      190
+#  define LAUNCHER_APP_TILE_H      170
+#  define LAUNCHER_TITLE_FONT      (&lv_font_montserrat_20)
+#  define LAUNCHER_SUB_FONT        (&lv_font_montserrat_14)
+#  define LAUNCHER_HEADER_FONT     (&lv_font_montserrat_24)
+#  define LAUNCHER_TITLEBAR_H      44
+#endif
 
 // ─────────────────────────────────────────────
 //  Category metadata — colors track S3 accents.
@@ -100,37 +130,31 @@ static lv_obj_t* _make_tile(lv_obj_t* parent, const char* title,
                               const char* sub, uint32_t accent_rgb,
                               int width, int height,
                               lv_event_cb_t cb, void* user) {
-    lv_obj_t* tile = lv_button_create(parent);
-    lv_obj_remove_style_all(tile);
-    lv_obj_set_size(tile, width, height);
-    lv_obj_set_style_bg_color(tile, PM_C_BG_2, 0);
-    lv_obj_set_style_bg_opa  (tile, LV_OPA_COVER, 0);
-    lv_obj_set_style_radius  (tile, 10, 0);
-    lv_obj_set_style_pad_all (tile, 12, 0);
-    lv_obj_set_style_border_color(tile, lv_color_hex(accent_rgb), 0);
-    lv_obj_set_style_border_width(tile, 2, 0);
-    lv_obj_set_style_text_color(tile, PM_C_FG, 0);
-    lv_obj_add_flag(tile, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_clear_flag(tile, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_layout(tile, LV_LAYOUT_FLEX);
-    lv_obj_set_flex_flow(tile, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_align(tile, LV_FLEX_ALIGN_CENTER,
-                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_color_t accent = lv_color_hex(accent_rgb);
+
+    // Chamfered tile with category-color border. pm_cyber_make_tile
+    // already wires flex-column / centered children / scroll-off, so
+    // we just drop in the labels.
+    lv_obj_t* tile = pm_cyber_make_tile(parent, width, height, accent, false);
 
     lv_obj_t* t = lv_label_create(tile);
-    lv_label_set_text(t, title);
+    lv_label_set_text(t, title ? title : "");
     lv_label_set_long_mode(t, LV_LABEL_LONG_DOT);
     lv_obj_set_width(t, LV_PCT(100));
-    lv_obj_set_style_text_color(t, lv_color_hex(accent_rgb), 0);
+    lv_obj_set_style_text_color(t, accent, 0);
     lv_obj_set_style_text_align(t, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_font(t, LAUNCHER_TITLE_FONT, 0);
+    lv_obj_set_style_text_letter_space(t, 2, 0);
 
     if (sub) {
         lv_obj_t* s = lv_label_create(tile);
         lv_label_set_text(s, sub);
         lv_label_set_long_mode(s, LV_LABEL_LONG_DOT);
         lv_obj_set_width(s, LV_PCT(100));
-        lv_obj_set_style_text_color(s, PM_C_FG_DIM, 0);
+        // Subtitle in matrix green for the circuit feel.
+        lv_obj_set_style_text_color(s, PM_CYBER_C_MATRIX, 0);
         lv_obj_set_style_text_align(s, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(s, LAUNCHER_SUB_FONT, 0);
     }
 
     if (cb) lv_obj_add_event_cb(tile, cb, LV_EVENT_CLICKED, user);
@@ -152,18 +176,32 @@ static void _build_cats_screen(void) {
     lv_obj_remove_style_all(body);
     lv_obj_set_size(body, LV_PCT(100), LV_PCT(100));
     lv_obj_set_flex_grow(body, 1);
-    lv_obj_set_layout(body, LV_LAYOUT_FLEX);
-    lv_obj_set_flex_flow(body, LV_FLEX_FLOW_ROW_WRAP);
-    lv_obj_set_flex_align(body, LV_FLEX_ALIGN_CENTER,
+    lv_obj_clear_flag(body, LV_OBJ_FLAG_SCROLLABLE);
+
+    // Matrix-green PCB substrate behind the tiles. Drawn first so
+    // every child added afterwards (the tiles) renders on top.
+    pm_cyber_draw_pcb_bg(body,
+                          PM_BOARD_LCD_H_RES,
+                          PM_BOARD_LCD_V_RES - LAUNCHER_TITLEBAR_H);
+
+    // Tile grid layer on top of the PCB.
+    lv_obj_t* grid = lv_obj_create(body);
+    lv_obj_remove_style_all(grid);
+    lv_obj_set_size(grid, LV_PCT(100), LV_PCT(100));
+    lv_obj_set_style_bg_opa(grid, LV_OPA_TRANSP, 0);
+    lv_obj_set_layout(grid, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(grid, LV_FLEX_FLOW_ROW_WRAP);
+    lv_obj_set_flex_align(grid, LV_FLEX_ALIGN_CENTER,
                            LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_pad_gap(body, 12, 0);
-    lv_obj_set_style_pad_all(body, 12, 0);
+    lv_obj_set_style_pad_gap(grid, LAUNCHER_TILE_GAP, 0);
+    lv_obj_set_style_pad_all(grid, LAUNCHER_TILE_GAP, 0);
+    lv_obj_clear_flag(grid, LV_OBJ_FLAG_SCROLLABLE);
 
     for (int c = 0; c < PM_CAT_COUNT; c++) {
         char sub[24];
         snprintf(sub, sizeof(sub), "%d apps", pm_app_count_in_category(c));
-        _make_tile(body, s_cat_meta[c].name, sub, s_cat_meta[c].accent_rgb,
-                    200, 110,
+        _make_tile(grid, s_cat_meta[c].name, sub, s_cat_meta[c].accent_rgb,
+                    LAUNCHER_CAT_TILE_W, LAUNCHER_CAT_TILE_H,
                     _cat_tile_clicked, (void*)(intptr_t)c);
     }
 }
@@ -178,10 +216,23 @@ static void _build_apps_screen(void) {
     s_apps_titlebar_label =
         lv_obj_get_child(lv_obj_get_child(s_scr_apps, 0), 1);
 
-    s_apps_grid = lv_obj_create(s_scr_apps);
+    // Body holds the PCB substrate + the scrollable grid.
+    lv_obj_t* body = lv_obj_create(s_scr_apps);
+    lv_obj_remove_style_all(body);
+    lv_obj_set_size(body, LV_PCT(100), LV_PCT(100));
+    lv_obj_set_flex_grow(body, 1);
+    lv_obj_clear_flag(body, LV_OBJ_FLAG_SCROLLABLE);
+
+    // Matrix-green PCB substrate behind the tile grid.
+    pm_cyber_draw_pcb_bg(body,
+                          PM_BOARD_LCD_H_RES,
+                          PM_BOARD_LCD_V_RES - LAUNCHER_TITLEBAR_H);
+
+    // Scrollable tile grid layer.
+    s_apps_grid = lv_obj_create(body);
     lv_obj_remove_style_all(s_apps_grid);
     lv_obj_set_size(s_apps_grid, LV_PCT(100), LV_PCT(100));
-    lv_obj_set_flex_grow(s_apps_grid, 1);
+    lv_obj_set_style_bg_opa(s_apps_grid, LV_OPA_TRANSP, 0);
     lv_obj_set_layout(s_apps_grid, LV_LAYOUT_FLEX);
     lv_obj_set_flex_flow(s_apps_grid, LV_FLEX_FLOW_ROW_WRAP);
     lv_obj_set_flex_align(s_apps_grid, LV_FLEX_ALIGN_START,
@@ -189,9 +240,9 @@ static void _build_apps_screen(void) {
     lv_obj_add_flag(s_apps_grid, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_scroll_dir(s_apps_grid, LV_DIR_VER);
     lv_obj_set_scrollbar_mode(s_apps_grid, LV_SCROLLBAR_MODE_AUTO);
-    lv_obj_set_style_pad_gap(s_apps_grid, 10, 0);
-    lv_obj_set_style_pad_all(s_apps_grid, 12, 0);
-    lv_obj_set_style_pad_bottom(s_apps_grid, 24, 0);
+    lv_obj_set_style_pad_gap(s_apps_grid, LAUNCHER_TILE_GAP, 0);
+    lv_obj_set_style_pad_all(s_apps_grid, LAUNCHER_TILE_GAP, 0);
+    lv_obj_set_style_pad_bottom(s_apps_grid, LAUNCHER_TILE_GAP * 2, 0);
 }
 
 static void _populate_apps_for_category(pm_category_t cat) {
@@ -211,7 +262,7 @@ static void _populate_apps_for_category(pm_category_t cat) {
         const pm_app_t* a = pm_app_in_category(cat, i);
         if (!a) continue;
         _make_tile(s_apps_grid, a->display_name, a->id, accent,
-                    160, 74,
+                    LAUNCHER_APP_TILE_W, LAUNCHER_APP_TILE_H,
                     _app_tile_clicked, (void*)a);
         if ((i & 3) == 3) {
             pm_delay_ms(1);

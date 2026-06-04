@@ -33,6 +33,7 @@
 
 static const char* TAG = "PM_SILAS";
 
+#define SILAS_WIFI_SCAN_OWNER  "silas_creek"
 #define SILAS_MAX_RECORDS       192
 #define SILAS_MAX_SCAN_RECORDS   96
 #define SILAS_MAX_LOG_LINES      14
@@ -218,6 +219,8 @@ static void _set_scan_error(const char* msg) {
 }
 
 static void _process_scan_done(void) {
+    if (!pm_wifi_scan_is_owner(SILAS_WIFI_SCAN_OWNER)) return;
+
     uint16_t found = 0;
     esp_err_t err = esp_wifi_scan_get_ap_num(&found);
     if (err != ESP_OK) {
@@ -290,6 +293,7 @@ static void _scan_worker_task(void* arg) {
             esp_err_t err = _start_wifi_scan();
             if (err != ESP_OK) {
                 s_running = false;
+                pm_wifi_scan_give(SILAS_WIFI_SCAN_OWNER);
                 _set_scan_error(esp_err_to_name(err));
             }
         }
@@ -301,6 +305,7 @@ static void _wifi_event_handler(void* arg, esp_event_base_t base,
     (void)arg;
     (void)event_data;
     if (base != WIFI_EVENT || event_id != WIFI_EVENT_SCAN_DONE) return;
+    if (!pm_wifi_scan_is_owner(SILAS_WIFI_SCAN_OWNER)) return;
     if (!s_running || !s_scan_worker) return;
     xTaskNotifyGive(s_scan_worker);
 }
@@ -337,15 +342,25 @@ static void _start_scan(void) {
         _set_scan_error("state allocation failed");
         return;
     }
+    if (!pm_wifi_scan_take(SILAS_WIFI_SCAN_OWNER, 0)) {
+        char msg[64];
+        snprintf(msg, sizeof(msg), "scanner busy: %s", pm_wifi_scan_owner());
+        _set_scan_error(msg);
+        return;
+    }
 
     _ensure_worker();
-    if (!s_scan_worker) return;
+    if (!s_scan_worker) {
+        pm_wifi_scan_give(SILAS_WIFI_SCAN_OWNER);
+        return;
+    }
     _register_wifi_events();
 
     s_running = true;
     esp_err_t err = _start_wifi_scan();
     if (err != ESP_OK) {
         s_running = false;
+        pm_wifi_scan_give(SILAS_WIFI_SCAN_OWNER);
         _set_scan_error(esp_err_to_name(err));
         return;
     }
@@ -360,7 +375,10 @@ static void _start_scan(void) {
 static void _stop_scan(void) {
     if (!s_running) return;
     s_running = false;
-    esp_wifi_scan_stop();
+    if (pm_wifi_scan_is_owner(SILAS_WIFI_SCAN_OWNER)) {
+        esp_wifi_scan_stop();
+        pm_wifi_scan_give(SILAS_WIFI_SCAN_OWNER);
+    }
     if (_ensure_state() && xSemaphoreTake(s_lock, pdMS_TO_TICKS(100)) == pdTRUE) {
         _append_log_locked("scan stopped");
         xSemaphoreGive(s_lock);

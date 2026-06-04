@@ -1,0 +1,43 @@
+Command: ninja all
+[1/13] Performing build step for 'bootloader'
+[1/1] cd /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/bootloader/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x2000 /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/bootloader/bootloader.bin
+Bootloader binary size 0x59c0 bytes. 0x640 bytes (7%) free.
+[2/13] No install step for 'bootloader'
+[3/13] Completed 'bootloader'
+[4/13] Building C object esp-idf/pm_hal/CMakeFiles/__idf_pm_hal.dir/pm_hal.c.obj
+[5/13] Linking C static library esp-idf/pm_hal/libpm_hal.a
+[6/13] Building C object esp-idf/espressif__esp_lvgl_port/CMakeFiles/lvgl_port_lib.dir/src/lvgl9/esp_lvgl_port_touch.c.obj
+[7/13] Linking CXX static library esp-idf/espressif__esp_lvgl_port/liblvgl_port_lib.a
+[8/13] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/main/main.c:152:13: warning: '_on_status' defined but not used [-Wunused-function]
+  152 | static void _on_status(bool wifi, bool ble, int nets, int devs, uint32_t up) {
+      |             ^~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/main/main.c:148:13: warning: '_on_ready' defined but not used [-Wunused-function]
+  148 | static void _on_ready(const char* firmware, const char* version) {
+      |             ^~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/main/main.c:142:13: warning: '_on_pkt' defined but not used [-Wunused-function]
+  142 | static void _on_pkt(const char* frame_type, const char* src, int rssi) {
+      |             ^~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/main/main.c:135:13: warning: '_on_gps' defined but not used [-Wunused-function]
+  135 | static void _on_gps(double lat, double lng, double alt,
+      |             ^~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/main/main.c:126:13: warning: '_on_probe' defined but not used [-Wunused-function]
+  126 | static void _on_probe(const char* mac, const char* ssid, int rssi,
+      |             ^~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/main/main.c:105:13: warning: '_on_wifi' defined but not used [-Wunused-function]
+  105 | static void _on_wifi(const char* mac, const char* ssid, int rssi,
+      |             ^~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/main/main.c:81:13: warning: '_boot_visual_probe' defined but not used [-Wunused-function]
+   81 | static void _boot_visual_probe(bool on) {
+      |             ^~~~~~~~~~~~~~~~~~
+[9/13] Linking C static library esp-idf/main/libmain.a
+[10/13] Generating esp-idf/esp_system/ld/sections.ld
+[11/13] Linking CXX executable pisces_moon_p4.elf
+[12/13] Generating binary image from built executable
+esptool.py v4.12.dev1
+Creating esp32p4 image...
+Merged 3 ELF sections
+Successfully created esp32p4 image.
+Generated /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/pisces_moon_p4.bin
+[13/13] cd /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/esp-idf/esptool_py && /Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python /Users/eric/.espressif/v5.5.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/partition_table/partition-table.bin /Users/eric/Documents/GitHub/pisces-moon-os-p4/build-p4-5-codex/pisces_moon_p4.bin
+pisces_moon_p4.bin binary size 0x2382b0 bytes. Smallest app partition is 0x600000 bytes. 0x3c7d50 bytes (63%) free.

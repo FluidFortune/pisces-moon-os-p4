@@ -40,6 +40,7 @@
 
 static const char* TAG = "PM_WIFI";
 
+#define WIFI_SCAN_OWNER "wifi_app"
 #define MAX_NETWORKS 64
 #define SSID_LEN     33
 #define BSSID_LEN    18
@@ -128,11 +129,13 @@ static void _wifi_scan_done_handler(void* arg, esp_event_base_t base,
     (void)arg;
     (void)event_data;
     if (base != WIFI_EVENT || event_id != WIFI_EVENT_SCAN_DONE) return;
+    if (!pm_wifi_scan_is_owner(WIFI_SCAN_OWNER)) return;
 
     uint16_t ap_count = 0;
     esp_err_t err = esp_wifi_scan_get_ap_num(&ap_count);
     if (err != ESP_OK) {
         s_scanning = false;
+        pm_wifi_scan_give(WIFI_SCAN_OWNER);
         snprintf(s_status_note, sizeof(s_status_note),
                  "scan count failed: %s", esp_err_to_name(err));
         pm_log_w(TAG, "%s", s_status_note);
@@ -150,6 +153,8 @@ static void _wifi_scan_done_handler(void* arg, esp_event_base_t base,
         records = (wifi_ap_record_t*)calloc(requested, sizeof(wifi_ap_record_t));
         if (!records) {
             s_scanning = false;
+            esp_wifi_clear_ap_list();
+            pm_wifi_scan_give(WIFI_SCAN_OWNER);
             snprintf(s_status_note, sizeof(s_status_note),
                      "scan alloc failed for %u APs", (unsigned)requested);
             pm_log_w(TAG, "%s", s_status_note);
@@ -163,6 +168,8 @@ static void _wifi_scan_done_handler(void* arg, esp_event_base_t base,
         if (err != ESP_OK) {
             s_scanning = false;
             free(records);
+            esp_wifi_clear_ap_list();
+            pm_wifi_scan_give(WIFI_SCAN_OWNER);
             snprintf(s_status_note, sizeof(s_status_note),
                      "scan read failed: %s", esp_err_to_name(err));
             pm_log_w(TAG, "%s", s_status_note);
@@ -190,6 +197,7 @@ static void _wifi_scan_done_handler(void* arg, esp_event_base_t base,
     free(records);
     esp_wifi_clear_ap_list();
     pm_app_wifi_on_scan_done((int)requested);
+    pm_wifi_scan_give(WIFI_SCAN_OWNER);
 
     if (lvgl_port_lock(0)) {
         _render();
@@ -214,6 +222,14 @@ static void _register_wifi_events(void) {
 //  Actions
 // ─────────────────────────────────────────────
 void pm_app_wifi_action_scan(void) {
+    if (!pm_wifi_scan_take(WIFI_SCAN_OWNER, 0)) {
+        snprintf(s_status_note, sizeof(s_status_note),
+                 "scanner busy: %s", pm_wifi_scan_owner());
+        pm_log_w(TAG, "%s", s_status_note);
+        _render();
+        return;
+    }
+
     s_net_count = 0;
     s_scanning  = true;
     s_status_note[0] = 0;
@@ -231,6 +247,7 @@ void pm_app_wifi_action_scan(void) {
     esp_err_t err = esp_wifi_scan_start(&cfg, false);
     if (err != ESP_OK) {
         s_scanning = false;
+        pm_wifi_scan_give(WIFI_SCAN_OWNER);
         snprintf(s_status_note, sizeof(s_status_note),
                  "scan_start failed: %s", esp_err_to_name(err));
         pm_log_w(TAG, "%s", s_status_note);
@@ -405,7 +422,14 @@ static void _enter(void) {
     _render();
 }
 
-static void _exit_(void) { pm_log_i(TAG, "exit"); }
+static void _exit_(void) {
+    if (s_scanning && pm_wifi_scan_is_owner(WIFI_SCAN_OWNER)) {
+        s_scanning = false;
+        esp_wifi_scan_stop();
+        pm_wifi_scan_give(WIFI_SCAN_OWNER);
+    }
+    pm_log_i(TAG, "exit");
+}
 
 static const pm_app_t _APP = {
     .id           = "wifi",

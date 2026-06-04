@@ -55,6 +55,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/git"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/git"
@@ -110,6 +111,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -162,6 +164,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/uname"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/uname"
@@ -221,6 +224,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "message-v1"
     backtrace:
@@ -284,6 +288,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/ninja-build"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/ninja"
@@ -349,6 +354,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -402,6 +408,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc"
@@ -451,6 +458,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -514,6 +522,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "message-v1"
     backtrace:
@@ -601,6 +610,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-ar"
     search_context:
       ENV{PATH}:
@@ -637,6 +647,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -691,6 +702,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-ranlib"
     search_context:
       ENV{PATH}:
@@ -727,6 +739,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -781,6 +794,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-strip"
     search_context:
       ENV{PATH}:
@@ -817,6 +831,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -871,6 +886,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-ld"
     search_context:
       ENV{PATH}:
@@ -907,6 +923,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -961,6 +978,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-nm"
     search_context:
       ENV{PATH}:
@@ -997,6 +1015,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1051,6 +1070,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-objdump"
     search_context:
       ENV{PATH}:
@@ -1087,6 +1107,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1141,6 +1162,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-objcopy"
     search_context:
       ENV{PATH}:
@@ -1177,6 +1199,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1231,6 +1254,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-readelf"
     search_context:
       ENV{PATH}:
@@ -1267,6 +1291,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1321,6 +1346,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-dlltool"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-dlltool"
@@ -1354,6 +1380,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-dlltool"
       - "/Users/eric/.local/bin/riscv32-esp-elf-dlltool"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-dlltool"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-dlltool"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/dlltool"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/dlltool"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/dlltool"
@@ -1386,6 +1413,7 @@ events:
       - "/pkg/env/global/bin/dlltool"
       - "/Users/eric/.local/bin/dlltool"
       - "/Users/eric/.lmstudio/bin/dlltool"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/dlltool"
     found: false
     search_context:
       ENV{PATH}:
@@ -1422,6 +1450,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1476,6 +1505,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-addr2line"
     search_context:
       ENV{PATH}:
@@ -1512,6 +1542,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1566,6 +1597,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-tapi"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-tapi"
@@ -1599,6 +1631,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-tapi"
       - "/Users/eric/.local/bin/riscv32-esp-elf-tapi"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-tapi"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-tapi"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/tapi"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/tapi"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/tapi"
@@ -1631,6 +1664,7 @@ events:
       - "/pkg/env/global/bin/tapi"
       - "/Users/eric/.local/bin/tapi"
       - "/Users/eric/.lmstudio/bin/tapi"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/tapi"
     found: false
     search_context:
       ENV{PATH}:
@@ -1667,6 +1701,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1723,6 +1758,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar-14.2"
@@ -1756,6 +1792,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar-14.2"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ar-14"
@@ -1788,6 +1825,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar-14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ar14"
@@ -1820,6 +1858,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar14"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar"
     search_context:
       ENV{PATH}:
@@ -1856,6 +1895,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -1912,6 +1952,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib-14.2"
@@ -1945,6 +1986,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib-14.2"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ranlib-14"
@@ -1977,6 +2019,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib-14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ranlib14"
@@ -2009,6 +2052,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib14"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib"
     search_context:
       ENV{PATH}:
@@ -2045,6 +2089,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -2098,6 +2143,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-g++"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-g++"
@@ -2147,6 +2193,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -2210,6 +2257,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "message-v1"
     backtrace:
@@ -2299,6 +2347,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar-14.2"
@@ -2332,6 +2381,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar-14.2"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar-14.2"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ar-14"
@@ -2364,6 +2414,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar-14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar-14"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ar14"
@@ -2396,6 +2447,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar14"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar"
     search_context:
       ENV{PATH}:
@@ -2432,6 +2484,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -2488,6 +2541,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib-14.2"
@@ -2521,6 +2575,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib-14.2"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib-14.2"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ranlib-14"
@@ -2553,6 +2608,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib-14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib-14"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ranlib14"
@@ -2585,6 +2641,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib14"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib14"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib14"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib"
     search_context:
       ENV{PATH}:
@@ -2621,6 +2678,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -2674,6 +2732,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc"
@@ -2723,6 +2782,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "message-v1"
     backtrace:
@@ -2793,6 +2853,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar-"
@@ -2826,6 +2887,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar-"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ar-"
@@ -2858,6 +2920,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ar-"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ar-"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ar-"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ar"
     search_context:
       ENV{PATH}:
@@ -2894,6 +2957,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "find-v1"
     backtrace:
@@ -2950,6 +3014,7 @@ events:
       - "/pkg/env/global/bin/"
       - "/Users/eric/.local/bin/"
       - "/Users/eric/.lmstudio/bin/"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/"
     searched_directories:
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib-"
@@ -2983,6 +3048,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib-"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli/riscv32-esp-elf-gcc-ranlib-"
@@ -3015,6 +3081,7 @@ events:
       - "/pkg/env/global/bin/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/.local/bin/riscv32-esp-elf-gcc-ranlib-"
       - "/Users/eric/.lmstudio/bin/riscv32-esp-elf-gcc-ranlib-"
+      - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts/riscv32-esp-elf-gcc-ranlib-"
     found: "/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc-ranlib"
     search_context:
       ENV{PATH}:
@@ -3051,6 +3118,7 @@ events:
         - "/Users/eric/.local/bin"
         - "/Users/eric/.lmstudio/bin"
         - "/Users/eric/.local/bin"
+        - "/Users/eric/.vscode/extensions/ms-python.debugpy-2026.6.0-darwin-arm64/bundled/scripts/noConfigScripts"
   -
     kind: "try_compile-v1"
     backtrace:
@@ -3061,8 +3129,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-IYuutr"
-      binary: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-IYuutr"
+      source: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-QhARGT"
+      binary: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-QhARGT"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "-march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f "
@@ -3073,10 +3141,10 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-IYuutr'
+        Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-QhARGT'
         
-        Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_cc3c4
-        [1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c
+        Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_60df7
+        [1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c
         Using built-in specs.
         COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc
         Target: riscv32-esp-elf
@@ -3084,8 +3152,8 @@ events:
         Thread model: posix
         Supported LTO compression algorithms: zlib
         gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) 
-        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_cc3c4.dir/'
-         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1 -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_cc3c4.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccjOcsYE.s
+        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_60df7.dir/'
+         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1 -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_60df7.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//cc5uzACa.s
         GNU C17 (crosstool-NG esp-14.2.0_20251107) version 14.2.0 (riscv32-esp-elf)
         	compiled by GNU C version Debian Clang 11.0.1, GMP version 6.2.1, MPFR version 4.2.1, MPC version 1.2.1, isl version isl-0.26-GMP
         
@@ -3102,13 +3170,13 @@ events:
          /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/include
         End of search list.
         Compiler executable checksum: 6d15ba980f79cdd0132b285ffeec510c
-        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_cc3c4.dir/'
-         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccjOcsYE.s
+        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_60df7.dir/'
+         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//cc5uzACa.s
         GNU assembler version 2.43.1 (riscv32-esp-elf) using BFD version (crosstool-NG esp-14.2.0_20251107) 2.43.1
         COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/
         LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/
-        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.'
-        [2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj -o cmTC_cc3c4   && :
+        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.'
+        [2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj -o cmTC_60df7   && :
         Using built-in specs.
         COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc
         COLLECT_LTO_WRAPPER=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper
@@ -3119,10 +3187,10 @@ events:
         gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) 
         COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/
         LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/
-        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_cc3c4' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_cc3c4.'
-         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//cciI11kI.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_cc3c4 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj -lgcc -lc -lnosys -lc -lgcc
+        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_60df7' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_60df7.'
+         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccA0XJXu.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_60df7 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj -lgcc -lc -lnosys -lc -lgcc
         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/ld: warning: cannot find entry symbol _start; defaulting to 000100b4
-        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_cc3c4' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_cc3c4.'
+        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_60df7' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_60df7.'
         
       exitCode: 0
   -
@@ -3157,10 +3225,10 @@ events:
       Parsed C implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
-        ignore line: [Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-IYuutr']
+        ignore line: [Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-QhARGT']
         ignore line: []
-        ignore line: [Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_cc3c4]
-        ignore line: [[1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c]
+        ignore line: [Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_60df7]
+        ignore line: [[1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc]
         ignore line: [Target: riscv32-esp-elf]
@@ -3168,8 +3236,8 @@ events:
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_cc3c4.dir/']
-        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1 -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_cc3c4.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccjOcsYE.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_60df7.dir/']
+        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1 -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_60df7.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//cc5uzACa.s]
         ignore line: [GNU C17 (crosstool-NG esp-14.2.0_20251107) version 14.2.0 (riscv32-esp-elf)]
         ignore line: [	compiled by GNU C version Debian Clang 11.0.1  GMP version 6.2.1  MPFR version 4.2.1  MPC version 1.2.1  isl version isl-0.26-GMP]
         ignore line: []
@@ -3186,13 +3254,13 @@ events:
         ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/include]
         ignore line: [End of search list.]
         ignore line: [Compiler executable checksum: 6d15ba980f79cdd0132b285ffeec510c]
-        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_cc3c4.dir/']
-        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccjOcsYE.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_60df7.dir/']
+        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//cc5uzACa.s]
         ignore line: [GNU assembler version 2.43.1 (riscv32-esp-elf) using BFD version (crosstool-NG esp-14.2.0_20251107) 2.43.1]
         ignore line: [COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/]
         ignore line: [LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.']
-        ignore line: [[2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj -o cmTC_cc3c4   && :]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.']
+        ignore line: [[2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj -o cmTC_60df7   && :]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc]
         ignore line: [COLLECT_LTO_WRAPPER=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper]
@@ -3203,13 +3271,13 @@ events:
         ignore line: [gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) ]
         ignore line: [COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/]
         ignore line: [LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_cc3c4' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_cc3c4.']
-        link line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//cciI11kI.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_cc3c4 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj -lgcc -lc -lnosys -lc -lgcc]
+        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_60df7' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_60df7.']
+        link line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccA0XJXu.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_60df7 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj -lgcc -lc -lnosys -lc -lgcc]
           arg [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2] ==> ignore
           arg [-plugin] ==> ignore
           arg [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so] ==> ignore
           arg [-plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper] ==> ignore
-          arg [-plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//cciI11kI.res] ==> ignore
+          arg [-plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccA0XJXu.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
           arg [-plugin-opt=-pass-through=-lnosys] ==> ignore
@@ -3219,7 +3287,7 @@ events:
           arg [-melf32lriscv] ==> ignore
           arg [-X] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_cc3c4] ==> ignore
+          arg [cmTC_60df7] ==> ignore
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f]
@@ -3228,7 +3296,7 @@ events:
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib]
-          arg [CMakeFiles/cmTC_cc3c4.dir/CMakeCCompilerABI.c.obj] ==> ignore
+          arg [CMakeFiles/cmTC_60df7.dir/CMakeCCompilerABI.c.obj] ==> ignore
           arg [-lgcc] ==> lib [gcc]
           arg [-lc] ==> lib [c]
           arg [-lnosys] ==> lib [nosys]
@@ -3236,7 +3304,7 @@ events:
           arg [-lgcc] ==> lib [gcc]
         ignore line: [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/ld: warning: cannot find entry symbol _start]
         ignore line: [ defaulting to 000100b4]
-        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_cc3c4' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_cc3c4.']
+        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_60df7' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_60df7.']
         ignore line: []
         ignore line: []
         collapse library dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f] ==> [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f]
@@ -3263,8 +3331,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-8Bsrv3"
-      binary: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-8Bsrv3"
+      source: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-hfqb7v"
+      binary: "/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-hfqb7v"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "-march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f "
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -3276,10 +3344,10 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-8Bsrv3'
+        Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-hfqb7v'
         
-        Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_a123a
-        [1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_d3531
+        [1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp
         Using built-in specs.
         COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++
         Target: riscv32-esp-elf
@@ -3287,8 +3355,8 @@ events:
         Thread model: posix
         Supported LTO compression algorithms: zlib
         gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) 
-        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_a123a.dir/'
-         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1plus -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_a123a.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccefslH3.s
+        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_d3531.dir/'
+         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1plus -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_d3531.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccpUs1Yz.s
         GNU C++17 (crosstool-NG esp-14.2.0_20251107) version 14.2.0 (riscv32-esp-elf)
         	compiled by GNU C version Debian Clang 11.0.1, GMP version 6.2.1, MPFR version 4.2.1, MPC version 1.2.1, isl version isl-0.26-GMP
         
@@ -3311,13 +3379,13 @@ events:
          /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/include
         End of search list.
         Compiler executable checksum: 6ae154a52501fad8d5cbdc355dbe9af6
-        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_a123a.dir/'
-         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccefslH3.s
+        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_d3531.dir/'
+         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccpUs1Yz.s
         GNU assembler version 2.43.1 (riscv32-esp-elf) using BFD version (crosstool-NG esp-14.2.0_20251107) 2.43.1
         COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/
         LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/
-        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.'
-        [2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++ -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_a123a   && :
+        COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.'
+        [2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++ -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_d3531   && :
         Using built-in specs.
         COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++
         COLLECT_LTO_WRAPPER=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper
@@ -3328,10 +3396,10 @@ events:
         gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) 
         COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/
         LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/
-        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_a123a' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_a123a.'
-         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccWSSMpa.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_a123a -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm -lgcc -lc -lnosys -lc -lgcc
+        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_d3531' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_d3531.'
+         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccKSdJnw.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_d3531 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm -lgcc -lc -lnosys -lc -lgcc
         /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/ld: warning: cannot find entry symbol _start; defaulting to 000100b4
-        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_a123a' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_a123a.'
+        COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_d3531' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_d3531.'
         
       exitCode: 0
   -
@@ -3372,10 +3440,10 @@ events:
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
-        ignore line: [Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-8Bsrv3']
+        ignore line: [Change Dir: '/Users/eric/Documents/GitHub/pisces-moon-os-p4/build/bootloader/CMakeFiles/CMakeScratch/TryCompile-hfqb7v']
         ignore line: []
-        ignore line: [Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_a123a]
-        ignore line: [[1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Run Build Command(s): /Users/eric/.espressif/tools/ninja/1.12.1/ninja -v cmTC_d3531]
+        ignore line: [[1/2] /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++   -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f     -v -o CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++]
         ignore line: [Target: riscv32-esp-elf]
@@ -3383,8 +3451,8 @@ events:
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_a123a.dir/']
-        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1plus -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_a123a.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccefslH3.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_d3531.dir/']
+        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/cc1plus -quiet -v -imultilib rv32imafc_zicsr_zifencei/ilp32f -iprefix /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/ -isysroot /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf /opt/homebrew/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_d3531.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -march=rv32imafc_zicsr_zifencei_xesploop_xespv -version -o /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccpUs1Yz.s]
         ignore line: [GNU C++17 (crosstool-NG esp-14.2.0_20251107) version 14.2.0 (riscv32-esp-elf)]
         ignore line: [	compiled by GNU C version Debian Clang 11.0.1  GMP version 6.2.1  MPFR version 4.2.1  MPC version 1.2.1  isl version isl-0.26-GMP]
         ignore line: []
@@ -3407,13 +3475,13 @@ events:
         ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/include]
         ignore line: [End of search list.]
         ignore line: [Compiler executable checksum: 6ae154a52501fad8d5cbdc355dbe9af6]
-        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_a123a.dir/']
-        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccefslH3.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_d3531.dir/']
+        ignore line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/as -v --traditional-format -march=rv32imafc_zicsr_zifencei_xesploop_xespv -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -misa-spec=20191213 -o CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccpUs1Yz.s]
         ignore line: [GNU assembler version 2.43.1 (riscv32-esp-elf) using BFD version (crosstool-NG esp-14.2.0_20251107) 2.43.1]
         ignore line: [COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/]
         ignore line: [LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.']
-        ignore line: [[2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++ -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_a123a   && :]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [[2/2] : && /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++ -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f -nostartfiles -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -v CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_d3531   && :]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++]
         ignore line: [COLLECT_LTO_WRAPPER=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper]
@@ -3424,13 +3492,13 @@ events:
         ignore line: [gcc version 14.2.0 (crosstool-NG esp-14.2.0_20251107) ]
         ignore line: [COMPILER_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/]
         ignore line: [LIBRARY_PATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/:/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_a123a' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_a123a.']
-        link line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccWSSMpa.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_a123a -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm -lgcc -lc -lnosys -lc -lgcc]
+        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_d3531' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_d3531.']
+        link line: [ /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2 -plugin /Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so -plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper -plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccKSdJnw.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc --sysroot=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf -melf32lriscv -X -o cmTC_d3531 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0 -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib -L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm -lgcc -lc -lnosys -lc -lgcc]
           arg [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/collect2] ==> ignore
           arg [-plugin] ==> ignore
           arg [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/liblto_plugin.so] ==> ignore
           arg [-plugin-opt=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../libexec/gcc/riscv32-esp-elf/14.2.0/lto-wrapper] ==> ignore
-          arg [-plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccWSSMpa.res] ==> ignore
+          arg [-plugin-opt=-fresolution=/var/folders/j_/m0t5cvs516x6lyfxv9p8dkq40000gn/T//ccKSdJnw.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
           arg [-plugin-opt=-pass-through=-lnosys] ==> ignore
@@ -3440,7 +3508,7 @@ events:
           arg [-melf32lriscv] ==> ignore
           arg [-X] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_a123a] ==> ignore
+          arg [cmTC_d3531] ==> ignore
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib/rv32imafc_zicsr_zifencei/ilp32f]
@@ -3449,7 +3517,7 @@ events:
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/lib]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/lib]
           arg [-L/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib] ==> dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../riscv32-esp-elf/usr/lib]
-          arg [CMakeFiles/cmTC_a123a.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
+          arg [CMakeFiles/cmTC_d3531.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
           arg [-lstdc++] ==> lib [stdc++]
           arg [-lm] ==> lib [m]
           arg [-lgcc] ==> lib [gcc]
@@ -3459,7 +3527,7 @@ events:
           arg [-lgcc] ==> lib [gcc]
         ignore line: [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/../../../../riscv32-esp-elf/bin/ld: warning: cannot find entry symbol _start]
         ignore line: [ defaulting to 000100b4]
-        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_a123a' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_a123a.']
+        ignore line: [COLLECT_GCC_OPTIONS='-nostartfiles' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-mabi=ilp32f' '-v' '-o' 'cmTC_d3531' '-misa-spec=20191213' '-march=rv32imafc_zicsr_zifencei_xesploop_xespv' '-dumpdir' 'cmTC_d3531.']
         ignore line: []
         ignore line: []
         collapse library dir [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/../lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f] ==> [/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/lib/gcc/riscv32-esp-elf/14.2.0/rv32imafc_zicsr_zifencei/ilp32f]

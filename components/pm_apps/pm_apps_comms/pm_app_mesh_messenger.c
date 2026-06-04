@@ -52,6 +52,7 @@ static const char* TAG = "PM_MESH";
 #define SENDER_LEN           24
 #define TEXT_LEN             200
 #define SEEN_IDS_SIZE        128
+#define CARDPUTER_LORA_UNAVAILABLE_TEXT "Cardputer LoRa unavailable"
 
 // Heard-node tracking
 #define HEARD_NODES_SIZE     16
@@ -347,6 +348,11 @@ void pm_app_mesh_messenger_send(const char* text) {
     int total = (int)sizeof(*hdr) + payload_len;
 
     if (s_using_cardputer_lora) {
+        if (!s_lora_peer || !s_holds_lora_peer) {
+            pm_log_w(TAG, "Cardputer LoRa send without exclusive peer hold");
+            _add_sys(s_active_channel, "Cardputer radio not held");
+            return;
+        }
         esp_err_t err = pm_cardputer_i2c_lora_tx(pkt, (uint8_t)total);
         if (err != ESP_OK) {
             pm_log_w(TAG, "Cardputer LoRa tx failed: %s", esp_err_to_name(err));
@@ -842,20 +848,20 @@ static bool _radio_init(void) {
     }
 
     pm_log_i(TAG, "no local SX1262; trying Cardputer LoRa fallback");
-    s_lora_peer = pm_peer_find("lora_mesh", PM_PEER_ROLE_PRIMARY);
-    if (!s_lora_peer) {
-        s_lora_peer = pm_peer_find("lora_mesh", PM_PEER_ROLE_ANY);
-    }
+    s_lora_peer = pm_peer_find("lora_mesh", PM_PEER_ROLE_EXCLUSIVE);
     if (!s_lora_peer) {
         pm_log_w(TAG, "no LoRa mesh peer available; local radio is %s",
                  pm_radio_name(pm_radio_kind()));
-        _add_sys(0, "No LoRa radio available");
+        _add_sys(0, CARDPUTER_LORA_UNAVAILABLE_TEXT);
         return false;
     }
+    s_holds_lora_peer = true;
 
     if (pm_peer_kind(s_lora_peer) != PM_PEER_KIND_CARDPUTER_I2C) {
         pm_log_w(TAG, "LoRa peer %s has no direct mesh dispatcher yet",
                  pm_peer_name(s_lora_peer));
+        pm_peer_release_cap(s_lora_peer, "lora_mesh");
+        s_holds_lora_peer = false;
         s_lora_peer = NULL;
         return false;
     }
@@ -863,6 +869,8 @@ static bool _radio_init(void) {
     if (!pm_cardputer_i2c_link_seen()) {
         pm_log_w(TAG, "Cardputer LoRa peer registered but UART link is not live yet");
         _add_sys(0, "Cardputer UART link not seen");
+        pm_peer_release_cap(s_lora_peer, "lora_mesh");
+        s_holds_lora_peer = false;
         s_lora_peer = NULL;
         return false;
     }
@@ -871,6 +879,8 @@ static bool _radio_init(void) {
         pm_log_w(TAG, "Cardputer bridge is live but does not advertise LoRa caps=0x%08lx",
                  (unsigned long)pm_cardputer_i2c_caps());
         _add_sys(0, "Cardputer has no LoRa capability");
+        pm_peer_release_cap(s_lora_peer, "lora_mesh");
+        s_holds_lora_peer = false;
         s_lora_peer = NULL;
         return false;
     }
@@ -879,6 +889,8 @@ static bool _radio_init(void) {
     if (rc != 0) {
         pm_log_w(TAG, "Cardputer LoRa mesh start failed rc=%d", rc);
         _add_sys(0, "Cardputer LoRa start failed");
+        pm_peer_release_cap(s_lora_peer, "lora_mesh");
+        s_holds_lora_peer = false;
         s_lora_peer = NULL;
         return false;
     }
@@ -897,11 +909,11 @@ static void _radio_shutdown(void) {
         pm_lora_give();
         s_holds_local_lora = false;
     }
-    if (s_lora_peer && s_holds_lora_peer) {
-        pm_peer_release(s_lora_peer);
-    }
     if (s_lora_peer && s_using_cardputer_lora) {
         pm_peer_call(s_lora_peer, "lora_stop", NULL);
+    }
+    if (s_lora_peer && s_holds_lora_peer) {
+        pm_peer_release_cap(s_lora_peer, "lora_mesh");
     }
     s_lora_peer = NULL;
     s_holds_lora_peer = false;

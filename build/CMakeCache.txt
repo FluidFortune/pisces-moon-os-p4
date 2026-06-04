@@ -14,6 +14,9 @@
 # EXTERNAL cache entries
 ########################
 
+//No help, variable specified on the command line.
+CCACHE_ENABLE:UNINITIALIZED=0
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-addr2line
 
@@ -359,6 +362,9 @@ Mbed TLS_SOURCE_DIR:STATIC=/Users/eric/.espressif/v5.5.3/esp-idf/components/mbed
 PM_P4_BOARD:STRING=
 
 //No help, variable specified on the command line.
+PYTHON:UNINITIALIZED=/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python
+
+//No help, variable specified on the command line.
 PYTHON_DEPS_CHECKED:UNINITIALIZED=1
 
 //Allow unsafe builds. These builds ARE NOT SECURE.
@@ -605,7 +611,7 @@ C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS:INTERNAL=1
 //Details about finding Git
 FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[/opt/homebrew/bin/git][v2.53.0()]
 //Details about finding Python3
-FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python][found components: Interpreter ][v3.14.4()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python][found components: Interpreter ][v3.14.5()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GIT_EXECUTABLE
@@ -618,7 +624,7 @@ _Python3_Compiler_REASON_FAILURE:INTERNAL=
 _Python3_Development_REASON_FAILURE:INTERNAL=
 _Python3_EXECUTABLE:INTERNAL=/Users/eric/.espressif/tools/python/v5.5.3/venv/bin/python
 //Python3 Properties
-_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;14;4;32;64;;;abi3;/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14/lib/python3.14;/Users/eric/.espressif/tools/python/v5.5.3/venv/lib/python3.14;/Users/eric/.espressif/tools/python/v5.5.3/venv/lib/python3.14/site-packages;/Users/eric/.espressif/tools/python/v5.5.3/venv/lib/python3.14/site-packages
+_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;14;5;32;64;;;abi3;/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14/lib/python3.14;/Users/eric/.espressif/tools/python/v5.5.3/venv/lib/python3.14;/Users/eric/.espressif/tools/python/v5.5.3/venv/lib/python3.14/site-packages;/Users/eric/.espressif/tools/python/v5.5.3/venv/lib/python3.14/site-packages
 _Python3_INTERPRETER_SIGNATURE:INTERNAL=5930496b603b5d85308396435654d02f
 //NumPy reason failure
 _Python3_NumPy_REASON_FAILURE:INTERNAL=

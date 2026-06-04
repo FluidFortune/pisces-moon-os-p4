@@ -23,11 +23,14 @@
 #include "pm_sqlite.h"
 #include "pm_hal.h"
 #include "sqlite3.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 static const char* TAG = "PM_SQL";
+static SemaphoreHandle_t s_sqlite_mutex = NULL;
 
 struct pm_db_s {
     sqlite3* h;
@@ -39,15 +42,38 @@ struct pm_stmt_s {
     pm_db_t*       db;
 };
 
+static bool _sqlite_lock(uint32_t timeout_ms) {
+    if (!s_sqlite_mutex) {
+        s_sqlite_mutex = xSemaphoreCreateRecursiveMutex();
+        if (!s_sqlite_mutex) {
+            pm_log_w(TAG, "sqlite mutex create failed");
+            return false;
+        }
+    }
+    TickType_t ticks = (timeout_ms == UINT32_MAX)
+                           ? portMAX_DELAY
+                           : pdMS_TO_TICKS(timeout_ms);
+    return xSemaphoreTakeRecursive(s_sqlite_mutex, ticks) == pdTRUE;
+}
+
+static void _sqlite_unlock(void) {
+    if (s_sqlite_mutex) {
+        xSemaphoreGiveRecursive(s_sqlite_mutex);
+    }
+}
+
 // ─────────────────────────────────────────────
 //  Global init — usually a no-op once
 // ─────────────────────────────────────────────
 bool pm_sqlite_global_init(void) {
+    if (!_sqlite_lock(5000)) return false;
     int rc = sqlite3_initialize();
     if (rc != SQLITE_OK) {
         pm_log_e(TAG, "sqlite3_initialize failed: %d", rc);
+        _sqlite_unlock();
         return false;
     }
+    _sqlite_unlock();
     pm_log_i(TAG, "sqlite3 init OK");
     return true;
 }
@@ -61,6 +87,10 @@ pm_db_t* pm_db_open(const char* path) {
     if (!db) return NULL;
 
     int rc = SQLITE_OK;
+    if (!_sqlite_lock(5000)) {
+        pm_psram_free(db);
+        return NULL;
+    }
     PM_SPI_TAKE("db_open") {
         rc = sqlite3_open(path, &db->h);
     } PM_SPI_GIVE();
@@ -69,20 +99,24 @@ pm_db_t* pm_db_open(const char* path) {
         pm_log_w(TAG, "open '%s' failed: %d (%s)",
                  path, rc, db->h ? sqlite3_errmsg(db->h) : "(null)");
         if (db->h) sqlite3_close(db->h);
+        _sqlite_unlock();
         pm_psram_free(db);
         return NULL;
     }
+    _sqlite_unlock();
     pm_log_i(TAG, "opened '%s'", path);
     return db;
 }
 
 void pm_db_close(pm_db_t* db) {
     if (!db) return;
+    if (!_sqlite_lock(UINT32_MAX)) return;
     if (db->h) {
         PM_SPI_TAKE("db_close") {
             sqlite3_close(db->h);
         } PM_SPI_GIVE();
     }
+    _sqlite_unlock();
     pm_psram_free(db);
 }
 
@@ -103,6 +137,7 @@ bool pm_db_apply_schema(pm_db_t* db, const char* schema_sql) {
     if (!db || !db->h || !schema_sql) return false;
     char* errmsg = NULL;
     int rc = SQLITE_OK;
+    if (!_sqlite_lock(UINT32_MAX)) return false;
     PM_SPI_TAKE("db_schema") {
         rc = sqlite3_exec(db->h, schema_sql, NULL, NULL, &errmsg);
     } PM_SPI_GIVE();
@@ -110,8 +145,10 @@ bool pm_db_apply_schema(pm_db_t* db, const char* schema_sql) {
         _set_error(db, errmsg ? errmsg : "schema error");
         pm_log_w(TAG, "schema: %s", errmsg ? errmsg : "(null)");
         if (errmsg) sqlite3_free(errmsg);
+        _sqlite_unlock();
         return false;
     }
+    _sqlite_unlock();
     return true;
 }
 
@@ -122,6 +159,7 @@ bool pm_db_exec(pm_db_t* db, const char* sql) {
     if (!db || !db->h || !sql) return false;
     char* errmsg = NULL;
     int rc = SQLITE_OK;
+    if (!_sqlite_lock(UINT32_MAX)) return false;
     PM_SPI_TAKE("db_exec") {
         rc = sqlite3_exec(db->h, sql, NULL, NULL, &errmsg);
     } PM_SPI_GIVE();
@@ -129,8 +167,10 @@ bool pm_db_exec(pm_db_t* db, const char* sql) {
         _set_error(db, errmsg ? errmsg : "exec error");
         pm_log_d(TAG, "exec: %s [%s]", sql, errmsg ? errmsg : "?");
         if (errmsg) sqlite3_free(errmsg);
+        _sqlite_unlock();
         return false;
     }
+    _sqlite_unlock();
     return true;
 }
 
@@ -143,12 +183,17 @@ pm_stmt_t* pm_db_prepare(pm_db_t* db, const char* sql) {
     if (!st) return NULL;
     st->db = db;
     int rc = SQLITE_OK;
+    if (!_sqlite_lock(UINT32_MAX)) {
+        pm_psram_free(st);
+        return NULL;
+    }
     PM_SPI_TAKE("db_prepare") {
         rc = sqlite3_prepare_v2(db->h, sql, -1, &st->h, NULL);
     } PM_SPI_GIVE();
     if (rc != SQLITE_OK) {
         _set_error(db, sqlite3_errmsg(db->h));
         pm_log_w(TAG, "prepare: %s", sqlite3_errmsg(db->h));
+        _sqlite_unlock();
         pm_psram_free(st);
         return NULL;
     }
@@ -162,6 +207,7 @@ void pm_stmt_finalize(pm_stmt_t* st) {
             sqlite3_finalize(st->h);
         } PM_SPI_GIVE();
     }
+    _sqlite_unlock();
     pm_psram_free(st);
 }
 

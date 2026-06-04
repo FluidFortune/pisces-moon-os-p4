@@ -15,6 +15,7 @@
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include "freertos/task.h"
 
 #include <ctype.h>
@@ -36,9 +37,12 @@ static const char* TAG = "PM_CARDPUTER";
 #define PM_CARDPUTER_UART_RX_BYTES  4096
 #define PM_CARDPUTER_UART_TX_BYTES  1024
 #define PM_CARDPUTER_UART_LINE_MAX  640
+#define PM_CARDPUTER_UART_TASK_STACK 8192
 #define PM_CARDPUTER_UART_WIFI_Q_DEPTH 16
 #define PM_CARDPUTER_UART_LORA_Q_DEPTH 4
 #define PM_CARDPUTER_UART_BLE_Q_DEPTH 24
+#define PM_CARDPUTER_KEY_MOD_LSHIFT 0x02
+#define PM_CARDPUTER_KEY_MOD_RSHIFT 0x20
 
 static bool         s_present = false;
 static uint32_t     s_caps = 0;
@@ -62,9 +66,14 @@ static pm_cardputer_i2c_ble_seen_t s_uart_ble_q[PM_CARDPUTER_UART_BLE_Q_DEPTH];
 static uint8_t s_uart_ble_head = 0;
 static uint8_t s_uart_ble_tail = 0;
 static uint8_t s_uart_ble_count = 0;
+static SemaphoreHandle_t s_uart_write_mutex = NULL;
+static bool s_uart_ble_scan_requested = false;
+static bool s_uart_ble_scan_active_mode = false;
 
 static void _uart_hex_encode(const uint8_t* data, size_t len, char* out, size_t out_len);
 static esp_err_t _uart_write_line(const char* line);
+static esp_err_t _uart_ble_scan_start_raw(bool active);
+static esp_err_t _uart_ble_scan_stop_raw(void);
 static bool _pop_uart_wifi(pm_cardputer_i2c_wifi_frame_t* out);
 static bool _pop_uart_lora(pm_cardputer_i2c_lora_rx_t* out);
 static bool _pop_uart_ble(pm_cardputer_i2c_ble_seen_t* out);
@@ -127,7 +136,16 @@ esp_err_t pm_cardputer_i2c_lora_tx(const uint8_t* data, uint8_t len) {
     char line[PM_CARDPUTER_I2C_LORA_MAX * 2 + 48];
     _uart_hex_encode(data, len, hex, sizeof(hex));
     snprintf(line, sizeof(line), "PMU1 CMD lora_tx len=%u data=%s\n", len, hex);
+    bool resume_ble = s_uart_ble_scan_requested;
+    if (resume_ble) {
+        _uart_ble_scan_stop_raw();
+        pm_delay_ms(15);
+    }
     esp_err_t err = _uart_write_line(line);
+    if (resume_ble) {
+        pm_delay_ms(25);
+        _uart_ble_scan_start_raw(s_uart_ble_scan_active_mode);
+    }
     if (err == ESP_OK) {
         pm_log_i(TAG, "Cardputer LoRa TX queued len=%u", len);
     }
@@ -159,7 +177,11 @@ bool pm_cardputer_i2c_link_seen(void) {
 }
 
 uint32_t pm_cardputer_i2c_caps(void) {
+#if PM_BOARD_CARDPUTER_UART_BRIDGE
+    return s_uart_seen ? s_caps : 0;
+#else
     return s_caps;
+#endif
 }
 
 esp_err_t pm_cardputer_i2c_lora_rx_pop(pm_cardputer_i2c_lora_rx_t* out) {
@@ -221,7 +243,7 @@ esp_err_t pm_cardputer_i2c_wifi_frame_pop(pm_cardputer_i2c_wifi_frame_t* out) {
 #endif
 }
 
-esp_err_t pm_cardputer_i2c_ble_scan_start(bool active) {
+static esp_err_t _uart_ble_scan_start_raw(bool active) {
 #if PM_BOARD_CARDPUTER_UART_BRIDGE
     char line[96];
     snprintf(line, sizeof(line), "PMU1 CMD ble_scan_start active=%u interval=100 window=80\n",
@@ -233,9 +255,33 @@ esp_err_t pm_cardputer_i2c_ble_scan_start(bool active) {
 #endif
 }
 
-esp_err_t pm_cardputer_i2c_ble_scan_stop(void) {
+static esp_err_t _uart_ble_scan_stop_raw(void) {
 #if PM_BOARD_CARDPUTER_UART_BRIDGE
     return _uart_write_line("PMU1 CMD ble_scan_stop\n");
+#else
+    return ESP_ERR_NOT_SUPPORTED;
+#endif
+}
+
+esp_err_t pm_cardputer_i2c_ble_scan_start(bool active) {
+#if PM_BOARD_CARDPUTER_UART_BRIDGE
+    esp_err_t err = _uart_ble_scan_start_raw(active);
+    if (err == ESP_OK) {
+        s_uart_ble_scan_requested = true;
+        s_uart_ble_scan_active_mode = active;
+    }
+    return err;
+#else
+    (void)active;
+    return ESP_ERR_NOT_SUPPORTED;
+#endif
+}
+
+esp_err_t pm_cardputer_i2c_ble_scan_stop(void) {
+#if PM_BOARD_CARDPUTER_UART_BRIDGE
+    esp_err_t err = _uart_ble_scan_stop_raw();
+    if (err == ESP_OK) s_uart_ble_scan_requested = false;
+    return err;
 #else
     return ESP_ERR_NOT_SUPPORTED;
 #endif
@@ -254,13 +300,45 @@ esp_err_t pm_cardputer_i2c_ble_seen_pop(pm_cardputer_i2c_ble_seen_t* out) {
 #endif
 }
 
+static uint32_t _apply_key_shift(uint32_t code, uint8_t modifiers) {
+    bool shift = (modifiers & (PM_CARDPUTER_KEY_MOD_LSHIFT |
+                               PM_CARDPUTER_KEY_MOD_RSHIFT)) != 0;
+    if (!shift) return code;
+
+    if (code >= 'a' && code <= 'z') return code - ('a' - 'A');
+    switch (code) {
+    case '1': return '!';
+    case '2': return '@';
+    case '3': return '#';
+    case '4': return '$';
+    case '5': return '%';
+    case '6': return '^';
+    case '7': return '&';
+    case '8': return '*';
+    case '9': return '(';
+    case '0': return ')';
+    case '-': return '_';
+    case '=': return '+';
+    case '[': return '{';
+    case ']': return '}';
+    case '\\': return '|';
+    case ';': return ':';
+    case '\'': return '"';
+    case ',': return '<';
+    case '.': return '>';
+    case '/': return '?';
+    case '`': return '~';
+    default: return code;
+    }
+}
+
 static void _post_key(const pm_cardputer_i2c_key_t* k) {
     if (!k || !k->available || !k->down) return;
 
     pm_input_event_t e = {
         .kind = PM_INPUT_KEY,
         .source = PM_INPUT_SRC_I2C_KEYBOARD,
-        .code = k->code,
+        .code = _apply_key_shift(k->code, k->modifiers),
         .down = true,
         .x = 0,
         .y = 0,
@@ -346,12 +424,61 @@ static void _uart_hex_encode(const uint8_t* data, size_t len, char* out, size_t 
 static esp_err_t _uart_write_line(const char* line) {
 #if PM_BOARD_CARDPUTER_UART_BRIDGE
     if (!line || !s_uart_started) return ESP_ERR_INVALID_STATE;
+    bool locked = false;
+    if (s_uart_write_mutex) {
+        if (xSemaphoreTake(s_uart_write_mutex, pdMS_TO_TICKS(100)) != pdTRUE) {
+            return ESP_ERR_TIMEOUT;
+        }
+        locked = true;
+    }
     int n = uart_write_bytes(PM_CARDPUTER_UART_NUM, line, strlen(line));
+    if (locked) xSemaphoreGive(s_uart_write_mutex);
     return n >= 0 ? ESP_OK : ESP_FAIL;
 #else
     (void)line;
     return ESP_ERR_NOT_SUPPORTED;
 #endif
+}
+
+static uint32_t _required_cap_for_op(const char* op) {
+    if (!op) return 0;
+    if (strncmp(op, "lora_", 5) == 0) {
+        return PM_CARDPUTER_CAP_LORA;
+    }
+    if (strncmp(op, "wifi_", 5) == 0 ||
+        strcmp(op, "promiscuous_start") == 0 ||
+        strcmp(op, "promiscuous_stop") == 0 ||
+        strcmp(op, "promiscuous_set_channel") == 0) {
+        return PM_CARDPUTER_CAP_WIFI_PROMISC;
+    }
+    if (strncmp(op, "ble_", 4) == 0) {
+        return PM_CARDPUTER_CAP_BLE;
+    }
+    if (strncmp(op, "gps_", 4) == 0) {
+        return PM_CARDPUTER_CAP_GPS;
+    }
+    if (strncmp(op, "key_", 4) == 0) {
+        return PM_CARDPUTER_CAP_KEYBOARD;
+    }
+    return 0;
+}
+
+static int _require_uart_link_for_op(const char* op) {
+#if PM_BOARD_CARDPUTER_UART_BRIDGE
+    if (!s_uart_seen) {
+        pm_log_w(TAG, "Cardputer op '%s' requested before UART HELLO", op ? op : "(null)");
+        return -5;
+    }
+    uint32_t cap = _required_cap_for_op(op);
+    if (cap && !(s_caps & cap)) {
+        pm_log_w(TAG, "Cardputer op '%s' missing caps=0x%08lx need=0x%08lx",
+                 op ? op : "(null)", (unsigned long)s_caps, (unsigned long)cap);
+        return -6;
+    }
+#else
+    (void)op;
+#endif
+    return 0;
 }
 
 static void _push_uart_wifi(const pm_cardputer_i2c_wifi_frame_t* f) {
@@ -519,11 +646,6 @@ static void _handle_uart_line(const char* line) {
             .timestamp_ms = pm_millis(),
         };
         _post_key(&k);
-        if (k.code >= 32 && k.code <= 126) {
-            pm_log_i(TAG, "Cardputer key '%c' code=%lu", (char)k.code, (unsigned long)k.code);
-        } else {
-            pm_log_i(TAG, "Cardputer key code=%lu", (unsigned long)k.code);
-        }
         return;
     }
 
@@ -560,8 +682,6 @@ static void _handle_uart_line(const char* line) {
         const char* data = _kv_value(line, "data");
         size_t got = _uart_hex_decode(data, rx.data, sizeof(rx.data));
         rx.len = (uint8_t)got;
-        pm_log_i(TAG, "Cardputer LoRa RX len=%u rssi=%d snr_x4=%d freq=%lu",
-                 rx.len, rx.rssi, rx.snr_x4, (unsigned long)rx.freq_khz);
         _push_uart_lora(&rx);
         return;
     }
@@ -586,16 +706,7 @@ static void _handle_uart_line(const char* line) {
             _copy_kv_token(line, "name", b.name, sizeof(b.name));
         }
 
-        if (b.mac[0]) {
-            static uint32_t s_ble_rx_log_count = 0;
-            s_ble_rx_log_count++;
-            if (s_ble_rx_log_count <= 5 || (s_ble_rx_log_count % 25) == 0) {
-                pm_log_i(TAG, "Cardputer BLE seen %s rssi=%d name='%s' count=%lu",
-                         b.mac, b.rssi, b.name,
-                         (unsigned long)s_ble_rx_log_count);
-            }
-            _push_uart_ble(&b);
-        }
+        if (b.mac[0]) _push_uart_ble(&b);
         return;
     }
 }
@@ -672,10 +783,15 @@ static esp_err_t _uart_bridge_start(void) {
                               0, NULL, 0);
     if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) return err;
 
+    if (!s_uart_write_mutex) {
+        s_uart_write_mutex = xSemaphoreCreateMutex();
+        if (!s_uart_write_mutex) return ESP_ERR_NO_MEM;
+    }
     s_uart_started = true;
     if (!s_caps) s_caps = _default_caps();
     snprintf(s_name, sizeof(s_name), "Cardputer ADV UART");
-    xTaskCreatePinnedToCore(_uart_rx_task, "pm_cardputer_uart", 4096,
+    xTaskCreatePinnedToCore(_uart_rx_task, "pm_cardputer_uart",
+                            PM_CARDPUTER_UART_TASK_STACK,
                             NULL, 4, &s_uart_task, 0);
     pm_log_i(TAG, "Cardputer UART1 bridge armed: RX=IO%d TX=IO%d baud=%d",
              PM_CARDPUTER_UART_RX_PIN,
@@ -848,6 +964,9 @@ int pm_cardputer_i2c_call(const char* op, const char* params) {
         return 0;
 #endif
     }
+
+    int ready = _require_uart_link_for_op(op);
+    if (ready != 0) return ready;
 
     if (strcmp(op, "gps_get") == 0) {
 #if PM_BOARD_CARDPUTER_UART_BRIDGE

@@ -156,6 +156,15 @@ extern pm_mutex_t pm_spi_treaty;
         pm_mutex_give(pm_spi_treaty); \
     }
 
+// ── Hosted WiFi scan treaty ─────────────────────────────────
+// The C6-hosted WiFi stack has one scan engine and one result
+// buffer. Only the current owner may start scans, receive scan
+// completion events, read records, clear the list, or stop scans.
+bool        pm_wifi_scan_take(const char* owner, uint32_t timeout_ms);
+void        pm_wifi_scan_give(const char* owner);
+bool        pm_wifi_scan_is_owner(const char* owner);
+const char* pm_wifi_scan_owner(void);
+
 // ── Boot / system ────────────────────────────────────────────
 void     pm_hal_init(void);            // Called once from main()
 void     pm_reboot(void);

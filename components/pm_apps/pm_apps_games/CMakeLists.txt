@@ -14,6 +14,18 @@ idf_component_register(
         "pm_app_doom.c"
         "pm_app_simcity.c"
         "pm_app_retro_elf.c"
+        "pm_app_tetris.c"
+        "pm_app_pole_position.c"
+        "pm_app_mario_bros.c"
+        "pm_app_breakout.c"
+        "pm_app_2048.c"
+        "pm_app_minesweeper.c"
+        "pm_app_connect4.c"
+        "pm_app_simon.c"
+        "pm_app_solitaire.c"
+        "pm_app_asteroids.c"
+        "pm_app_space_invaders.c"
+        "pm_app_frogger.c"
     INCLUDE_DIRS "include"
     REQUIRES
         pm_ui

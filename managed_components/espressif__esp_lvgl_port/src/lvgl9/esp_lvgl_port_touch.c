@@ -123,11 +123,24 @@ static void lvgl_port_touchpad_read(lv_indev_t *indev_drv, lv_indev_data_t *data
     uint8_t touch_cnt = 0;
     esp_lcd_touch_point_data_t touch_data[CONFIG_ESP_LCD_TOUCH_MAX_POINTS] = {0};
 
-    /* Read data from touch controller into memory */
-    ESP_ERROR_CHECK(esp_lcd_touch_read_data(touch_ctx->handle));
+    /* Read data from touch controller into memory.
+     * GT911 can transiently NACK while another board service is settling.
+     * A missed touch sample must not abort the OS.
+     */
+    esp_err_t err = esp_lcd_touch_read_data(touch_ctx->handle);
+    if (err != ESP_OK) {
+        data->state = LV_INDEV_STATE_RELEASED;
+        ESP_LOGW(TAG, "touch read failed: %s", esp_err_to_name(err));
+        return;
+    }
 
     /* Read data from touch controller */
-    ESP_ERROR_CHECK(esp_lcd_touch_get_data(touch_ctx->handle, touch_data, &touch_cnt, CONFIG_ESP_LCD_TOUCH_MAX_POINTS));
+    err = esp_lcd_touch_get_data(touch_ctx->handle, touch_data, &touch_cnt, CONFIG_ESP_LCD_TOUCH_MAX_POINTS);
+    if (err != ESP_OK) {
+        data->state = LV_INDEV_STATE_RELEASED;
+        ESP_LOGW(TAG, "touch get data failed: %s", esp_err_to_name(err));
+        return;
+    }
 
 #if (CONFIG_ESP_LCD_TOUCH_MAX_POINTS > 1 && CONFIG_LV_USE_GESTURE_RECOGNITION)
     // Number of touch points which need to be constantly updated inside gesture recognizers

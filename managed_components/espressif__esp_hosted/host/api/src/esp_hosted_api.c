@@ -19,6 +19,7 @@ extern "C" {
 #include "esp_check.h"
 #include "transport_drv.h"
 #include "rpc_wrap.h"
+#include "esp_err.h"
 #include "esp_log.h"
 #include "esp_hosted_event.h"
 
@@ -148,11 +149,30 @@ int esp_hosted_init(void)
 	if (esp_hosted_is_config_valid()) {
 		ESP_LOGW(TAG, "ESP-Hosted config valid; reuse existing config");
 	} else {
-		ESP_ERROR_CHECK(esp_hosted_set_default_config());
+		esp_err_t err = esp_hosted_set_default_config();
+		if (err != ESP_OK) {
+			ESP_LOGE(TAG, "default config failed: %s", esp_err_to_name(err));
+			return err;
+		}
 	}
-	ESP_ERROR_CHECK(add_esp_wifi_remote_channels());
-	ESP_ERROR_CHECK(setup_transport(transport_active_cb));
-	ESP_ERROR_CHECK(rpc_init());
+	esp_err_t err = add_esp_wifi_remote_channels();
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "wifi remote channels failed: %s", esp_err_to_name(err));
+		return err;
+	}
+	err = setup_transport(transport_active_cb);
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "transport setup failed: %s", esp_err_to_name(err));
+		remove_esp_wifi_remote_channels();
+		return err;
+	}
+	err = rpc_init();
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "rpc init failed: %s", esp_err_to_name(err));
+		teardown_transport();
+		remove_esp_wifi_remote_channels();
+		return err;
+	}
 	rpc_register_event_callbacks();
 
 	esp_hosted_init_done = 1;
@@ -163,9 +183,18 @@ int esp_hosted_deinit(void)
 {
 	ESP_LOGI(TAG, "ESP-Hosted deinit\n");
 	rpc_unregister_event_callbacks();
-	ESP_ERROR_CHECK(rpc_deinit());
-	ESP_ERROR_CHECK(remove_esp_wifi_remote_channels());
-	ESP_ERROR_CHECK(teardown_transport());
+	esp_err_t err = rpc_deinit();
+	if (err != ESP_OK) {
+		ESP_LOGW(TAG, "rpc deinit failed: %s", esp_err_to_name(err));
+	}
+	err = remove_esp_wifi_remote_channels();
+	if (err != ESP_OK) {
+		ESP_LOGW(TAG, "wifi remote channel remove failed: %s", esp_err_to_name(err));
+	}
+	err = teardown_transport();
+	if (err != ESP_OK) {
+		ESP_LOGW(TAG, "transport teardown failed: %s", esp_err_to_name(err));
+	}
 	esp_hosted_init_done = 0;
 	esp_hosted_transport_up = 0;
 	g_h.funcs->_h_event_post(ESP_HOSTED_EVENT,
@@ -181,7 +210,11 @@ static inline esp_err_t esp_hosted_reconfigure(void)
 		return ESP_FAIL;
 	}
 
-	ESP_ERROR_CHECK_WITHOUT_ABORT(transport_drv_reconfigure());
+	esp_err_t err = transport_drv_reconfigure();
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "transport reconfigure failed: %s", esp_err_to_name(err));
+		return err;
+	}
 	return ESP_OK;
 }
 
@@ -198,7 +231,10 @@ esp_remote_channel_t esp_hosted_add_channel(esp_remote_channel_config_t config,
 	esp_remote_channel_t eh_chan = NULL;
 
 	eh_chan = g_h.funcs->_h_calloc(sizeof(struct esp_remote_channel), 1);
-	assert(eh_chan);
+	if (!eh_chan) {
+		ESP_LOGE(TAG, "remote channel allocation failed");
+		return NULL;
+	}
 
 	t_chan = transport_drv_add_channel(eh_chan, config->if_type, config->secure, tx, rx);
 	if (t_chan) {
@@ -225,7 +261,10 @@ esp_err_t esp_hosted_remove_channel(esp_remote_channel_t eh_chan)
 
 esp_err_t esp_wifi_remote_init(const wifi_init_config_t *arg)
 {
-	ESP_ERROR_CHECK_WITHOUT_ABORT(esp_hosted_reconfigure());
+	esp_err_t err = esp_hosted_reconfigure();
+	if (err != ESP_OK) {
+		return err;
+	}
 	check_transport_up();
 	return rpc_wifi_init(arg);
 }

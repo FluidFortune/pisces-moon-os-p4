@@ -14,6 +14,8 @@ idf_component_register(
         "pm_app_calendar.c"
         "pm_app_etch.c"
         "pm_app_camera_qr.c"
+        "pm_app_ereader.c"
+        "pm_app_contacts.c"
     INCLUDE_DIRS "include"
     REQUIRES
         pm_ui
@@ -23,6 +25,7 @@ idf_component_register(
         pm_camera
         pm_input
         esp_lvgl_port
+        pm_nosql
 )
 
 # Relax v5.5.3 strict warnings for this component.

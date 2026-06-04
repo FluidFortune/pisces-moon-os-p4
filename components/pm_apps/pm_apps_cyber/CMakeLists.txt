@@ -29,6 +29,8 @@ idf_component_register(
         "pm_app_amiibo.c"
         "pm_app_nfc_emulate.c"
         "pm_app_secondary_scan.c"
+        "pm_app_wardrive_inspect.c"
+        "pm_app_tracker_scan.c"
     INCLUDE_DIRS "include"
     REQUIRES
         esp_wifi

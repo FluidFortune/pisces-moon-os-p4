@@ -84,7 +84,7 @@ static void _start(void) {
     if (rc != 0) {
         pm_log_w(TAG, "capture start failed on %s rc=%d",
                  pm_peer_name(s_capture_peer), rc);
-        pm_peer_release(s_capture_peer);
+        pm_peer_release_cap(s_capture_peer, "wifi_capture");
         s_capture_peer = NULL;
         return;
     }
@@ -98,7 +98,7 @@ static void _stop(void) {
     if (s_capture_peer) {
         pm_peer_call(s_capture_peer, "promiscuous_stop", NULL);
         pm_log_i(TAG, "capture stopped on %s", pm_peer_name(s_capture_peer));
-        pm_peer_release(s_capture_peer);
+        pm_peer_release_cap(s_capture_peer, "wifi_capture");
         s_capture_peer = NULL;
     }
     s_capture_channel = 1;

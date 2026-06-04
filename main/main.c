@@ -39,6 +39,7 @@
 #include "esp_netif.h"
 #include "esp_wifi.h"
 #include "esp_hosted.h"
+#include "esp_lvgl_port.h"
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 #include "sdkconfig.h"
@@ -66,6 +67,16 @@
 #include "pm_cardputer_i2c.h"
 
 static const char* TAG = "PM_MAIN";
+static TaskHandle_t s_service_bringup_task = NULL;
+
+#define PM_BOOT_STEP_PACE_MS       180
+#define PM_BOOT_SECTION_PACE_MS    350
+#define PM_BOOT_HANDOFF_PACE_MS    600
+#define PM_BOOT_SPLASH_MS          2600
+
+static void _boot_pace(uint32_t ms) {
+    if (ms) vTaskDelay(pdMS_TO_TICKS(ms));
+}
 
 static void _boot_visual_probe(bool on) {
     (void)on;
@@ -394,14 +405,86 @@ static void _ui_loop_task(void* arg) {
         const pm_app_t* cur = pm_app_current();
         if (cur && cur->tick) {
             uint32_t now = pm_millis();
-            cur->tick(now - last);
-            last = now;
+            if (lvgl_port_lock(5)) {
+                cur->tick(now - last);
+                lvgl_port_unlock();
+                last = now;
+            } else {
+                last = now;
+            }
         } else {
             last = pm_millis();
         }
 
         // ~60Hz cadence for the per-app tick
         pm_delay_ms(16);
+    }
+}
+
+static void _service_bringup_delay(uint32_t ms) {
+    vTaskDelay(pdMS_TO_TICKS(ms));
+}
+
+static void _service_bringup_task(void* arg) {
+    (void)arg;
+    pm_log_i(TAG, "System service bring-up starting on OS core");
+
+    _service_bringup_delay(100);
+    pm_log_i(TAG, "Service: ESP-Hosted WiFi");
+    esp_err_t hosted = _init_c6_hosted_wifi();
+    pm_log_i(TAG, "ESP-Hosted WiFi: %s", esp_err_to_name(hosted));
+
+    _service_bringup_delay(100);
+    pm_log_i(TAG, "Service: SQLite init");
+    if (!pm_sqlite_global_init()) {
+        pm_log_w(TAG, "SQLite init failed; DB-backed apps will fall back");
+    }
+
+    _service_bringup_delay(250);
+    pm_log_i(TAG, "Service: wireless slot probe");
+    pm_radio_kind_t radio = pm_radio_init_auto();
+    pm_log_i(TAG, "Wireless slot: %s", pm_radio_name(radio));
+
+    _service_bringup_delay(250);
+    pm_log_i(TAG, "Service: optional peer probes");
+    pm_peer_probe_optional();
+
+    _service_bringup_delay(250);
+    pm_log_i(TAG, "Service: T-Beam probe");
+    pm_tbeam_init_auto();
+
+    _service_bringup_delay(100);
+    bool external_ble_sensor =
+        pm_cardputer_i2c_link_seen() || pm_tbeam_connected();
+    if (external_ble_sensor) {
+        pm_log_i(TAG, "Service: BLE source is external; local hosted BT left idle");
+    } else if (hosted == ESP_OK) {
+        pm_log_i(TAG, "Service: ESP-Hosted Bluetooth");
+        esp_err_t hosted_bt = _init_c6_hosted_bluetooth();
+        pm_log_i(TAG, "ESP-Hosted Bluetooth: %s", esp_err_to_name(hosted_bt));
+    } else {
+        pm_log_w(TAG, "Service: skipping BT because hosted WiFi is not ready");
+    }
+
+    pm_log_i(TAG, "System service bring-up complete");
+    s_service_bringup_task = NULL;
+    vTaskDelete(NULL);
+}
+
+static void _start_service_bringup(void) {
+    if (s_service_bringup_task) return;
+    BaseType_t ok = xTaskCreatePinnedToCore(
+        _service_bringup_task,
+        "pm_services",
+        12288,
+        NULL,
+        3,
+        &s_service_bringup_task,
+        0
+    );
+    if (ok != pdPASS) {
+        s_service_bringup_task = NULL;
+        pm_log_w(TAG, "System service bring-up task create failed");
     }
 }
 
@@ -428,12 +511,6 @@ void app_main(void) {
     pm_hal_init();
     ESP_LOGI(TAG, "BOOTMARK: pm_hal_init done");
 
-    // 2b. SQLite — used by wardrive (CYBER) for session DB.
-    //     Falls back to per-session CSV if init fails.
-    ESP_LOGI(TAG, "BOOTMARK: pm_sqlite_global_init begin");
-    pm_sqlite_global_init();
-    ESP_LOGI(TAG, "BOOTMARK: pm_sqlite_global_init done");
-
     // 3. BSP — MIPI-DSI display, GT911 touch, LVGL plumbing,
     //          backlight PWM, I2C bus. After this returns OK,
     //          screens are flushable and touch events flow.
@@ -453,10 +530,16 @@ void app_main(void) {
     }
 
 #define BOOT_STEP(label, detail, status) do { \
-        if (ui_ok) pm_boot_step((label), (detail), (status)); \
+        if (ui_ok) { \
+            pm_boot_step((label), (detail), (status)); \
+            _boot_pace(PM_BOOT_STEP_PACE_MS); \
+        } \
     } while (0)
 #define BOOT_PROGRESS(percent) do { \
-        if (ui_ok) pm_boot_progress((percent)); \
+        if (ui_ok) { \
+            pm_boot_progress((percent)); \
+            _boot_pace(PM_BOOT_SECTION_PACE_MS); \
+        } \
     } while (0)
 
     // BOOT SCREEN — display now alive, start streaming POST-style status
@@ -464,6 +547,7 @@ void app_main(void) {
         ESP_LOGI(TAG, "BOOTMARK: pm_boot_screen_show begin");
         pm_boot_screen_show();
         ESP_LOGI(TAG, "BOOTMARK: pm_boot_screen_show done");
+        _boot_pace(PM_BOOT_HANDOFF_PACE_MS);
     }
     BOOT_STEP("CPU HP0",   "360 MHz RISC-V LX9",     PM_BOOT_OK);
     BOOT_STEP("CPU HP1",   "360 MHz RISC-V LX9",     PM_BOOT_OK);
@@ -475,11 +559,14 @@ void app_main(void) {
     bool sd_ok = pm_sd_mounted();
     BOOT_STEP("SDMMC",     sd_ok ? "microSD mounted @ /sd" : "microSD not mounted",
                  sd_ok ? PM_BOOT_OK : PM_BOOT_WARN);
-    BOOT_STEP("SQLITE",    "v3.45 engine ready",     PM_BOOT_OK);
+    BOOT_STEP("SQLITE",    "deferred",               PM_BOOT_DISABLED);
     BOOT_STEP("MIPI-DSI",  PM_BOARD_PANEL_DETAIL,    PM_BOOT_OK);
     BOOT_STEP("GT911",     "I2C touch 400 KHz",      PM_BOOT_OK);
-    BOOT_STEP("LVGL",      "v9.2 TLSF 64KB pool",    PM_BOOT_OK);
+    BOOT_STEP("LVGL",      "v9.2 PSRAM malloc",      PM_BOOT_OK);
     BOOT_PROGRESS(45);
+
+    pm_peer_init_base();
+    BOOT_STEP("PEERS",     "base registry ready",    PM_BOOT_OK);
 
     // 3b. GPS source. The Cardputer ADV UART1 header bridge is the
     //     default for both 5" and 7" P4 boards. The IO52 UART path
@@ -497,62 +584,33 @@ void app_main(void) {
 #endif
     BOOT_PROGRESS(55);
 
-    // 3c. Wireless module slot — auto-detect what's plugged in.
-    //     Returns NONE cleanly if the slot is empty; mesh/voice/
-    //     nRF24 apps handle that case in their UI. SX1262 and
-    //     nRF24 are auto-detected via SPI signature probes; H2,
-    //     C6 (slot variant), and HaLow are user-declared since
-    //     they're full MCUs needing their own firmware.
-    pm_radio_kind_t radio = pm_radio_init_auto();
-    pm_log_i(TAG, "Wireless slot: %s", pm_radio_name(radio));
-    BOOT_STEP("WIRELESS SLOT", pm_radio_name(radio),
-                 radio == PM_RADIO_NONE ? PM_BOOT_DISABLED : PM_BOOT_OK);
+    // 3c. Optional capability providers are intentionally staged
+    // after the launcher is visible. Each probe can stall or fail
+    // independently without turning boot into a single long critical
+    // section.
+    BOOT_STEP("WIRELESS SLOT", "deferred", PM_BOOT_DISABLED);
     BOOT_PROGRESS(65);
 
-    // 3d. Peer registry — modular ESP32 OS spine.
-    //     The C6 is a permanent fixture. Cardputer ADV, PN532 NFC,
-    //     T-Beam Supreme S3, wireless slot modules, and BLE HID
-    //     peripherals are auto-detected.
-    pm_peer_init_auto();
+    // 3d. Peer registry — modular ESP32 OS spine. Deferred so
+    // peer-specific UART/I2C/SDIO probes cannot block the first UI.
 #if PM_BOARD_CARDPUTER_RADIO_BRIDGE
-    bool cardputer_present = pm_cardputer_i2c_present();
+    bool cardputer_armed = pm_cardputer_i2c_present();
+    bool cardputer_live = pm_cardputer_i2c_link_seen();
     BOOT_STEP("CARDPUTER GPS",
-                 cardputer_present ? "UART1 bridge armed" : "header not present",
-                 cardputer_present ? PM_BOOT_OK : PM_BOOT_DISABLED);
+                 cardputer_live ? "UART1 HELLO received" :
+                 (cardputer_armed ? "UART1 armed; HELLO pending" : "UART1 arm failed"),
+                 cardputer_live ? PM_BOOT_OK :
+                 (cardputer_armed ? PM_BOOT_WARN : PM_BOOT_WARN));
 #endif
 
-    // 3e. T-Beam Supreme S3 (modular secondary radios) — probe
-    //     on UART2 (IO25/IO27 @ 921600). Silent if absent.
-    bool tbeam_present = pm_tbeam_init_auto();
-    BOOT_STEP("T-BEAM S3", tbeam_present ? "UART2 @ 921600" : "(not present)",
-                 tbeam_present ? PM_BOOT_OK : PM_BOOT_DISABLED);
-    BOOT_STEP("C6 GHOST",  "ESP-Hosted SDIO",        PM_BOOT_OK);
+    BOOT_STEP("T-BEAM S3", "deferred", PM_BOOT_DISABLED);
+    BOOT_STEP("C6 GHOST",  "ESP-Hosted deferred",    PM_BOOT_DISABLED);
     BOOT_PROGRESS(75);
 
-    ESP_LOGI(TAG, "BOOTMARK: ESP-Hosted WiFi init begin");
-    esp_err_t hosted = _init_c6_hosted_wifi();
-    ESP_LOGI(TAG, "BOOTMARK: ESP-Hosted WiFi init done: %s", esp_err_to_name(hosted));
-    BOOT_STEP("ESP-HOSTED",
-                 hosted == ESP_OK ? "WiFi STA ready" : esp_err_to_name(hosted),
-                 hosted == ESP_OK ? PM_BOOT_OK : PM_BOOT_WARN);
+    BOOT_STEP("ESP-HOSTED", "background startup", PM_BOOT_DISABLED);
     BOOT_PROGRESS(82);
 
-    bool external_ble_sensor =
-        (pm_cardputer_i2c_link_seen() ||
-         (tbeam_present && pm_tbeam_connected()));
-    esp_err_t hosted_bt = ESP_ERR_NOT_SUPPORTED;
-    if (external_ble_sensor) {
-        pm_log_i(TAG, "BLE wardrive source: external bridge; leaving local BT free");
-    } else {
-        hosted_bt = (hosted == ESP_OK)
-            ? _init_c6_hosted_bluetooth()
-            : ESP_ERR_INVALID_STATE;
-    }
-    BOOT_STEP("BLE SENSOR",
-                 external_ble_sensor
-                    ? (pm_cardputer_i2c_link_seen() ? "Cardputer ADV" : "T-Beam S3")
-                    : (hosted_bt == ESP_OK ? "local C6 fallback active" : esp_err_to_name(hosted_bt)),
-                 (external_ble_sensor || hosted_bt == ESP_OK) ? PM_BOOT_OK : PM_BOOT_WARN);
+    BOOT_STEP("BLE SENSOR", "background startup", PM_BOOT_DISABLED);
 
     // 4. App registry — must precede launcher so categories see real counts
     main_register_apps();
@@ -609,11 +667,12 @@ void app_main(void) {
 
     BOOT_STEP("LAUNCHER", "ready",                  PM_BOOT_OK);
     BOOT_PROGRESS(100);
+    _boot_pace(ui_ok ? PM_BOOT_HANDOFF_PACE_MS : 0);
 
     // Splash screen, then free boot memory and show launcher
     if (ui_ok) {
         ESP_LOGI(TAG, "BOOTMARK: pm_boot_splash_show begin");
-        pm_boot_splash_show(2200);
+        pm_boot_splash_show(PM_BOOT_SPLASH_MS);
         ESP_LOGI(TAG, "BOOTMARK: pm_boot_splash_show done");
     }
 
@@ -621,6 +680,7 @@ void app_main(void) {
     if (ui_ok) {
         pm_launcher_show();
         pm_boot_dismiss();
+        _start_service_bringup();
     }
 
     // 8. UI loop — pinned to Core 1 to keep LVGL away from radio drain
@@ -634,6 +694,9 @@ void app_main(void) {
             NULL,
             1
         );
+    }
+    if (!ui_ok) {
+        _start_service_bringup();
     }
 
     pm_log_i(TAG, "Boot complete. Pisces Moon P4 is running.");
