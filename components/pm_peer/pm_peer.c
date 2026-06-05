@@ -21,6 +21,8 @@
 #include "pm_board.h"
 #include "pm_hal.h"
 #include "pm_cardputer_i2c.h"
+#include "pm_radio_host.h"
+#include "esp_err.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -465,18 +467,45 @@ const char* const* pm_peer_capabilities(const pm_peer_t* p) {
 // ─────────────────────────────────────────────
 int pm_peer_call(pm_peer_t* p, const char* op, const char* params) {
     if (!p || !op) return -1;
-    extern void pm_c6_cmd_send_raw(const char* json_line);
-    char buf[256];
+    (void)params;
 
     switch (p->kind) {
-        case PM_PEER_KIND_C6_GHOST:
-            // Map op to a C6 bridge command
-            if (params)
-                snprintf(buf, sizeof(buf), "{\"cmd\":\"%s\",%s}\n", op, params);
-            else
-                snprintf(buf, sizeof(buf), "{\"cmd\":\"%s\"}\n", op);
-            pm_c6_cmd_send_raw(buf);
-            return 0;
+        case PM_PEER_KIND_C6_GHOST: {
+            // Native dispatch via pm_radio_host. The C6 is reached
+            // over ESP-Hosted SDIO; the pre-Phase-17 UART path
+            // (pm_c6_cmd_send_raw) was retired when the custom
+            // Ghost Engine firmware was abandoned. Unknown ops
+            // return -3 so callers can distinguish unsupported
+            // from genuine failure.
+            if (strcmp(op, "ble_scan_start") == 0 ||
+                strcmp(op, "ble_start")      == 0) {
+                return pm_radio_host_ble_scan_start() == ESP_OK ? 0 : -1;
+            }
+            if (strcmp(op, "ble_scan_stop") == 0 ||
+                strcmp(op, "ble_stop")      == 0) {
+                return pm_radio_host_ble_scan_stop() == ESP_OK ? 0 : -1;
+            }
+            if (strcmp(op, "wifi_scan_start") == 0 ||
+                strcmp(op, "wardrive_start") == 0) {
+                return pm_radio_host_wifi_scan_subscribe() == ESP_OK ? 0 : -1;
+            }
+            if (strcmp(op, "wifi_scan_stop") == 0 ||
+                strcmp(op, "wardrive_stop") == 0) {
+                return pm_radio_host_wifi_scan_unsubscribe() == ESP_OK ? 0 : -1;
+            }
+            if (strcmp(op, "promiscuous_start")   == 0 ||
+                strcmp(op, "wifi_promisc_start") == 0 ||
+                strcmp(op, "raw_log_start")      == 0) {
+                return pm_radio_host_wifi_promisc_start() == ESP_OK ? 0 : -1;
+            }
+            if (strcmp(op, "promiscuous_stop")    == 0 ||
+                strcmp(op, "wifi_promisc_stop")  == 0 ||
+                strcmp(op, "raw_log_stop")       == 0) {
+                return pm_radio_host_wifi_promisc_stop() == ESP_OK ? 0 : -1;
+            }
+            pm_log_w(TAG, "C6_GHOST op '%s' not handled on P4 host", op);
+            return -3;
+        }
         case PM_PEER_KIND_TBEAM_S3:
             if (strcmp(op, "ble_scan_start") == 0 || strcmp(op, "ble_start") == 0) {
                 extern void pm_tbeam_send_cmd(const char* json_line);

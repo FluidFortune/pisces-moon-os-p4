@@ -7,316 +7,128 @@
 
 
 // ============================================================
-//  pm_c6_bridge.c — UART receiver, JSON parser, dispatcher
+//  pm_c6_bridge.c — COMPATIBILITY SHIM
 //
-//  Reads line-delimited JSON from UART2, parses the "event"
-//  field, and fans out to registered callbacks.
+//  The original implementation of this file was a UART2 JSON
+//  bridge to a custom firmware running on the Pisces Moon C6
+//  ("Ghost Engine"). That firmware is abandoned. On the
+//  Pisces Moon P4 the C6 ships with Espressif's standard
+//  ESP-Hosted slave firmware and is reached transparently
+//  over SDIO. The host calls esp_wifi_* / esp_ble_gap_*
+//  as if it had built-in radios.
 //
-//  Uses cJSON (ESP-IDF built-in component "json") for parsing.
+//  This file remains compiled because dozens of places across
+//  the codebase include "pm_c6_bridge.h" or reference
+//  pm_c6_cmd_*() helpers. Rather than ripple-change every
+//  call site, we keep the header API stable and forward each
+//  cmd into pm_radio_host, which is the real implementation.
 //
-//  Backpressure: the C6 may emit faster than apps can drain.
-//  We use a generous UART RX FIFO and drop overrun lines with
-//  a logged warning. The C6 does not retransmit — radio
-//  intelligence is lossy by nature, single-frame loss is fine.
+//  Behaviour summary:
+//
+//    pm_c6_bridge_init(cbs)   — accepts the callbacks struct
+//                                for API compatibility but
+//                                ignores it. The real WiFi
+//                                and BLE event fan-out lives
+//                                in main.c (_on_wifi, _on_ble,
+//                                _bt_gap_cb). Logs a one-time
+//                                "compat shim" notice.
+//    pm_c6_bridge_task(arg)   — sleeps forever. The UART
+//                                receiver task is gone; ESP-
+//                                Hosted handles transport.
+//    pm_c6_cmd_*_start/stop   — forward to the matching
+//                                pm_radio_host_* call.
+//    pm_c6_cmd_send_raw       — no-op; logs once that custom
+//                                JSON commands no longer have
+//                                a destination.
+//    pm_c6_cmd_ping / status  — no-op.
+//
+//  State flags (pm_c6_connected, pm_c6_wardrive_active,
+//  pm_c6_ble_active) are still declared because legacy code
+//  reads them. pm_c6_ble_active is updated by main.c's GAP
+//  callback so apps that check it for "BLE is scanning"
+//  continue to get the right answer.
 // ============================================================
 
 #include "pm_c6_bridge.h"
-#include "pm_hal.h"
-#include "pm_input.h"
-#include "pm_nfc.h"
-
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "driver/uart.h"
+#include "pm_radio_host.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "cJSON.h"
+#include <stdbool.h>
 
 static const char* TAG = "PM_C6_BRIDGE";
 
-// ── Config ───────────────────────────────────────────────────
-#define LINE_BUF_SIZE   1024
-#define UART_RX_BUF     4096
-#define UART_TX_BUF     1024
-
-// ── State ────────────────────────────────────────────────────
-volatile bool pm_c6_connected        = false;
+// State flags — declared in the header as `extern volatile`.
+volatile bool pm_c6_connected        = false;  // legacy flag; no longer meaningful
 volatile bool pm_c6_wardrive_active  = false;
 volatile bool pm_c6_ble_active       = false;
 
-static pm_c6_callbacks_t s_cb = {0};
+static bool s_warned_send_raw = false;
 
-// ─────────────────────────────────────────────
-//  Init
-// ─────────────────────────────────────────────
 void pm_c6_bridge_init(const pm_c6_callbacks_t* cbs) {
-    if (cbs) memcpy(&s_cb, cbs, sizeof(s_cb));
-
-    uart_config_t cfg = {
-        .baud_rate  = PM_C6_BAUD,
-        .data_bits  = UART_DATA_8_BITS,
-        .parity     = UART_PARITY_DISABLE,
-        .stop_bits  = UART_STOP_BITS_1,
-        .flow_ctrl  = UART_HW_FLOWCTRL_DISABLE,
-        .source_clk = UART_SCLK_DEFAULT,
-    };
-
-    ESP_ERROR_CHECK(uart_param_config(PM_C6_UART_NUM, &cfg));
-    ESP_ERROR_CHECK(uart_set_pin(PM_C6_UART_NUM,
-                                  PM_C6_TX_PIN,
-                                  PM_C6_RX_PIN,
-                                  UART_PIN_NO_CHANGE,
-                                  UART_PIN_NO_CHANGE));
-    ESP_ERROR_CHECK(uart_driver_install(PM_C6_UART_NUM,
-                                         UART_RX_BUF, UART_TX_BUF,
-                                         0, NULL, 0));
-
-    ESP_LOGI(TAG, "Bridge UART%d init: %d baud TX=%d RX=%d",
-             PM_C6_UART_NUM, PM_C6_BAUD,
-             PM_C6_TX_PIN, PM_C6_RX_PIN);
+    (void)cbs;
+    ESP_LOGW(TAG,
+        "pm_c6_bridge is a compatibility shim; "
+        "WiFi/BLE now run via ESP-Hosted on the host. "
+        "Callbacks ignored; main.c owns event fan-out.");
 }
 
-// ─────────────────────────────────────────────
-//  Outbound commands
-// ─────────────────────────────────────────────
-void pm_c6_cmd_send_raw(const char* json_line) {
-    if (!json_line) return;
-    uart_write_bytes(PM_C6_UART_NUM, json_line, strlen(json_line));
-    if (json_line[strlen(json_line) - 1] != '\n') {
-        uart_write_bytes(PM_C6_UART_NUM, "\n", 1);
-    }
-}
-
-void pm_c6_cmd_wardrive_start(void)    { pm_c6_cmd_send_raw("{\"cmd\":\"wardrive_start\"}");    pm_c6_wardrive_active = true; }
-void pm_c6_cmd_wardrive_stop(void)     { pm_c6_cmd_send_raw("{\"cmd\":\"wardrive_stop\"}");     pm_c6_wardrive_active = false; }
-void pm_c6_cmd_ble_start(void)         { pm_c6_cmd_send_raw("{\"cmd\":\"ble_start\"}");         pm_c6_ble_active = true; }
-void pm_c6_cmd_ble_stop(void)          { pm_c6_cmd_send_raw("{\"cmd\":\"ble_stop\"}");          pm_c6_ble_active = false; }
-void pm_c6_cmd_promiscuous_start(void) { pm_c6_cmd_send_raw("{\"cmd\":\"promiscuous_start\"}"); }
-void pm_c6_cmd_promiscuous_stop(void)  { pm_c6_cmd_send_raw("{\"cmd\":\"promiscuous_stop\"}");  }
-void pm_c6_cmd_raw_log_start(void)     { pm_c6_cmd_send_raw("{\"cmd\":\"raw_log_start\"}");     }
-void pm_c6_cmd_raw_log_stop(void)      { pm_c6_cmd_send_raw("{\"cmd\":\"raw_log_stop\"}");      }
-void pm_c6_cmd_ping(void)              { pm_c6_cmd_send_raw("{\"cmd\":\"ping\"}");              }
-void pm_c6_cmd_status(void)            { pm_c6_cmd_send_raw("{\"cmd\":\"status\"}");            }
-
-// ─────────────────────────────────────────────
-//  JSON helpers — safe accessors with defaults
-// ─────────────────────────────────────────────
-static const char* _js_str(cJSON* root, const char* key, const char* dflt) {
-    cJSON* v = cJSON_GetObjectItemCaseSensitive(root, key);
-    if (cJSON_IsString(v) && v->valuestring) return v->valuestring;
-    return dflt;
-}
-
-static int _js_int(cJSON* root, const char* key, int dflt) {
-    cJSON* v = cJSON_GetObjectItemCaseSensitive(root, key);
-    if (cJSON_IsNumber(v)) return v->valueint;
-    return dflt;
-}
-
-static double _js_dbl(cJSON* root, const char* key, double dflt) {
-    cJSON* v = cJSON_GetObjectItemCaseSensitive(root, key);
-    if (cJSON_IsNumber(v)) return v->valuedouble;
-    return dflt;
-}
-
-static bool _js_bool(cJSON* root, const char* key, bool dflt) {
-    cJSON* v = cJSON_GetObjectItemCaseSensitive(root, key);
-    if (cJSON_IsBool(v)) return cJSON_IsTrue(v);
-    return dflt;
-}
-
-// ─────────────────────────────────────────────
-//  Dispatch one parsed event
-// ─────────────────────────────────────────────
-static void _dispatch_event(cJSON* root) {
-    const char* event = _js_str(root, "event", "");
-
-    if (strcmp(event, "wifi_seen") == 0) {
-        if (s_cb.on_wifi) {
-            s_cb.on_wifi(
-                _js_str(root, "mac",  ""),
-                _js_str(root, "ssid", ""),
-                _js_int(root, "rssi", 0),
-                _js_int(root, "ch",   0),
-                _js_str(root, "enc",  "OPEN"),
-                _js_dbl(root, "lat",  0.0),
-                _js_dbl(root, "lng",  0.0));
-        }
-    }
-    else if (strcmp(event, "ble_seen") == 0) {
-        if (s_cb.on_ble) {
-            s_cb.on_ble(
-                _js_str(root, "mac",       ""),
-                _js_str(root, "name",      ""),
-                _js_int(root, "rssi",      0),
-                _js_dbl(root, "lat",       0.0),
-                _js_dbl(root, "lng",       0.0),
-                _js_str(root, "addr_type", "public"),
-                _js_str(root, "mfg_data",  ""));
-        }
-    }
-    else if (strcmp(event, "probe_seen") == 0) {
-        if (s_cb.on_probe) {
-            s_cb.on_probe(
-                _js_str(root, "mac",  ""),
-                _js_str(root, "ssid", ""),
-                _js_int(root, "rssi", 0),
-                _js_int(root, "count",1),
-                _js_dbl(root, "lat",  0.0),
-                _js_dbl(root, "lng",  0.0));
-        }
-    }
-    else if (strcmp(event, "gps") == 0) {
-        // Legacy/test C6 builds can still feed pm_gps_state here.
-        // Standard P4 builds now source GPS from the Cardputer ADV
-        // UART1 header bridge; the IO52 UART4 reader is opt-in only.
-        if (s_cb.on_gps) {
-            s_cb.on_gps(
-                _js_dbl(root, "lat",   0.0),
-                _js_dbl(root, "lng",   0.0),
-                _js_dbl(root, "alt_m", 0.0),
-                _js_int(root, "sats",  0),
-                _js_bool(root,"valid", false));
-        }
-    }
-    else if (strcmp(event, "pkt") == 0) {
-        if (s_cb.on_pkt) {
-            s_cb.on_pkt(
-                _js_str(root, "frame_type", ""),
-                _js_str(root, "src",        ""),
-                _js_int(root, "rssi",       0));
-        }
-    }
-    else if (strcmp(event, "ready") == 0) {
-        pm_c6_connected = true;
-        if (s_cb.on_ready) {
-            s_cb.on_ready(
-                _js_str(root, "firmware", ""),
-                _js_str(root, "version",  ""));
-        }
-    }
-    else if (strcmp(event, "status") == 0) {
-        if (s_cb.on_status) {
-            s_cb.on_status(
-                _js_bool(root, "wifi_active",     false),
-                _js_bool(root, "ble_active",      false),
-                _js_int (root, "networks_found",  0),
-                _js_int (root, "ble_devices",     0),
-                (uint32_t)_js_int(root, "uptime_s", 0));
-        }
-    }
-    else if (strcmp(event, "pong") == 0) {
-        ESP_LOGI(TAG, "C6 pong");
-    }
-    // ── Phase 14: BLE HID host events (input layer) ──────
-    else if (strcmp(event, "gamepad_event") == 0) {
-        // {"event":"gamepad_event","btn":N,"dpad":bitmask,
-        //  "down":bool,"name":"..."}
-        int btn  = _js_int(root, "btn",  -1);
-        int dpad = _js_int(root, "dpad",  0);
-        bool dn  = _js_bool(root, "down", false);
-        pm_input_event_t ev = {
-            .source    = PM_INPUT_SRC_BT_GAMEPAD,
-            .down      = dn,
-            .timestamp = (uint32_t)pm_millis(),
-        };
-        if (btn >= 0) {
-            ev.kind = PM_INPUT_BUTTON;
-            ev.code = (uint32_t)btn;
-        } else {
-            ev.kind = PM_INPUT_DPAD;
-            ev.code = (uint32_t)dpad;
-        }
-        pm_input_post(&ev);
-    }
-    else if (strcmp(event, "keyboard_event") == 0) {
-        // {"event":"keyboard_event","code":N,"down":bool,"mods":N,"name":"..."}
-        int  code = _js_int (root, "code", 0);
-        bool dn   = _js_bool(root, "down", false);
-        pm_input_event_t ev = {
-            .kind      = PM_INPUT_KEY,
-            .code      = (uint32_t)code,
-            .source    = PM_INPUT_SRC_BT_KEYBOARD,
-            .down      = dn,
-            .timestamp = (uint32_t)pm_millis(),
-        };
-        pm_input_post(&ev);
-    }
-    else if (strcmp(event, "hid_paired") == 0) {
-        const char* kind = _js_str(root, "kind", "");
-        const char* name = _js_str(root, "name", "");
-        if (!strcmp(kind, "gamepad"))
-            pm_input_set_bt_gamepad_connected(true, name);
-        else if (!strcmp(kind, "keyboard"))
-            pm_input_set_bt_keyboard_connected(true, name);
-    }
-    else if (strcmp(event, "hid_unpaired") == 0) {
-        const char* kind = _js_str(root, "kind", "");
-        if (!strcmp(kind, "gamepad"))
-            pm_input_set_bt_gamepad_connected(false, NULL);
-        else if (!strcmp(kind, "keyboard"))
-            pm_input_set_bt_keyboard_connected(false, NULL);
-    }
-    // ── Phase 15: NFC events from PN532 (via C6) ─────────
-    else if (strcmp(event, "nfc_present") == 0) {
-        pm_nfc_on_present(_js_str(root, "fw", ""));
-    }
-    else if (strcmp(event, "nfc_absent") == 0) {
-        pm_nfc_on_absent();
-    }
-    else if (strcmp(event, "nfc_seen") == 0) {
-        pm_nfc_on_seen(_js_str(root, "uid",  ""),
-                        _js_str(root, "type", "iso14443a"),
-                        _js_int(root, "sak", 0));
-    }
-    else if (strcmp(event, "nfc_data") == 0) {
-        pm_nfc_on_data(_js_str(root, "uid",  ""),
-                        _js_int(root, "block", 0),
-                        _js_str(root, "data", ""));
-    }
-    else {
-        ESP_LOGD(TAG, "unhandled event '%s'", event);
-    }
-}
-
-// ─────────────────────────────────────────────
-//  Receiver task — line buffer over UART
-// ─────────────────────────────────────────────
 void pm_c6_bridge_task(void* pvArgs) {
     (void)pvArgs;
-    static char line[LINE_BUF_SIZE];
-    int  linelen = 0;
-    uint8_t rxbuf[256];
-
-    ESP_LOGI(TAG, "Bridge receiver task running");
-
+    ESP_LOGW(TAG, "pm_c6_bridge_task started against a shim; sleeping forever");
     while (1) {
-        int len = uart_read_bytes(PM_C6_UART_NUM, rxbuf,
-                                   sizeof(rxbuf),
-                                   pdMS_TO_TICKS(20));
-        if (len <= 0) continue;
+        vTaskDelay(pdMS_TO_TICKS(60 * 1000));
+    }
+}
 
-        for (int i = 0; i < len; i++) {
-            char c = (char)rxbuf[i];
-            if (c == '\r') continue;
-            if (c == '\n' || linelen >= LINE_BUF_SIZE - 1) {
-                line[linelen] = 0;
-                if (linelen > 0) {
-                    cJSON* root = cJSON_Parse(line);
-                    if (root) {
-                        _dispatch_event(root);
-                        cJSON_Delete(root);
-                    } else {
-                        ESP_LOGW(TAG, "JSON parse failed (%d bytes)", linelen);
-                    }
-                }
-                linelen = 0;
-            } else {
-                line[linelen++] = c;
-            }
-        }
+// ── Forwarded cmds ─────────────────────────────────────────
+void pm_c6_cmd_wardrive_start(void) {
+    pm_radio_host_wifi_scan_subscribe();
+    pm_c6_wardrive_active = true;
+}
+
+void pm_c6_cmd_wardrive_stop(void) {
+    pm_radio_host_wifi_scan_unsubscribe();
+    pm_c6_wardrive_active = false;
+}
+
+void pm_c6_cmd_ble_start(void) {
+    pm_radio_host_ble_scan_start();
+    pm_c6_ble_active = pm_radio_host_ble_scan_active();
+}
+
+void pm_c6_cmd_ble_stop(void) {
+    pm_radio_host_ble_scan_stop();
+    pm_c6_ble_active = false;
+}
+
+void pm_c6_cmd_promiscuous_start(void) {
+    pm_radio_host_wifi_promisc_start();
+}
+
+void pm_c6_cmd_promiscuous_stop(void) {
+    pm_radio_host_wifi_promisc_stop();
+}
+
+// raw_log was a custom Ghost Engine feature with no host-side
+// equivalent. Map it to promiscuous since that's the closest
+// behaviour (raw 802.11 frames). If the slave doesn't support
+// promiscuous mode the underlying call will fail gracefully.
+void pm_c6_cmd_raw_log_start(void) { pm_radio_host_wifi_promisc_start(); }
+void pm_c6_cmd_raw_log_stop(void)  { pm_radio_host_wifi_promisc_stop();  }
+
+// Ping and status had meaning only when there was a custom
+// firmware to query. Now they're harmless logs so callers
+// don't crash.
+void pm_c6_cmd_ping(void)   { ESP_LOGD(TAG, "ping (shim)"); }
+void pm_c6_cmd_status(void) { ESP_LOGD(TAG, "status (shim)"); }
+
+void pm_c6_cmd_send_raw(const char* json_line) {
+    (void)json_line;
+    if (!s_warned_send_raw) {
+        s_warned_send_raw = true;
+        ESP_LOGW(TAG,
+            "pm_c6_cmd_send_raw is no longer a transport. "
+            "Use pm_radio_host_* or esp_*  APIs directly.");
     }
 }

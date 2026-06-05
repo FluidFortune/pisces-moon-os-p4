@@ -11,11 +11,7 @@ idf_component_register(
     INCLUDE_DIRS "include"
     REQUIRES
         freertos
-        driver
-        json
-        pm_hal
-        pm_input
-        pm_nfc
+        pm_radio_host
 )
 
 # Relax v5.5.3 strict warnings for this component.

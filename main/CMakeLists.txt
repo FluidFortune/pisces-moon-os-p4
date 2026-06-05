@@ -33,6 +33,7 @@ idf_component_register(
         pm_gps_state
         pm_gps_uart
         pm_radio
+        pm_radio_host
         pm_peer
         pm_tbeam
         pm_nfc

@@ -13,6 +13,7 @@ idf_component_register(
         pm_hal
         pm_c6_bridge
         pm_radio
+        pm_radio_host
         pm_camera
         pm_cardputer_i2c
 )

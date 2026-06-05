@@ -61,6 +61,7 @@
 #include "pm_radio.h"
 #include "pm_peer.h"
 #include "pm_tbeam.h"
+#include "pm_radio_host.h"
 #include "esp_err.h"
 #include "pm_boot.h"
 #include "pm_board.h"
@@ -154,6 +155,73 @@ static void _on_status(bool wifi, bool ble, int nets, int devs, uint32_t up) {
              wifi, ble, nets, devs, (unsigned)up);
 }
 
+// ── WiFi scan-done event handler ───────────────────────────
+//
+// Standard ESP-Hosted WiFi gives us scan results via the
+// WIFI_EVENT_SCAN_DONE event. We pull the AP records, fan
+// them out through the long-standing _on_wifi callback (so
+// every app that subscribed to scan results in the bridge-era
+// code still receives them unchanged), then ask pm_radio_host
+// whether anyone still wants scanning; if so it re-kicks.
+//
+// AP records arrive in PSRAM-allocated records; we copy what
+// we need then free.
+static const char* _wifi_auth_name(wifi_auth_mode_t a) {
+    switch (a) {
+        case WIFI_AUTH_OPEN:            return "OPEN";
+        case WIFI_AUTH_WEP:             return "WEP";
+        case WIFI_AUTH_WPA_PSK:         return "WPA";
+        case WIFI_AUTH_WPA2_PSK:        return "WPA2";
+        case WIFI_AUTH_WPA_WPA2_PSK:    return "WPA/WPA2";
+        case WIFI_AUTH_WPA2_ENTERPRISE: return "WPA2-ENT";
+        case WIFI_AUTH_WPA3_PSK:        return "WPA3";
+        case WIFI_AUTH_WPA2_WPA3_PSK:   return "WPA2/WPA3";
+        default:                        return "?";
+    }
+}
+
+static void _wifi_event_handler(void* arg, esp_event_base_t base,
+                                 int32_t id, void* data) {
+    (void)arg; (void)data;
+    if (base != WIFI_EVENT) return;
+    if (id != WIFI_EVENT_SCAN_DONE) return;
+
+    uint16_t count = 0;
+    if (esp_wifi_scan_get_ap_num(&count) != ESP_OK || count == 0) {
+        pm_radio_host_on_wifi_scan_done();
+        return;
+    }
+    // Cap so we never allocate an unbounded chunk on a wild scan.
+    if (count > 64) count = 64;
+    wifi_ap_record_t* recs = (wifi_ap_record_t*)pm_psram_alloc(
+        sizeof(wifi_ap_record_t) * count);
+    if (!recs) {
+        pm_log_w(TAG, "PSRAM alloc for scan records failed");
+        pm_radio_host_on_wifi_scan_done();
+        return;
+    }
+    uint16_t got = count;
+    if (esp_wifi_scan_get_ap_records(&got, recs) != ESP_OK) {
+        pm_psram_free(recs);
+        pm_radio_host_on_wifi_scan_done();
+        return;
+    }
+    for (uint16_t i = 0; i < got; i++) {
+        const wifi_ap_record_t* r = &recs[i];
+        char mac[18];
+        snprintf(mac, sizeof(mac), "%02X:%02X:%02X:%02X:%02X:%02X",
+                 r->bssid[0], r->bssid[1], r->bssid[2],
+                 r->bssid[3], r->bssid[4], r->bssid[5]);
+        char ssid[33] = {0};
+        memcpy(ssid, r->ssid, sizeof(r->ssid));
+        ssid[sizeof(ssid) - 1] = 0;
+        _on_wifi(mac, ssid, r->rssi, r->primary,
+                  _wifi_auth_name(r->authmode), 0.0, 0.0);
+    }
+    pm_psram_free(recs);
+    pm_radio_host_on_wifi_scan_done();
+}
+
 static esp_err_t _init_c6_hosted_wifi(void) {
     esp_err_t err = esp_netif_init();
     if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
@@ -204,6 +272,16 @@ static esp_err_t _init_c6_hosted_wifi(void) {
         return err;
     }
 
+    // Subscribe to scan-done events so _wifi_event_handler
+    // fans out AP records to wifi / beacon / wardrive apps.
+    esp_err_t reg = esp_event_handler_register(
+        WIFI_EVENT, WIFI_EVENT_SCAN_DONE,
+        &_wifi_event_handler, NULL);
+    if (reg != ESP_OK) {
+        pm_log_w(TAG, "scan-done handler register: %s", esp_err_to_name(reg));
+    }
+
+    pm_radio_host_mark_wifi_ready(true);
     pm_log_i(TAG, "C6 ESP-Hosted WiFi STA ready");
     return ESP_OK;
 }
@@ -254,6 +332,7 @@ static void _bt_gap_cb(esp_gap_ble_cb_event_t event,
                 } else {
                     pm_log_i(TAG, "ESP-Hosted BLE scan active");
                     pm_c6_ble_active = true;
+                    pm_radio_host_mark_ble_scanning(true);
                 }
             } else {
                 pm_log_w(TAG, "BLE scan params failed: status=%d",
@@ -370,6 +449,7 @@ static esp_err_t _init_c6_hosted_bluetooth(void) {
         return err;
     }
 
+    pm_radio_host_mark_ble_ready(true);
     pm_log_i(TAG, "ESP-Hosted Bluedroid host ready");
     return ESP_OK;
 }
@@ -433,6 +513,16 @@ static void _service_bringup_task(void* arg) {
     pm_log_i(TAG, "Service: ESP-Hosted WiFi");
     esp_err_t hosted = _init_c6_hosted_wifi();
     pm_log_i(TAG, "ESP-Hosted WiFi: %s", esp_err_to_name(hosted));
+
+    if (hosted == ESP_OK) {
+        // Transitional: kick a continuous WiFi scan immediately so
+        // legacy apps (wardrive, beacon, wifi list) start seeing AP
+        // events without needing per-app subscribe wiring. Each app
+        // should eventually manage its own subscribe/unsubscribe
+        // around enter/exit and this one-time kick can be removed.
+        pm_radio_host_wifi_scan_subscribe();
+        pm_log_i(TAG, "WiFi scan auto-subscribed (transitional)");
+    }
 
     _service_bringup_delay(100);
     pm_log_i(TAG, "Service: SQLite init");
