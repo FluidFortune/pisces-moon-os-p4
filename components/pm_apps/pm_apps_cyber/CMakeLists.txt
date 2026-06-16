@@ -31,16 +31,19 @@ idf_component_register(
         "pm_app_secondary_scan.c"
         "pm_app_wardrive_inspect.c"
         "pm_app_tracker_scan.c"
+        "pm_app_ble_beacon.c"
     INCLUDE_DIRS "include"
     REQUIRES
         esp_wifi
         esp_event
+        bt
         pm_ui
         lvgl__lvgl
         pm_hal
         pm_app_iface
         pm_c6_bridge
         pm_sqlite
+        pm_tilemap
         pm_gps_state
         pm_gps_uart
         pm_cardputer_i2c

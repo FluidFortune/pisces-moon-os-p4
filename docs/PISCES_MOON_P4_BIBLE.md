@@ -611,6 +611,7 @@ pisces-moon-p4/
 │       ├── pm_apps_system/    SYSTEM (9)
 │       └── pm_apps_tools/     TOOLS (6)
 ├── docs/
+│   └── MESHTASTIC_WARDRIVE_MAPPING.md
 ├── partitions.csv
 ├── sdkconfig
 ├── sdkconfig.defaults

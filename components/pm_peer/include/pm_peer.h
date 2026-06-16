@@ -101,6 +101,7 @@ typedef enum {
     PM_PEER_KIND_BT_GAMEPAD  = 9,   // paired BLE HID gamepad
     PM_PEER_KIND_BT_KEYBOARD = 10,  // paired BLE HID keyboard
     PM_PEER_KIND_CARDPUTER_I2C = 11,// Cardputer ADV module over I2C
+    PM_PEER_KIND_C5_UART       = 12,// ESP32-C5 edge radio on P4 UART2
 } pm_peer_kind_t;
 
 // ── Capability names (strings used at runtime) ───────────────

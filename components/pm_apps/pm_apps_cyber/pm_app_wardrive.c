@@ -38,6 +38,7 @@
 #include "pm_peer.h"
 #include "pm_ui.h"
 #include "pm_sqlite.h"
+#include "pm_tilemap.h"
 #include "pm_gps_state.h"
 #include <string.h>
 #include <stdio.h>
@@ -171,6 +172,32 @@ static lv_obj_t* s_chip_db       = NULL;
 static lv_obj_t* s_rec_dot       = NULL;
 static lv_obj_t* s_btn_start     = NULL;
 static lv_obj_t* s_btn_stop      = NULL;
+
+// ── Map overlay (center panel) ──────────────────────────────
+// The center panel hosts a slippy-map tile renderer with the
+// GPS-status text floated on top. The map only shows imagery
+// when a tile pack exists at /sd/tiles; otherwise it's a dark
+// panel and the status text carries the information. We track
+// the rover's path as a rolling polyline and drop a marker at
+// the current fix.
+static pm_tilemap_t* s_map         = NULL;   // NULL until built / after destroy
+static lv_obj_t*     s_map_center  = NULL;   // the center container
+static bool          s_follow_gps  = true;   // recenter on each new fix
+static pm_tilemap_marker_t s_track[256];     // rolling path polyline
+static int           s_track_n     = 0;
+static pm_tilemap_marker_t s_pos_marker;     // single current-position dot
+static double        s_last_track_lat = 0.0;
+static double        s_last_track_lon = 0.0;
+static bool          s_have_last_track = false;
+// Default view: Oceanside, CA — sensible if a local tile pack
+// is present before the first GPS fix arrives.
+#define WD_MAP_DEFAULT_LAT   33.1959
+#define WD_MAP_DEFAULT_LON  -117.3795
+#define WD_MAP_DEFAULT_ZOOM  16
+// Only re-record a track point / recenter when the fix has moved
+// at least this far (~5 m), so a stationary rover doesn't thrash
+// the renderer or flood the track buffer.
+#define WD_MAP_MOVE_EPS_DEG  0.00005
 static lv_obj_t* s_net_rows[WD_MAX_UI_NETWORK_ROWS];
 static lv_obj_t* s_net_ssid_labels[WD_MAX_UI_NETWORK_ROWS];
 static lv_obj_t* s_net_meta_labels[WD_MAX_UI_NETWORK_ROWS];
@@ -696,6 +723,59 @@ static void _flush_scan_ui(void) {
     }
 }
 
+// ── Map: fold a new GPS fix into the center-panel renderer ──
+// Called from _render() under the LVGL lock. Cheap when the
+// rover is stationary: we only touch the tilemap when the fix
+// has actually moved (WD_MAP_MOVE_EPS_DEG), so a parked device
+// doesn't thrash the tile layout or flood the track buffer.
+static void _update_map_from_gps(const pm_gps_t* g) {
+    if (!s_map || !g || !g->valid) return;
+
+    bool moved = true;
+    if (s_have_last_track) {
+        double dlat = g->lat - s_last_track_lat;
+        double dlon = g->lng - s_last_track_lon;
+        if (dlat < 0) dlat = -dlat;
+        if (dlon < 0) dlon = -dlon;
+        moved = (dlat >= WD_MAP_MOVE_EPS_DEG || dlon >= WD_MAP_MOVE_EPS_DEG);
+    }
+    if (!moved) return;
+
+    s_last_track_lat  = g->lat;
+    s_last_track_lon  = g->lng;
+    s_have_last_track = true;
+
+    // Append to the rolling track polyline.
+    if (s_track_n < (int)(sizeof(s_track) / sizeof(s_track[0]))) {
+        s_track[s_track_n].lat       = g->lat;
+        s_track[s_track_n].lon       = g->lng;
+        s_track[s_track_n].color     = lv_color_hex(0x4dd9ff);
+        s_track[s_track_n].radius_px = 0;
+        s_track[s_track_n].label     = NULL;
+        s_track_n++;
+    } else {
+        memmove(&s_track[0], &s_track[1],
+                sizeof(s_track[0]) * (s_track_n - 1));
+        s_track[s_track_n - 1].lat = g->lat;
+        s_track[s_track_n - 1].lon = g->lng;
+    }
+
+    // Current-position marker (cyan dot).
+    s_pos_marker.lat       = g->lat;
+    s_pos_marker.lon       = g->lng;
+    s_pos_marker.color     = lv_color_hex(0x4dd9ff);
+    s_pos_marker.radius_px = 7;
+    s_pos_marker.label     = NULL;
+
+    // Recenter first (if following), then push overlays. Each of
+    // these relayouts; on a stationary rover none of this runs.
+    if (s_follow_gps) {
+        pm_tilemap_set_center(s_map, g->lat, g->lng);
+    }
+    pm_tilemap_set_markers(s_map, &s_pos_marker, 1);
+    pm_tilemap_set_track(s_map, s_track, s_track_n);
+}
+
 static void _render(void) {
     _ensure_session_label();
     if (s_lbl_session) {
@@ -799,6 +879,10 @@ static void _render(void) {
             _label_set_text_changed(s_center_canvas, s_last_center_text,
                                     sizeof(s_last_center_text), gps_buf);
         }
+
+        // Fold the same fix into the map renderer (no-op when the
+        // rover hasn't moved, or when tiles/map aren't present).
+        _update_map_from_gps(&g);
     }
 
     _flush_scan_ui();
@@ -816,8 +900,21 @@ static void __attribute__((unused)) _export_cb(lv_event_t* e) {
 
 static void _map_cb(lv_event_t* e) {
     (void)e;
-    pm_log_i("WD", "GPS/signal panel active; map renderer not implemented");
-    _queue_status_log("GPS", "INFO", "map renderer not implemented", 0xf4a820);
+    if (!s_map) return;
+    // Toggle follow mode; when (re)enabling, snap to the current
+    // fix immediately so the user sees the jump.
+    s_follow_gps = !s_follow_gps;
+    pm_gps_t g; pm_gps_state_get(&g);
+    if (g.valid) {
+        if (s_follow_gps) pm_tilemap_set_center(s_map, g.lat, g.lng);
+        _queue_status_log("MAP", "GPS",
+            s_follow_gps ? "follow on — centered on fix" : "follow off",
+            0xf4a820);
+    } else {
+        _queue_status_log("MAP", "GPS",
+            s_follow_gps ? "follow on (waiting for fix)" : "follow off",
+            0xffcc00);
+    }
 }
 static void _settings_cb(lv_event_t* e) { (void)e; pm_log_i("WD", "settings todo"); }
 static void _back_cb(lv_event_t* e)     { (void)e; pm_launcher_back_from_app(); }
@@ -1346,6 +1443,27 @@ void pm_app_wardrive_log(const char* timestamp, const char* type,
 }
 
 
+// ── Map control callbacks (center panel) ────────────────────
+// Resize the tilemap to the center panel's true pixel size once
+// the flex layout has computed it (and on any later change).
+static void _center_size_cb(lv_event_t* e) {
+    lv_obj_t* center = lv_event_get_target(e);
+    if (!s_map || !center) return;
+    int w = lv_obj_get_content_width(center);
+    int h = lv_obj_get_content_height(center);
+    if (w > 16 && h > 16) pm_tilemap_resize(s_map, w, h);
+}
+
+static void _zoom_in_cb(lv_event_t* e) {
+    (void)e;
+    if (s_map) pm_tilemap_set_zoom(s_map, pm_tilemap_get_zoom(s_map) + 1);
+}
+
+static void _zoom_out_cb(lv_event_t* e) {
+    (void)e;
+    if (s_map) pm_tilemap_set_zoom(s_map, pm_tilemap_get_zoom(s_map) - 1);
+}
+
 // ── P4 redesign color constants ──────────────────────────────
 #define WD_C_WIFI       lv_color_hex(0x00d4ff)
 #define WD_C_BLE        lv_color_hex(0x00ff88)
@@ -1527,25 +1645,79 @@ static void _build_screen(void) {
     lv_obj_set_scroll_dir(s_net_list, LV_DIR_VER);
     lv_obj_set_style_pad_all(s_net_list, 0, 0);
 
-    // 3b. CENTER PANEL — visualization (fills remaining width)
+    // 3b. CENTER PANEL — slippy-map renderer with GPS overlay
     lv_obj_t* center = lv_obj_create(content);
     lv_obj_remove_style_all(center);
     lv_obj_set_flex_grow(center, 1);
     lv_obj_set_height(center, LV_PCT(100));
     lv_obj_set_style_bg_color(center, WD_C_BG, 0);
     lv_obj_set_style_bg_opa(center, LV_OPA_COVER, 0);
+    lv_obj_clear_flag(center, LV_OBJ_FLAG_SCROLLABLE);
+    s_map_center = center;
 
-    // Center signal panel: GPS status now; map renderer can plug in later.
-    lv_obj_t* center_placeholder = lv_label_create(center);
-    lv_label_set_text(center_placeholder, WD_CENTER_TEXT);
-    lv_obj_set_style_text_font(center_placeholder,
-        WD_FONT_LABEL, 0);
-    lv_obj_set_style_text_color(center_placeholder,
-        lv_color_hex(0x1e4a62), 0);
-    lv_obj_set_style_text_align(center_placeholder,
-        LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_center(center_placeholder);
-    s_center_canvas = center_placeholder;
+    // Tile renderer fills the panel (drawn behind the overlays).
+    // Initial size is an estimate; _center_size_cb snaps it to the
+    // panel's real dimensions once flex layout settles. Tiles load
+    // from /sd/tiles; with no tile pack present the map is simply a
+    // dark panel and the GPS overlay carries the information.
+    int map_w0 = WD_LAYOUT_COMPACT ? 250 : 404;
+    int map_h0 = WD_LAYOUT_COMPACT ? 330 : 404;
+    s_map = pm_tilemap_create(center, map_w0, map_h0);
+    if (s_map) {
+        pm_tilemap_set_zoom(s_map, WD_MAP_DEFAULT_ZOOM);
+        pm_tilemap_set_center(s_map, WD_MAP_DEFAULT_LAT, WD_MAP_DEFAULT_LON);
+        lv_obj_set_pos(pm_tilemap_obj(s_map), 0, 0);
+    } else {
+        pm_log_w(TAG, "tilemap create failed — center panel text only");
+    }
+    lv_obj_add_event_cb(center, _center_size_cb, LV_EVENT_SIZE_CHANGED, NULL);
+
+    // GPS status overlay — floats top-left over the map. This is
+    // the same label the render path writes fix text into, so the
+    // existing GPS-text logic in _render() needs no change.
+    lv_obj_t* gps_overlay = lv_label_create(center);
+    lv_label_set_text(gps_overlay, WD_CENTER_TEXT);
+    lv_obj_set_style_text_font(gps_overlay, WD_FONT_LABEL, 0);
+    lv_obj_set_style_text_color(gps_overlay, lv_color_hex(0xc8e8f5), 0);
+    lv_obj_set_style_bg_color(gps_overlay, WD_C_BG, 0);
+    lv_obj_set_style_bg_opa(gps_overlay, 170, 0);   // semi-transparent
+    lv_obj_set_style_pad_all(gps_overlay, 6, 0);
+    lv_obj_set_style_radius(gps_overlay, 4, 0);
+    lv_obj_set_style_border_color(gps_overlay, WD_C_BORDER, 0);
+    lv_obj_set_style_border_width(gps_overlay, 1, 0);
+    lv_obj_align(gps_overlay, LV_ALIGN_TOP_LEFT, 8, 8);
+    s_center_canvas = gps_overlay;
+
+    // Zoom controls — float top-right over the map.
+    lv_obj_t* zoom_in = lv_btn_create(center);
+    lv_obj_remove_style_all(zoom_in);
+    lv_obj_set_size(zoom_in, 30, 30);
+    lv_obj_set_style_bg_color(zoom_in, WD_C_BG2, 0);
+    lv_obj_set_style_bg_opa(zoom_in, 200, 0);
+    lv_obj_set_style_border_color(zoom_in, WD_C_BORDER, 0);
+    lv_obj_set_style_border_width(zoom_in, 1, 0);
+    lv_obj_set_style_radius(zoom_in, 4, 0);
+    lv_obj_align(zoom_in, LV_ALIGN_TOP_RIGHT, -8, 8);
+    lv_obj_add_event_cb(zoom_in, _zoom_in_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_t* zi_lbl = lv_label_create(zoom_in);
+    lv_label_set_text(zi_lbl, LV_SYMBOL_PLUS);
+    lv_obj_set_style_text_color(zi_lbl, lv_color_hex(0xc8e8f5), 0);
+    lv_obj_center(zi_lbl);
+
+    lv_obj_t* zoom_out = lv_btn_create(center);
+    lv_obj_remove_style_all(zoom_out);
+    lv_obj_set_size(zoom_out, 30, 30);
+    lv_obj_set_style_bg_color(zoom_out, WD_C_BG2, 0);
+    lv_obj_set_style_bg_opa(zoom_out, 200, 0);
+    lv_obj_set_style_border_color(zoom_out, WD_C_BORDER, 0);
+    lv_obj_set_style_border_width(zoom_out, 1, 0);
+    lv_obj_set_style_radius(zoom_out, 4, 0);
+    lv_obj_align(zoom_out, LV_ALIGN_TOP_RIGHT, -8, 44);
+    lv_obj_add_event_cb(zoom_out, _zoom_out_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_t* zo_lbl = lv_label_create(zoom_out);
+    lv_label_set_text(zo_lbl, LV_SYMBOL_MINUS);
+    lv_obj_set_style_text_color(zo_lbl, lv_color_hex(0xc8e8f5), 0);
+    lv_obj_center(zo_lbl);
 
     // 3c. RIGHT PANEL — live log
     lv_obj_t* right = lv_obj_create(content);
@@ -1661,6 +1833,14 @@ static void _deinit(void) {
         pm_wifi_scan_give(WD_WIFI_SCAN_OWNER);
     }
     _stop_ble_source();
+    if (s_map) {
+        pm_tilemap_destroy(s_map);   // frees tile PSRAM buffers + LVGL objs
+        s_map = NULL;
+        s_map_center = NULL;
+        s_center_canvas = NULL;
+        s_track_n = 0;
+        s_have_last_track = false;
+    }
     if (s_db) { pm_db_close(s_db); s_db = NULL; }
 }
 

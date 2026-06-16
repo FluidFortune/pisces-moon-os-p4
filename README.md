@@ -187,6 +187,7 @@ pisces-moon-p4/                P4 firmware (this repo)
 ├── LICENSE
 └── docs/
     ├── ARCHITECTURE.md
+    ├── MESHTASTIC_WARDRIVE_MAPPING.md
     ├── PiscesMoon_P4_BringUp_Guide.docx
     └── PiscesMoon_OS_Architecture_Reference.docx
 

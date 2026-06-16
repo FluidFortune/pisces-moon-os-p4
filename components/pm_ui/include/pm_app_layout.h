@@ -134,6 +134,52 @@ lv_obj_t* pm_app_layout_action(pm_app_layout_t* L,
                                  const char* label, lv_color_t color,
                                  lv_event_cb_t cb);
 
+// ── HTML-style component helpers ────────────────────────────
+//
+// These build the recurring patterns from the pisces-moon-linux
+// HTML mockups:
+//
+//   - pm-sh        : sticky section header above lists
+//   - pm-item      : list row with primary line + meta + selection state
+//   - chart-section: bordered group with Orbitron-gold title
+//   - color-coded  : stat values tinted green/gold/red for at-a-glance state
+//
+// They're optional. Apps that need a custom row layout can still
+// build LVGL widgets directly; these just save boilerplate.
+
+// Section header strip ─ Orbitron-style label with uppercase
+// letter-spacing, optional accent sub-text on the right.
+//   parent      : where to insert (usually a pane)
+//   text        : primary label, e.g. "DEVICES"
+//   accent_txt  : optional sub-string in accent color, e.g. "24" for count
+//                  Pass NULL for no sub-text.
+lv_obj_t* pm_app_layout_section_header(lv_obj_t* parent,
+                                         const char* text,
+                                         const char* accent_txt);
+
+// Bordered chart section ─ used by viz-heavy panes that stack
+// multiple visualisations. Title is Orbitron-gold uppercase.
+// Returns a content container the caller fills with charts/widgets.
+lv_obj_t* pm_app_layout_chart_section(lv_obj_t* parent,
+                                        const char* title);
+
+// Item row ─ scrollable-list row pattern.
+//   parent      : a flex-column scroll container
+//   primary     : main text (white, larger)
+//   meta        : optional grey meta line below (NULL for none)
+//   selected    : true to render selection accent (left border + tinted bg)
+// Returns the row; caller can lv_obj_add_event_cb LV_EVENT_CLICKED.
+lv_obj_t* pm_app_layout_item_row(lv_obj_t* parent,
+                                   const char* primary,
+                                   const char* meta,
+                                   bool selected);
+
+// Color a stat's value label after creation. Use the standard
+// PM_LAYOUT_COL_* tokens (OK / GOLD / ERR / ACCENT / etc).
+static inline void pm_app_layout_stat_color(lv_obj_t* value_lbl, lv_color_t c) {
+    if (value_lbl) lv_obj_set_style_text_color(value_lbl, c, 0);
+}
+
 #ifdef __cplusplus
 }
 #endif

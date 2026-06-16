@@ -10,8 +10,10 @@
 //  pm_apps_register.c — Central app registration
 //
 //  Phase 17 — S3 parity pass.
-//  SYSTEM (9) + TOOLS (9) + INTEL (8) + GAMES (19) +
-//  MEDIA (3) + COMMS (7) + CYBER (23) = 78 apps.
+//  SYSTEM (8) + TOOLS (9) + INTEL (8) + GAMES (19) +
+//  MEDIA (3) + COMMS (7) + CYBER (24) = 78 apps.
+//  (c6_flasher unlinked — stale OTA path for deprecated C6 firmware.)
+//  Phase 19 add: pm_app_ble_beacon (BLE spotter split from pm_app_beacon WiFi AP discovery).
 //
 //  12 of the GAMES entries (tetris, pole_position, mario_bros,
 //  breakout, 2048, minesweeper, connect4, simon, solitaire,
@@ -32,7 +34,7 @@
 #include "pm_app_gamepad.h"
 #include "pm_app_bridge.h"
 #include "pm_app_micropython.h"
-#include "pm_app_c6_flasher.h"
+// #include "pm_app_c6_flasher.h"  // Unlinked Phase 17: deprecated C6 firmware OTA path. File preserved on disk.
 
 // TOOLS
 #include "pm_app_notepad.h"
@@ -102,6 +104,7 @@
 // Phase 17 additions (S3 parity)
 #include "pm_app_wardrive_inspect.h"
 #include "pm_app_tracker_scan.h"
+#include "pm_app_ble_beacon.h"
 #include "pm_app_ereader.h"
 #include "pm_app_contacts.h"
 #include "pm_app_tetris.h"
@@ -125,7 +128,7 @@
 void main_register_apps(void) {
     pm_log_i("PM_APPS", "registering apps...");
 
-    // SYSTEM (9)
+    // SYSTEM (9 → 8: c6_flasher unlinked)
     REGISTER_IF(pm_app_files());
     REGISTER_IF(pm_app_filemgr());
     REGISTER_IF(pm_app_about());
@@ -134,7 +137,7 @@ void main_register_apps(void) {
     REGISTER_IF(pm_app_elf_browser());
     REGISTER_IF(pm_app_gamepad());
     REGISTER_IF(pm_app_bridge());
-    REGISTER_IF(pm_app_c6_flasher());
+    // REGISTER_IF(pm_app_c6_flasher());  // Unlinked Phase 17: deprecated C6 firmware OTA path.
 
     // TOOLS (6 + 1 Phase 15 + 2 Phase 17)
     REGISTER_IF(pm_app_notepad());
@@ -217,6 +220,7 @@ void main_register_apps(void) {
     REGISTER_IF(pm_app_secondary_scan());   // Phase 15
     REGISTER_IF(pm_app_wardrive_inspect()); // Phase 17 (S3 parity)
     REGISTER_IF(pm_app_tracker_scan());     // Phase 17 (S3 parity)
+    REGISTER_IF(pm_app_ble_beacon());        // Phase 19 (BLE spotter split from WiFi beacon)
 
     pm_log_i("PM_APPS", "app registration complete: %d apps", pm_app_count());
 }

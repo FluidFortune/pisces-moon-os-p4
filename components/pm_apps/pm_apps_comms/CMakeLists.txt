@@ -19,6 +19,7 @@ idf_component_register(
         pm_ui
         lvgl__lvgl
         pm_radio
+        pm_radio_host
         pm_lora
         pm_hal
         pm_app_iface

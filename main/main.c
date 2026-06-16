@@ -92,6 +92,7 @@ static void _boot_visual_probe(bool on) {
 #include "pm_app_wardrive.h"
 #include "pm_app_bt_radar.h"
 #include "pm_app_beacon.h"
+#include "pm_app_ble_beacon.h"
 #include "pm_app_pkt_sniffer.h"
 #include "pm_app_probe_intel.h"
 
@@ -378,6 +379,12 @@ static void _bt_gap_cb(esp_gap_ble_cb_event_t event,
             _on_ble(mac, name_buf, param->scan_rst.rssi, 0.0, 0.0,
                     _ble_addr_type_name(param->scan_rst.ble_addr_type),
                     mfg_buf);
+
+            // Beacon spotter gets raw mfg bytes so it can parse
+            // iBeacon / AltBeacon UUID payloads in full.
+            pm_app_ble_beacon_on_adv(mac, name_buf,
+                                       param->scan_rst.rssi,
+                                       mfg, mfg_len);
             break;
         }
 

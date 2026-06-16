@@ -15,14 +15,14 @@ idf_component_register(
         "pm_app_gamepad.c"
         "pm_app_bridge.c"
         "pm_app_micropython.c"
-        "pm_app_c6_flasher.c"
+        # "pm_app_c6_flasher.c"  # Unlinked Phase 17: deprecated C6 firmware OTA. Preserved on disk.
     INCLUDE_DIRS "include"
     REQUIRES
         pm_ui
         lvgl__lvgl
         pm_hal
         pm_c6_bridge
-        pm_c6_programmer
+        # pm_c6_programmer  # Unlinked Phase 17: deprecated C6 firmware OTA driver.
         pm_app_iface
         pm_input
         nvs_flash

@@ -596,6 +596,11 @@ metadata    (key TEXT PK, value TEXT)
 
 If SQLite init fails (e.g. SD missing or full), the wardrive falls back to a per-session CSV file in the same directory. The CSV-fallback flag is exposed in the wardrive UI.
 
+LoRa/Meshtastic wardrive mapping is captured as a proposed passive-first
+extension in `docs/MESHTASTIC_WARDRIVE_MAPPING.md`. The core rule is to
+log raw packet sightings with GPS/RSSI/SNR and keep packet origin
+separate from the physical relay/transmitter candidate.
+
 ### `pm_nosql` — simple key-value store
 
 Lightweight JSON-backed store for app preferences and small persistent state. Each "namespace" is a file under `/sd/.config/<namespace>.json`. Used for things like notepad's last-opened file, audio player's playlist position, hash tool's recent inputs.
