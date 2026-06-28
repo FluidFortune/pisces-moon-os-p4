@@ -51,6 +51,15 @@ void pm_app_wardrive_on_probe(const char* mac, const char* ssid,
 void pm_app_wardrive_on_pkt (const char* frame_type, const char* src,
                               int rssi);
 
+// LoRa intake. Buf is the raw radio frame as delivered by pm_lora
+// (post-FEC, pre-protocol-parse). The wardrive logger attempts a
+// best-effort Meshtastic header parse; frames that aren't
+// recognizable still get logged with their RF metadata so the map
+// shows "something out there" markers.
+void pm_app_wardrive_on_lora(const uint8_t* buf, size_t len,
+                              int rssi, float snr,
+                              uint32_t freq_khz, const char* preset);
+
 void pm_app_wardrive_use_csv_fallback(bool on);
 bool pm_app_wardrive_export_csv(void);     // writes current session to CSV
 

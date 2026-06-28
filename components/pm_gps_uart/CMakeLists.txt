@@ -10,6 +10,7 @@ idf_component_register(
     INCLUDE_DIRS "include"
     REQUIRES
         pm_hal
+        pm_board
         pm_gps_state
         driver
         esp_driver_uart

@@ -1,0 +1,448 @@
+Command: ninja all
+[1/273] Linking C static library esp-idf/pm_radio/libpm_radio.a
+[2/273] Linking C static library esp-idf/spiffs/libspiffs.a
+[3/273] Building C object esp-idf/pm_peer/CMakeFiles/__idf_pm_peer.dir/pm_peer.c.obj
+FAILED: esp-idf/pm_peer/CMakeFiles/__idf_pm_peer.dir/pm_peer.c.obj 
+/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-gcc -DESP_PLATFORM -DIDF_VER=\"v5.5.3\" -DPM_BOARD_PROFILE_LILYGO_TDISPLAY_P4=1 -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/build-tdisplay/config -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_peer/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/newlib/platform_include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/config/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/config/include/freertos -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/config/riscv/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/FreeRTOS-Kernel/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/FreeRTOS-Kernel/portable/riscv/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/FreeRTOS-Kernel/portable/riscv/include/freertos -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/esp_additions/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/include/soc -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/include/soc/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/dma/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/ldo/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/debug_probe/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/mspi_timing_tuning/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/mspi_timing_tuning/tuning_scheme_impl/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/power_supply/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/port/esp32p4/. -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/port/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/port/esp32p4/private_include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/mspi_timing_tuning/port/esp32p4/. -I/Users/eric/.espressif/v5.5.3/esp-idf/components/heap/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/heap/tlsf -I/Users/eric/.espressif/v5.5.3/esp-idf/components/log/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/esp32p4/register/hw_ver1 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/platform_port/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/esp32p4/include/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_common/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/port/soc -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/port/include/riscv -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/port/include/private -I/Users/eric/.espressif/v5.5.3/esp-idf/components/riscv/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/include/apps -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/include/apps/sntp -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/lwip/src/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/freertos/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/esp32xx/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/esp32xx/include/arch -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/esp32xx/include/sys -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_board/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_hal/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/deprecated -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/i2c/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/touch_sensor/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/twai/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_pm/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_ringbuf/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_gpio/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_pcnt/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_gptimer/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_spi/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_mcpwm/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_ana_cmpr/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_i2s/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdmmc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/sdmmc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdspi/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdio/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_dac/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_rmt/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_tsens/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdm/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_i2c/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_uart/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/vfs/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_ledc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_parlio/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_usb_serial_jtag/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_twai/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/fatfs/diskio -I/Users/eric/.espressif/v5.5.3/esp-idf/components/fatfs/src -I/Users/eric/.espressif/v5.5.3/esp-idf/components/fatfs/vfs -I/Users/eric/.espressif/v5.5.3/esp-idf/components/wear_levelling/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_partition/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_timer/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_c6_bridge/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_radio_host/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/managed_components/espressif__esp_wifi_remote/idf_v5.5/include/injected -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_wifi/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_wifi/wifi_apps/nan_app/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_event/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_netif/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/managed_components/espressif__esp_wifi_remote/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/managed_components/espressif__esp_wifi_remote/idf_v5.5/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/osi/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/api/include/api -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/btc/profile/esp/blufi/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/btc/profile/esp/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/hci_log/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/ble_log/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/host/bluedroid/api/include/api -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/tinycrypt/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/bt/common/tinycrypt/port -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_radio/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_radio -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_camera/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_cardputer_i2c/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_bsp/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/interface -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/rgb/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/dsi/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_gps_state/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_input/include -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -fdiagnostics-color=always -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-error=extra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -nostartfiles -Og -fno-shrink-wrap -fmacro-prefix-map=/Users/eric/Documents/GitHub/pisces-moon-os-p4=. -fmacro-prefix-map=/Users/eric/.espressif/v5.5.3/esp-idf=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -march=rv32imafc_zicsr_zifencei_xesppie -std=gnu17 -Wno-old-style-declaration -Wno-error=format= -Wno-error=format-truncation= -Wno-error=misleading-indentation -Wno-error=maybe-uninitialized -Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=int-conversion -Wno-error=discarded-qualifiers -MD -MT esp-idf/pm_peer/CMakeFiles/__idf_pm_peer.dir/pm_peer.c.obj -MF esp-idf/pm_peer/CMakeFiles/__idf_pm_peer.dir/pm_peer.c.obj.d -o esp-idf/pm_peer/CMakeFiles/__idf_pm_peer.dir/pm_peer.c.obj -c /Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_peer/pm_peer.c
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_peer/pm_peer.c: In function '_kind_name':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_peer/pm_peer.c:183:5: error: enumeration value 'PM_PEER_KIND_C5_UART' not handled in switch [-Werror=switch]
+  183 |     switch (k) {
+      |     ^~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_peer/pm_peer.c: At top level:
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_peer/pm_peer.c:85:20: warning: 'CAPS_TBEAM' defined but not used [-Wunused-variable]
+   85 | static const char* CAPS_TBEAM[] = {
+      |                    ^~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_peer/pm_peer.c:73:20: warning: 'CAPS_C6_WITH_NFC' defined but not used [-Wunused-variable]
+   73 | static const char* CAPS_C6_WITH_NFC[] = {
+      |                    ^~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+[4/273] Building C object esp-idf/pm_camera/CMakeFiles/__idf_pm_camera.dir/pm_camera.c.obj
+[5/273] Building C object esp-idf/sqlite3/CMakeFiles/__idf_sqlite3.dir/shox96_0_2.c.obj
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/shox96_0_2.c: In function 'shox96_0_2_compress':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/shox96_0_2.c:273:39: warning: array subscript has type 'char' [-Wchar-subscripts]
+  273 |         ol = append_bits(out, ol, c_95[c_in], l_95[c_in], state);
+      |                                       ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/shox96_0_2.c:273:51: warning: array subscript has type 'char' [-Wchar-subscripts]
+  273 |         ol = append_bits(out, ol, c_95[c_in], l_95[c_in], state);
+      |                                                   ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/shox96_0_2.c: In function 'shox96_0_2_decompress':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/shox96_0_2.c:443:18: warning: 'c' may be used uninitialized [-Wmaybe-uninitialized]
+  443 |     if (c >= 'a' && c <= 'z') {
+      |         ~~~~~~~~~^~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/shox96_0_2.c:385:10: note: 'c' was declared here
+  385 |     char c;
+      |          ^
+[6/273] Building C object esp-idf/sqlite3/CMakeFiles/__idf_sqlite3.dir/esp32.c.obj
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:128:1: warning: missing initializer for field 'xCurrentTimeInt64' of 'sqlite3_vfs' [-Wmissing-field-initializers]
+  128 | };
+      | ^
+In file included from /Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:16:
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/include/sqlite3.h:1352:9: note: 'xCurrentTimeInt64' declared here
+ 1352 |   int (*xCurrentTimeInt64)(sqlite3_vfs*, sqlite3_int64*);
+      |         ^~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:144:1: warning: missing initializer for field 'xShmMap' of 'sqlite3_io_methods' [-Wmissing-field-initializers]
+  144 | };
+      | ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/include/sqlite3.h:789:9: note: 'xShmMap' declared here
+  789 |   int (*xShmMap)(sqlite3_file*, int iPg, int pgsz, int, void volatile**);
+      |         ^~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:160:1: warning: missing initializer for field 'xShmMap' of 'sqlite3_io_methods' [-Wmissing-field-initializers]
+  160 | };
+      | ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/include/sqlite3.h:789:9: note: 'xShmMap' declared here
+  789 |   int (*xShmMap)(sqlite3_file*, int iPg, int pgsz, int, void volatile**);
+      |         ^~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32mem_Sync':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:342:21: warning: unused variable 'file' [-Wunused-variable]
+  342 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_Open':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:397:16: warning: ordered comparison of pointer with integer zero [-Wextra]
+  397 |     if ( p->fd <= 0 ) {
+      |                ^~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:358:13: warning: unused variable 'rc' [-Wunused-variable]
+  358 |         int rc;
+      |             ^~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_Read':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:434:27: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+  434 |         } else if ( nRead >= 0 ) {
+      |                           ^~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_Truncate':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:469:21: warning: unused variable 'file' [-Wunused-variable]
+  469 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_Lock':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:548:21: warning: unused variable 'file' [-Wunused-variable]
+  548 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_Unlock':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:556:21: warning: unused variable 'file' [-Wunused-variable]
+  556 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_CheckReservedLock':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:564:21: warning: unused variable 'file' [-Wunused-variable]
+  564 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_FileControl':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:574:21: warning: unused variable 'file' [-Wunused-variable]
+  574 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_SectorSize':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:582:21: warning: unused variable 'file' [-Wunused-variable]
+  582 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'esp32_DeviceCharacteristics':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:590:21: warning: unused variable 'file' [-Wunused-variable]
+  590 |         esp32_file *file = (esp32_file*) id;
+      |                     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'shox96_0_2d':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:673:27: warning: unused variable 'rc' [-Wunused-variable]
+  673 |   unsigned int nIn, nOut, rc;
+      |                           ^~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c: In function 'sqlite3_os_init':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/esp32.c:710:26: warning: cast between incompatible function types from 'int (*)(sqlite3 *, const char **, const struct sqlite3_api_routines *)' to 'void (*)()' [-Wcast-function-type]
+  710 |   sqlite3_auto_extension((void (*)())registerShox96_0_2);
+      |                          ^
+[7/273] Building C object esp-idf/json/CMakeFiles/__idf_json.dir/cJSON/cJSON.c.obj
+[8/273] Building C object esp-idf/protobuf-c/CMakeFiles/__idf_protobuf-c.dir/protobuf-c/protobuf-c/protobuf-c.c.obj
+[9/273] Building CXX object esp-idf/pm_lora/CMakeFiles/__idf_pm_lora.dir/pm_lora.cpp.obj
+FAILED: esp-idf/pm_lora/CMakeFiles/__idf_pm_lora.dir/pm_lora.cpp.obj 
+/Users/eric/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20251107/riscv32-esp-elf/bin/riscv32-esp-elf-g++ -DESP_PLATFORM -DIDF_VER=\"v5.5.3\" -DPM_BOARD_PROFILE_LILYGO_TDISPLAY_P4=1 -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/build-tdisplay/config -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora -I/Users/eric/.espressif/v5.5.3/esp-idf/components/newlib/platform_include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/config/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/config/include/freertos -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/config/riscv/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/FreeRTOS-Kernel/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/FreeRTOS-Kernel/portable/riscv/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/FreeRTOS-Kernel/portable/riscv/include/freertos -I/Users/eric/.espressif/v5.5.3/esp-idf/components/freertos/esp_additions/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/include/soc -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/include/soc/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/dma/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/ldo/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/debug_probe/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/mspi_timing_tuning/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/mspi_timing_tuning/tuning_scheme_impl/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/power_supply/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/port/esp32p4/. -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/port/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/port/esp32p4/private_include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_hw_support/mspi_timing_tuning/port/esp32p4/. -I/Users/eric/.espressif/v5.5.3/esp-idf/components/heap/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/heap/tlsf -I/Users/eric/.espressif/v5.5.3/esp-idf/components/log/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/soc/esp32p4/register/hw_ver1 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/platform_port/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/esp32p4/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/esp32p4/include/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_rom/esp32p4 -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_common/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/port/soc -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/port/include/riscv -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_system/port/include/private -I/Users/eric/.espressif/v5.5.3/esp-idf/components/riscv/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/include/apps -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/include/apps/sntp -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/lwip/src/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/freertos/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/esp32xx/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/esp32xx/include/arch -I/Users/eric/.espressif/v5.5.3/esp-idf/components/lwip/port/esp32xx/include/sys -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_hal/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/deprecated -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/i2c/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/touch_sensor/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/driver/twai/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_pm/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_ringbuf/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_gpio/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_pcnt/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_gptimer/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_spi/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_mcpwm/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_ana_cmpr/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_i2s/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdmmc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/sdmmc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdspi/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdio/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_dac/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_rmt/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_tsens/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_sdm/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_i2c/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_uart/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/vfs/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_ledc/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_parlio/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_usb_serial_jtag/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_driver_twai/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/fatfs/diskio -I/Users/eric/.espressif/v5.5.3/esp-idf/components/fatfs/src -I/Users/eric/.espressif/v5.5.3/esp-idf/components/fatfs/vfs -I/Users/eric/.espressif/v5.5.3/esp-idf/components/wear_levelling/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_partition/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_timer/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_board/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/managed_components/jgromes__radiolib -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/managed_components/jgromes__radiolib/src -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_radio/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_radio -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_xl9535/include -I/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_bsp/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/interface -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/rgb/include -I/Users/eric/.espressif/v5.5.3/esp-idf/components/esp_lcd/dsi/include -march=rv32imafc_zicsr_zifencei_xesploop_xespv -mabi=ilp32f  -fdiagnostics-color=always -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-error=extra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -nostartfiles -Og -fno-shrink-wrap -fmacro-prefix-map=/Users/eric/Documents/GitHub/pisces-moon-os-p4=. -fmacro-prefix-map=/Users/eric/.espressif/v5.5.3/esp-idf=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -march=rv32imafc_zicsr_zifencei_xesppie -std=gnu++2b -fno-exceptions -fno-rtti -fuse-cxa-atexit -Wno-error=format= -Wno-error=format-truncation= -Wno-error=misleading-indentation -Wno-error=maybe-uninitialized -Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=int-conversion -Wno-error=discarded-qualifiers -MD -MT esp-idf/pm_lora/CMakeFiles/__idf_pm_lora.dir/pm_lora.cpp.obj -MF esp-idf/pm_lora/CMakeFiles/__idf_pm_lora.dir/pm_lora.cpp.obj.d -o esp-idf/pm_lora/CMakeFiles/__idf_pm_lora.dir/pm_lora.cpp.obj -c /Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/pm_lora.cpp
+In file included from /Users/eric/.espressif/v5.5.3/esp-idf/components/hal/include/hal/gpio_hal.h:19,
+                 from /Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:12,
+                 from /Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/pm_lora.cpp:46:
+/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/esp32p4/include/hal/gpio_ll.h: In function 'void gpio_ll_matrix_out_default(gpio_dev_t*, uint32_t)':
+/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/esp32p4/include/hal/gpio_ll.h:388:5: warning: missing initializer for member 'gpio_func_out_sel_cfg_reg_t::<unnamed struct>::out_inv_sel' [-Wmissing-field-initializers]
+  388 |     };
+      |     ^
+/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/esp32p4/include/hal/gpio_ll.h:388:5: warning: missing initializer for member 'gpio_func_out_sel_cfg_reg_t::<unnamed struct>::oen_sel' [-Wmissing-field-initializers]
+/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/esp32p4/include/hal/gpio_ll.h:388:5: warning: missing initializer for member 'gpio_func_out_sel_cfg_reg_t::<unnamed struct>::oen_inv_sel' [-Wmissing-field-initializers]
+/Users/eric/.espressif/v5.5.3/esp-idf/components/hal/esp32p4/include/hal/gpio_ll.h:388:5: warning: missing initializer for member 'gpio_func_out_sel_cfg_reg_t::<unnamed struct>::reserved_12' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h: In member function 'virtual void EspHal::pinMode(uint32_t, uint32_t)':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:95:7: warning: missing initializer for member 'gpio_config_t::hys_ctrl_mode' [-Wmissing-field-initializers]
+   95 |       };
+      |       ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h: In member function 'virtual void EspHal::spiBegin()':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::data4_io_num' [-Wmissing-field-initializers]
+  160 |         };
+      |         ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::data5_io_num' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::data6_io_num' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::data7_io_num' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::data_io_default_level' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::flags' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::isr_cpu_id' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:160:9: warning: missing initializer for member 'spi_bus_config_t::intr_flags' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::command_bits' [-Wmissing-field-initializers]
+  175 |         };
+      |         ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::address_bits' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::dummy_bits' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::clock_source' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::duty_cycle_pos' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::cs_ena_pretrans' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::cs_ena_posttrans' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::input_delay_ns' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::sample_point' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::pre_cb' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/EspHal.h:175:9: warning: missing initializer for member 'spi_device_interface_config_t::post_cb' [-Wmissing-field-initializers]
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/pm_lora.cpp: In function 'pm_lora_status_t pm_lora_init()':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/pm_lora.cpp:179:27: error: 'PM_XL9535_SX1262_RST' was not declared in this scope
+  179 |     pm_xl9535_pulse_reset(PM_XL9535_SX1262_RST, 20);
+      |                           ^~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/pm_lora/pm_lora.cpp:182:19: error: 'PM_XL9535_SKY13453_VCTL' was not declared in this scope
+  182 |     pm_xl9535_set(PM_XL9535_SKY13453_VCTL, false);
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~
+[10/273] Building C object esp-idf/sqlite3/CMakeFiles/__idf_sqlite3.dir/sqlite3.c.obj
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'strftimeFunc':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:13957:27: warning: cast between incompatible function types from 'int (*)(void *)' to 'void (*)(void *)' [-Wcast-function-type]
+13957 | #define SQLITE_DYNAMIC   ((sqlite3_destructor_type)sqlite3MallocSize)
+      |                           ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:21749:52: note: in expansion of macro 'SQLITE_DYNAMIC'
+21749 |                       z==zBuf ? SQLITE_TRANSIENT : SQLITE_DYNAMIC);
+      |                                                    ^~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3ErrorWithMsg':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:13957:27: warning: cast between incompatible function types from 'int (*)(void *)' to 'void (*)(void *)' [-Wcast-function-type]
+13957 | #define SQLITE_DYNAMIC   ((sqlite3_destructor_type)sqlite3MallocSize)
+      |                           ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:30000:54: note: in expansion of macro 'SQLITE_DYNAMIC'
+30000 |     sqlite3ValueSetStr(db->pErr, -1, z, SQLITE_UTF8, SQLITE_DYNAMIC);
+      |                                                      ^~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'balance_nonroot':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:70620:11: warning: unused variable 'key' [-Wunused-variable]
+70620 |       u32 key = get4byte(&apNew[i]->aData[8]);
+      |           ^~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'balance':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:70741:6: warning: unused variable 'aBalanceQuickSpace' [-Wunused-variable]
+70741 |   u8 aBalanceQuickSpace[13];
+      |      ^~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3VdbeMemSetStr':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:13957:27: warning: cast between incompatible function types from 'int (*)(void *)' to 'void (*)(void *)' [-Wcast-function-type]
+13957 | #define SQLITE_DYNAMIC   ((sqlite3_destructor_type)sqlite3MallocSize)
+      |                           ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:74734:19: note: in expansion of macro 'SQLITE_DYNAMIC'
+74734 |   }else if( xDel==SQLITE_DYNAMIC ){
+      |                   ^~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'valueFromExpr':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:13957:27: warning: cast between incompatible function types from 'int (*)(void *)' to 'void (*)(void *)' [-Wcast-function-type]
+13957 | #define SQLITE_DYNAMIC   ((sqlite3_destructor_type)sqlite3MallocSize)
+      |                           ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:75139:55: note: in expansion of macro 'SQLITE_DYNAMIC'
+75139 |       sqlite3ValueSetStr(pVal, -1, zVal, SQLITE_UTF8, SQLITE_DYNAMIC);
+      |                                                       ^~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3VdbeHalt':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:20225:34: warning: statement with no effect [-Wunused-value]
+20225 | # define sqlite3VdbeCheckFk(p,i) 0
+      |                                  ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:78355:7: note: in expansion of macro 'sqlite3VdbeCheckFk'
+78355 |       sqlite3VdbeCheckFk(p, 0);
+      |       ^~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3AlterFinishAddColumn':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:101398:10: warning: variable 'pTab' set but not used [-Wunused-but-set-variable]
+101398 |   Table *pTab;              /* Table being altered */
+       |          ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'printfFunc':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:13957:27: warning: cast between incompatible function types from 'int (*)(void *)' to 'void (*)(void *)' [-Wcast-function-type]
+13957 | #define SQLITE_DYNAMIC   ((sqlite3_destructor_type)sqlite3MallocSize)
+      |                           ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:111863:25: note: in expansion of macro 'SQLITE_DYNAMIC'
+111863 |                         SQLITE_DYNAMIC);
+       |                         ^~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3Insert':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116145:1: warning: label 'insert_end' defined but not used [-Wunused-label]
+116145 | insert_end:
+       | ^~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'generateColumnNames':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:13957:27: warning: cast between incompatible function types from 'int (*)(void *)' to 'void (*)(void *)' [-Wcast-function-type]
+13957 | #define SQLITE_DYNAMIC   ((sqlite3_destructor_type)sqlite3MallocSize)
+      |                           ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:125012:58: note: in expansion of macro 'SQLITE_DYNAMIC'
+125012 |         sqlite3VdbeSetColName(v, i, COLNAME_NAME, zName, SQLITE_DYNAMIC);
+       |                                                          ^~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:13957:27: warning: cast between incompatible function types from 'int (*)(void *)' to 'void (*)(void *)' [-Wcast-function-type]
+13957 | #define SQLITE_DYNAMIC   ((sqlite3_destructor_type)sqlite3MallocSize)
+      |                           ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:125019:52: note: in expansion of macro 'SQLITE_DYNAMIC'
+125019 |       sqlite3VdbeSetColName(v, i, COLNAME_NAME, z, SQLITE_DYNAMIC);
+       |                                                    ^~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'flattenSubquery':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:1456:29: warning: statement with no effect [-Wunused-value]
+ 1456 | #define SQLITE_OK           0   /* Successful result */
+      |                             ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:18824:41: note: in expansion of macro 'SQLITE_OK'
+18824 | # define sqlite3AuthCheck(a,b,c,d,e)    SQLITE_OK
+      |                                         ^~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:126949:17: note: in expansion of macro 'sqlite3AuthCheck'
+126949 |   TESTONLY(i =) sqlite3AuthCheck(pParse, SQLITE_SELECT, 0, 0, 0);
+       |                 ^~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3Select':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:128861:50: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+128861 |     if( p->pNext==0 ) ExplainQueryPlanPop(pParse);
+       |                                                  ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:1456:29: warning: statement with no effect [-Wunused-value]
+ 1456 | #define SQLITE_OK           0   /* Successful result */
+      |                             ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:18824:41: note: in expansion of macro 'SQLITE_OK'
+18824 | # define sqlite3AuthCheck(a,b,c,d,e)    SQLITE_OK
+      |                                         ^~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:128924:7: note: in expansion of macro 'sqlite3AuthCheck'
+128924 |       sqlite3AuthCheck(pParse, SQLITE_READ, pItem->zName, "", pItem->zDatabase);
+       |       ^~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3DropTriggerPtr':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:130532:12: warning: variable 'pTable' set but not used [-Wunused-but-set-variable]
+130532 |   Table   *pTable;
+       |            ^~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3VtabBeginParse':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:133021:7: warning: variable 'iDb' set but not used [-Wunused-but-set-variable]
+133021 |   int iDb;              /* The database the table is being created in */
+       |       ^~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'whereLoopAddBtree':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:141187:10: warning: variable 'rLogSize' set but not used [-Wunused-but-set-variable]
+141187 |   LogEst rLogSize;            /* Logarithm of the number of rows in the table */
+       |          ^~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3InvokeBusyHandler':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:153341:12: warning: cast between incompatible function types from 'int (*)(void *, int)' to 'int (*)(void *, int,  sqlite3_file *)' [-Wcast-function-type]
+153341 |     xTra = (int(*)(void*,int,sqlite3_file*))p->xBusyHandler;
+       |            ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3_busy_timeout':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:153419:30: warning: cast between incompatible function types from 'int (*)(void *, int,  sqlite3_file *)' to 'int (*)(void *, int)' [-Wcast-function-type]
+153419 |     sqlite3_busy_handler(db, (int(*)(void*,int))sqliteDefaultBusyCallback,
+       |                              ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: At top level:
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:14199:20: warning: 'sqlite3BtreeIncrVacuum' declared 'static' but never defined [-Wunused-function]
+14199 | SQLITE_PRIVATE int sqlite3BtreeIncrVacuum(Btree *);
+      |                    ^~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:14416:22: warning: 'sqlite3BtreeIntegrityCheck' declared 'static' but never defined [-Wunused-function]
+14416 | SQLITE_PRIVATE char *sqlite3BtreeIntegrityCheck(Btree*, int *aRoot, int nRoot, int, int*);
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:15258:20: warning: 'sqlite3PagerMovepage' declared 'static' but never defined [-Wunused-function]
+15258 | SQLITE_PRIVATE int sqlite3PagerMovepage(Pager*,DbPage*,Pgno,int);
+      |                    ^~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:18893:22: warning: 'sqlite3HexToBlob' declared 'static' but never defined [-Wunused-function]
+18893 | SQLITE_PRIVATE void *sqlite3HexToBlob(sqlite3*, const char *z, int n);
+      |                      ^~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:18957:21: warning: 'sqlite3RootPageMoved' declared 'static' but never defined [-Wunused-function]
+18957 | SQLITE_PRIVATE void sqlite3RootPageMoved(sqlite3*, int, int, int);
+      |                     ^~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:20134:20: warning: 'sqlite3VdbeList' declared 'static' but never defined [-Wunused-function]
+20134 | SQLITE_PRIVATE int sqlite3VdbeList(Vdbe*);
+      |                    ^~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:20173:28: warning: 'sqlite3OpcodeName' declared 'static' but never defined [-Wunused-function]
+20173 | SQLITE_PRIVATE const char *sqlite3OpcodeName(int);
+      |                            ^~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:115455:12: warning: 'xferOptimization' declared 'static' but never defined [-Wunused-function]
+115455 | static int xferOptimization(
+       |            ^~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3_db_status':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:20572:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+20572 |       op = SQLITE_DBSTATUS_CACHE_WRITE+1;
+      |       ~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:20574:5: note: here
+20574 |     case SQLITE_DBSTATUS_CACHE_HIT:
+      |     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3_str_vappendf':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:27280:19: warning: this statement may fall through [-Wimplicit-fallthrough=]
+27280 |         flag_long = sizeof(char*)==sizeof(i64) ? 2 :
+      |         ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+27281 |                      sizeof(char*)==sizeof(long int) ? 1 : 0;
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:27283:7: note: here
+27283 |       case etORDINAL:
+      |       ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:27285:19: warning: this statement may fall through [-Wimplicit-fallthrough=]
+27285 |         cThousand = 0;
+      |         ~~~~~~~~~~^~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:27287:7: note: here
+27287 |       case etDECIMAL:
+      |       ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3GetToken':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:151072:9: warning: this statement may fall through [-Wimplicit-fallthrough=]
+151072 |       if( !sqlite3Isdigit(z[1]) )
+       |         ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:151081:5: note: here
+151081 |     case CC_DIGIT: {
+       |     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3ExprCodeTarget':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:99150:25: warning: this statement may fall through [-Wimplicit-fallthrough=]
+99150 |     case TK_AGG_COLUMN: {
+      |                         ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:99163:5: note: here
+99163 |     case TK_COLUMN: {
+      |     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'resolveP2Values':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:76200:13: warning: this statement may fall through [-Wimplicit-fallthrough=]
+76200 |           if( pOp->p2!=0 ) p->readOnly = 0;
+      |             ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:76203:9: note: here
+76203 |         case OP_AutoCommit:
+      |         ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:76241:26: warning: this statement may fall through [-Wimplicit-fallthrough=]
+76241 |         case OP_VFilter: {
+      |                          ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:76250:9: note: here
+76250 |         default: {
+      |         ^~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'resolveExprStep':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:95012:20: warning: this statement may fall through [-Wimplicit-fallthrough=]
+95012 |     case TK_ISNOT: {
+      |                    ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:95028:5: note: here
+95028 |     case TK_BETWEEN:
+      |     ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'impliesNotNullRow':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:100692:8: warning: this statement may fall through [-Wimplicit-fallthrough=]
+100691 |       if( (pExpr->pLeft->op==TK_COLUMN && IsVirtual(pExpr->pLeft->pTab))
+       |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+100692 |        || (pExpr->pRight->op==TK_COLUMN && IsVirtual(pExpr->pRight->pTab))
+       |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:100696:5: note: here
+100696 |     default:
+       |     ^~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3GenerateConstraintChecks':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116561:17: warning: this statement may fall through [-Wimplicit-fallthrough=]
+116561 |         onError = OE_Abort;
+       |                 ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116564:7: note: here
+116564 |       case OE_Rollback:
+       |       ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116624:9: warning: this statement may fall through [-Wimplicit-fallthrough=]
+116624 |         sqlite3UpsertDoUpdate(pParse, pUpsert, pTab, 0, iDataCur);
+       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116628:7: note: here
+116628 |       case OE_Ignore: {
+       |       ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116833:9: warning: this statement may fall through [-Wimplicit-fallthrough=]
+116833 |         sqlite3UpsertDoUpdate(pParse, pUpsert, pTab, pIdx, iIdxCur+ix);
+       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116837:7: note: here
+116837 |       case OE_Ignore: {
+       |       ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: In function 'sqlite3VdbeExec':
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:83605:5: warning: this statement may fall through [-Wimplicit-fallthrough=]
+83605 |   if( (pIn3->flags & MEM_Null)==0 ) break;
+      |     ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:83639:1: note: here
+83639 | case OP_Halt: {
+      | ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:83772:5: warning: this statement may fall through [-Wimplicit-fallthrough=]
+83772 |   if( pOp->p1>db->aLimit[SQLITE_LIMIT_LENGTH] ){
+      |     ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:83791:1: note: here
+83791 | case OP_String: {          /* out2 */
+      | ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:86833:19: warning: this statement may fall through [-Wimplicit-fallthrough=]
+86833 | case OP_IfNoHope: {     /* jump, in3 */
+      |                   ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:86841:1: note: here
+86841 | case OP_NoConflict:     /* jump, in3 */
+      | ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:87769:38: warning: this statement may fall through [-Wimplicit-fallthrough=]
+87769 |   p->aCounter[SQLITE_STMTSTATUS_SORT]++;
+      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:87788:1: note: here
+87788 | case OP_Rewind: {        /* jump */
+      | ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:89069:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+89069 |   pOp->opcode = OP_AggStep1;
+      |               ^
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:89072:1: note: here
+89072 | case OP_AggStep1: {
+      | ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:89932:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+89932 |   pOp->opcode += 2;
+      |   ~~~~~~~~~~~~^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:89935:1: note: here
+89935 | case OP_PureFunc:              /* group */
+      | ^~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c: At top level:
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:127533:15: warning: 'isSimpleCount' defined but not used [-Wunused-function]
+127533 | static Table *isSimpleCount(Select *p, AggInfo *pAggInfo){
+       |               ^~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:120022:12: warning: 'integrityCheckResultRow' defined but not used [-Wunused-function]
+120022 | static int integrityCheckResultRow(Vdbe *v){
+       |            ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:116222:12: warning: 'checkConstraintUnchanged' defined but not used [-Wunused-function]
+116222 | static int checkConstraintUnchanged(Expr *pExpr, int *aiChng, int chngRowid){
+       |            ^~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:75997:21: warning: 'sqlite3VdbeReusable' defined but not used [-Wunused-function]
+75997 | SQLITE_PRIVATE void sqlite3VdbeReusable(Vdbe *p){
+      |                     ^~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:75790:21: warning: 'sqlite3VdbeMultiLoad' defined but not used [-Wunused-function]
+75790 | SQLITE_PRIVATE void sqlite3VdbeMultiLoad(Vdbe *p, int iDest, const char *zTypes, ...){
+      |                     ^~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:72141:12: warning: 'btreeHeapPull' defined but not used [-Wunused-function]
+72141 | static int btreeHeapPull(u32 *aHeap, u32 *pOut){
+      |            ^~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:72131:13: warning: 'btreeHeapInsert' defined but not used [-Wunused-function]
+72131 | static void btreeHeapInsert(u32 *aHeap, u32 x){
+      |             ^~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:65591:20: warning: 'sqlite3BtreeGetAutoVacuum' defined but not used [-Wunused-function]
+65591 | SQLITE_PRIVATE int sqlite3BtreeGetAutoVacuum(Btree *p){
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:65567:20: warning: 'sqlite3BtreeSetAutoVacuum' defined but not used [-Wunused-function]
+65567 | SQLITE_PRIVATE int sqlite3BtreeSetAutoVacuum(Btree *p, int autoVacuum){
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/eric/Documents/GitHub/pisces-moon-os-p4/components/sqlite3/sqlite3.c:63163:13: warning: 'invalidateAllOverflowCache' defined but not used [-Wunused-function]
+63163 | static void invalidateAllOverflowCache(BtShared *pBt){
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+ninja: build stopped: subcommand failed.

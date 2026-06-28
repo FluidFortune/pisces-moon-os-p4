@@ -420,11 +420,14 @@ static void _gps_preview_bytes(const uint8_t* buf, int n) {
 
 static esp_err_t _gps_apply_pin_route(bool swapped) {
     const int rx = PM_GPS_PIN_RX;
+    const int tx = PM_GPS_PIN_TX;
     (void)swapped;
-    // GPS is receive-only in normal operation. Do not drive the paired
-    // GPIO while probing; otherwise a crossed cable can look like UART data.
+    // GPS is receive-only on the Elecrow bench rig (PM_GPS_PIN_TX = -1
+    // → UART_PIN_NO_CHANGE). On LilyGO the L76K accepts $PMTK commands
+    // so we wire TX too.
     esp_err_t err = uart_set_pin(PM_GPS_UART_NUM,
-                                 UART_PIN_NO_CHANGE, rx,
+                                 tx >= 0 ? tx : UART_PIN_NO_CHANGE,
+                                 rx,
                                  UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
     if (err == ESP_OK) {
         s_stats.active_rx_pin = (uint8_t)rx;
@@ -433,7 +436,11 @@ static esp_err_t _gps_apply_pin_route(bool swapped) {
         s_preview_len = 0;
         s_next_preview_at = s_stats.bytes_rx + 1;
         uart_flush_input(PM_GPS_UART_NUM);
-        pm_log_i(TAG, "GPS UART route: RX=IO%d TX=disabled", rx);
+        if (tx >= 0) {
+            pm_log_i(TAG, "GPS UART route: RX=IO%d TX=IO%d", rx, tx);
+        } else {
+            pm_log_i(TAG, "GPS UART route: RX=IO%d TX=disabled", rx);
+        }
     } else {
         pm_log_w(TAG, "GPS UART route failed: %s", esp_err_to_name(err));
     }

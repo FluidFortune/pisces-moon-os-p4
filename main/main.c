@@ -66,6 +66,16 @@
 #include "pm_boot.h"
 #include "pm_board.h"
 #include "pm_cardputer_i2c.h"
+#include "pm_c5_uart.h"
+
+// New LilyGO T-Display-P4 native peripherals. Each header ships
+// no-op stubs on boards where the matching capability flag is 0,
+// so it's safe to include unconditionally.
+#include "pm_xl9535.h"
+#include "pm_rtc_pcf8563.h"
+#include "pm_fuel_gauge_bq27220.h"
+#include "pm_haptic_aw86224.h"
+#include "pm_imu_icm20948.h"
 
 static const char* TAG = "PM_MAIN";
 static TaskHandle_t s_service_bringup_task = NULL;
@@ -95,6 +105,7 @@ static void _boot_visual_probe(bool on) {
 #include "pm_app_ble_beacon.h"
 #include "pm_app_pkt_sniffer.h"
 #include "pm_app_probe_intel.h"
+#include "pm_lora.h"
 
 // ─────────────────────────────────────────────
 //  C6 event handlers
@@ -145,6 +156,28 @@ static void _on_pkt(const char* frame_type, const char* src, int rssi) {
     pm_log_d(TAG, "[PKT] %s from %s rssi=%d", frame_type, src, rssi);
     pm_app_pkt_sniffer_on_pkt(frame_type, src, rssi);
     pm_app_wardrive_on_pkt(frame_type, src, rssi);
+}
+
+// LoRa RX trampoline — every frame the SX1262 hands up to pm_lora
+// gets fanned out to wardrive's intake (which does the Meshtastic
+// header parse and per-node upsert) and to the mesh messenger app
+// via its own subscribe path. We use freq=0 / preset="" as sentinel
+// values when we don't know what the radio is currently tuned to
+// — pm_lora doesn't expose that yet, but wardrive logs them as-is.
+static void _lora_to_wardrive(const uint8_t* buf, size_t len,
+                              int rssi, float snr, void* user) {
+    (void)user;
+    // Mode string roughly maps to the current pm_lora preset.
+    const char* preset = (pm_lora_current_mode() == PM_LORA_MODE_VOICE)
+                             ? "FSK_VOICE"
+                             : "LongFast";
+    // freq_khz: pm_lora doesn't currently surface live frequency,
+    // so we report the LongFast US default (906.875 MHz = 906875 kHz)
+    // when in mesh mode. Real freq tracking is a future pm_lora API.
+    uint32_t freq_khz = (pm_lora_current_mode() == PM_LORA_MODE_VOICE)
+                            ? 906500u
+                            : 906875u;
+    pm_app_wardrive_on_lora(buf, len, rssi, snr, freq_khz, preset);
 }
 
 static void _on_ready(const char* firmware, const char* version) {
@@ -542,9 +575,37 @@ static void _service_bringup_task(void* arg) {
     pm_radio_kind_t radio = pm_radio_init_auto();
     pm_log_i(TAG, "Wireless slot: %s", pm_radio_name(radio));
 
+    // If the wireless slot brought up LoRa (either SX1262 native or
+    // a Cardputer LoRa carrier), subscribe wardrive to RX frames so
+    // every Meshtastic mesh packet within range gets logged with
+    // GPS + RSSI/SNR. We use the LOGGER callback slot so this
+    // subscription survives the mesh messenger app taking the
+    // primary RX callback for its own use — both fire per frame.
+    if (pm_lora_is_initialized()) {
+        if (pm_lora_set_logger_cb(_lora_to_wardrive, NULL) == PM_LORA_OK) {
+            pm_log_i(TAG, "Wardrive subscribed to LoRa RX (logger slot)");
+        } else {
+            pm_log_w(TAG, "Wardrive LoRa logger subscribe failed");
+        }
+    }
+
     _service_bringup_delay(250);
     pm_log_i(TAG, "Service: optional peer probes");
     pm_peer_probe_optional();
+
+    // C5 edge-radio link — LilyGO exposes EXT_1X4P_2 (GPIO 45/46)
+    // as a clean UART header, free of touch. The component is also
+    // available on Elecrow boards but conflicts with GT911 touch
+    // there; the user can still enable it manually if they accept
+    // the trade-off. We try-init unconditionally and let the link
+    // diagnostic surface whether a C5 ever HELLOs.
+    _service_bringup_delay(150);
+    pm_log_i(TAG, "Service: C5 UART bridge");
+    if (pm_c5_uart_init()) {
+        pm_log_i(TAG, "C5 UART bridge armed (link HELLO pending)");
+    } else {
+        pm_log_w(TAG, "C5 UART bridge init failed");
+    }
 
     _service_bringup_delay(250);
     pm_log_i(TAG, "Service: T-Beam probe");
@@ -608,6 +669,31 @@ void app_main(void) {
     pm_hal_init();
     ESP_LOGI(TAG, "BOOTMARK: pm_hal_init done");
 
+#if PM_BOARD_HAS_XL9535
+    // 2c. LilyGO T-Display-P4: I2C buses must come up before the
+    //     XL9535 power expander; the XL9535 must power on rails
+    //     and release peripheral resets BEFORE pm_bsp_init() runs
+    //     display, touch, or SD. Boot order:
+    //        pm_bsp_init_buses()       — bring up I2C1+I2C2
+    //        pm_xl9535_init()          — configure expander outputs
+    //        pm_xl9535_boot_sequence() — power-on rails in order
+    //        pm_bsp_init()             — display + touch + SD + LVGL
+    ESP_LOGI(TAG, "BOOTMARK: pm_bsp_init_buses begin");
+    esp_err_t buses = pm_bsp_init_buses();
+    ESP_LOGI(TAG, "BOOTMARK: pm_bsp_init_buses done: %s", esp_err_to_name(buses));
+
+    ESP_LOGI(TAG, "BOOTMARK: pm_xl9535_init begin");
+    esp_err_t xl = pm_xl9535_init();
+    ESP_LOGI(TAG, "BOOTMARK: pm_xl9535_init done: %s", esp_err_to_name(xl));
+    if (xl == ESP_OK) {
+        ESP_LOGI(TAG, "BOOTMARK: pm_xl9535_boot_sequence begin");
+        pm_xl9535_boot_sequence();
+        ESP_LOGI(TAG, "BOOTMARK: pm_xl9535_boot_sequence done");
+    } else {
+        pm_log_e(TAG, "XL9535 init failed - display and peripherals may not power on");
+    }
+#endif
+
     // 3. BSP — MIPI-DSI display, GT911 touch, LVGL plumbing,
     //          backlight PWM, I2C bus. After this returns OK,
     //          screens are flushable and touch events flow.
@@ -658,24 +744,87 @@ void app_main(void) {
                  sd_ok ? PM_BOOT_OK : PM_BOOT_WARN);
     BOOT_STEP("SQLITE",    "deferred",               PM_BOOT_DISABLED);
     BOOT_STEP("MIPI-DSI",  PM_BOARD_PANEL_DETAIL,    PM_BOOT_OK);
+#if defined(PM_BOARD_PROFILE_LILYGO_TDISPLAY_P4)
+    BOOT_STEP("TOUCH",     "HI8561 integrated I2C",  PM_BOOT_OK);
+#else
     BOOT_STEP("GT911",     "I2C touch 400 KHz",      PM_BOOT_OK);
+#endif
     BOOT_STEP("LVGL",      "v9.2 PSRAM malloc",      PM_BOOT_OK);
     BOOT_PROGRESS(45);
 
     pm_peer_init_base();
     BOOT_STEP("PEERS",     "base registry ready",    PM_BOOT_OK);
 
+#if PM_BOARD_HAS_NATIVE_RTC
+    // PCF8563 — read battery-backed clock, push to system time so
+    // file timestamps and log lines are accurate before NTP/GPS lock.
+    bool clock_lost = false;
+    if (pm_rtc_pcf8563_init(&clock_lost) == ESP_OK) {
+        if (!clock_lost) {
+            pm_rtc_pcf8563_sync_to_system();
+            BOOT_STEP("RTC PCF8563", "system time synced from RTC", PM_BOOT_OK);
+        } else {
+            BOOT_STEP("RTC PCF8563", "clock lost time — awaits GPS/NTP", PM_BOOT_WARN);
+        }
+    } else {
+        BOOT_STEP("RTC PCF8563", "absent", PM_BOOT_WARN);
+    }
+#endif
+
+#if PM_BOARD_HAS_NATIVE_FUEL_GAUGE
+    // BQ27220 — read battery once at boot for the status bar; the
+    // gauge is then polled at low cadence by the battery widget.
+    if (pm_fuel_gauge_init() == ESP_OK) {
+        pm_battery_t b = {0};
+        if (pm_fuel_gauge_read(&b) == ESP_OK && b.present) {
+            char buf[48];
+            snprintf(buf, sizeof(buf), "%u%% %u mV", b.soc_pct, b.voltage_mv);
+            BOOT_STEP("FUEL GAUGE", buf, PM_BOOT_OK);
+        } else {
+            BOOT_STEP("FUEL GAUGE", "no battery detected", PM_BOOT_WARN);
+        }
+    } else {
+        BOOT_STEP("FUEL GAUGE", "absent", PM_BOOT_WARN);
+    }
+#endif
+
+#if PM_BOARD_HAS_NATIVE_HAPTIC
+    // AW86224 — if present, a faint TAP signals "boot good".
+    if (pm_haptic_init() == ESP_OK) {
+        pm_haptic_play(PM_HAPTIC_TAP);
+        BOOT_STEP("HAPTIC", "AW86224 ready", PM_BOOT_OK);
+    } else {
+        BOOT_STEP("HAPTIC", "absent", PM_BOOT_WARN);
+    }
+#endif
+
+#if PM_BOARD_HAS_NATIVE_IMU
+    // ICM20948 — 9-axis IMU. Used for auto-rotation and the navigation
+    // compass arrow on the slippy map.
+    if (pm_imu_init() == ESP_OK) {
+        BOOT_STEP("IMU ICM20948", "±4g / ±500 dps / 100 Hz", PM_BOOT_OK);
+    } else {
+        BOOT_STEP("IMU ICM20948", "absent", PM_BOOT_WARN);
+    }
+#endif
+
     // 3b. GPS source. The Cardputer ADV UART1 header bridge is the
-    //     default for both 5" and 7" P4 boards. The IO52 UART path
-    //     remains available on UART4 behind PM_BOARD_LOCAL_GPS_UART for later
-    //     bench work, but it is parked for normal builds.
+    //     default for the Elecrow boards (Cardputer carries GPS).
+    //     On the LilyGO T-Display-P4 the L76K is native on UART2
+    //     (GPIO 22/23 @ 9600 baud) and pm_gps_uart handles it
+    //     directly via the PM_BOARD_LOCAL_GPS_* defines.
 #if PM_BOARD_LOCAL_GPS_UART
     bool gps_ok = (pm_gps_uart_init() == ESP_OK);
     if (!gps_ok) {
         pm_log_w(TAG, "GPS UART init failed - continuing without GPS");
     }
+#if defined(PM_BOARD_PROFILE_LILYGO_TDISPLAY_P4)
+    BOOT_STEP("GPS LOCAL", "L76K UART3 IO22/23 @ 9600",
+                 gps_ok ? PM_BOOT_OK : PM_BOOT_WARN);
+#else
     BOOT_STEP("GPS LOCAL", "UART4 IO52 @ 9600",
                  gps_ok ? PM_BOOT_OK : PM_BOOT_WARN);
+#endif
 #else
     BOOT_STEP("GPS SOURCE", "Cardputer ADV UART1 header", PM_BOOT_OK);
 #endif

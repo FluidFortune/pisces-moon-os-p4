@@ -88,6 +88,30 @@
     "  lng       REAL,"                                           \
     "  alt_m     REAL,"                                           \
     "  sats      INTEGER,"                                        \
-    "  ts_ms     INTEGER);"
+    "  ts_ms     INTEGER);"                                       \
+                                                                  \
+    "CREATE TABLE IF NOT EXISTS lora_seen ("                     \
+    "  id           INTEGER PRIMARY KEY AUTOINCREMENT,"          \
+    "  node_id      TEXT NOT NULL,"                               \
+    "  from_id      TEXT,"                                        \
+    "  to_id        TEXT,"                                        \
+    "  pkt_id       INTEGER,"                                     \
+    "  port_num     INTEGER,"                                     \
+    "  hop_limit    INTEGER,"                                     \
+    "  want_ack     INTEGER,"                                     \
+    "  rssi         INTEGER,"                                     \
+    "  snr_x10      INTEGER,"                                     \
+    "  freq_khz     INTEGER,"                                     \
+    "  preset       TEXT,"                                        \
+    "  payload_len  INTEGER,"                                     \
+    "  payload_hash TEXT,"                                        \
+    "  text_preview TEXT,"                                        \
+    "  lat          REAL,"                                        \
+    "  lng          REAL,"                                        \
+    "  first_ms     INTEGER,"                                     \
+    "  last_ms      INTEGER,"                                     \
+    "  hits         INTEGER DEFAULT 1);"                          \
+    "CREATE INDEX IF NOT EXISTS idx_lora_node ON lora_seen(node_id);" \
+    "CREATE INDEX IF NOT EXISTS idx_lora_last ON lora_seen(last_ms);"
 
 #endif  // PM_WARDRIVE_SCHEMA_H

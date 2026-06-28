@@ -7,16 +7,17 @@
 
 
 // ============================================================
-//  pm_gps_uart.h — P4-direct GPS reader (parked)
+//  pm_gps_uart.h — P4-direct GPS reader
 //
-//  Optional bench path for a BN-180 GPS module wired directly to
-//  the P4. Normal board profiles use the Cardputer ADV UART1 header
-//  bridge for GPS/radio/keyboard expansion instead.
+//  Two roles depending on board:
+//    - Elecrow CrowPanel P4 (5"/7"): optional bench path for a
+//      BN-180 module wired directly to GPIO 52 on UART4. Normal
+//      builds prefer the Cardputer ADV UART1 header bridge.
+//      Gated on PM_BOARD_LOCAL_GPS_UART=1 in the board profile.
 //
-//  Architecture note:
-//    The IO52 local GPS experiment stays in-tree on UART4 so it can
-//    be re-enabled by setting PM_BOARD_LOCAL_GPS_UART=1 in the active
-//    board profile. It is intentionally disabled for standard builds.
+//    - LilyGO T-Display-P4: native L76K module wired on UART3
+//      at GPIO 22/23 @ 9600 baud. Always on; PM_BOARD_LOCAL_GPS_UART
+//      defaults to 1 in that profile.
 //
 //  Boot sequence:
 //    1. pm_gps_uart_init()  — UART setup, task spawn
@@ -36,20 +37,27 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "esp_err.h"
+#include "pm_board.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// ── Pin map ─────────────────────────────────────────────────
-// Current hardware test rig powers the BN-180 from 5V because this
-// Beitian variant appears unstable from the CrowPanel 3V3 rail.
-// Moving to the 5V row shifts the GPS TX lead to IO52 on Eric's board.
-// GPS is used receive-only; there is no paired TX/probe pin in this setup.
-#define PM_GPS_UART_NUM     4            // P4 UART4; UART1 belongs to Cardputer
-#define PM_GPS_PIN_RX       52
-#define PM_GPS_PIN_TX       (-1)
-#define PM_GPS_BAUD         9600         // BN-180 default
+// ── Pin map (board-conditional) ─────────────────────────────────────
+#if defined(PM_BOARD_PROFILE_LILYGO_TDISPLAY_P4)
+  // L76K native on UART3, GPIO 22/23, 9600 baud (factory default).
+  // UART_NUM_2 is reserved for pm_c5_uart on this board.
+  #define PM_GPS_UART_NUM   3
+  #define PM_GPS_PIN_RX     PM_BOARD_LOCAL_GPS_RX_PIN
+  #define PM_GPS_PIN_TX     PM_BOARD_LOCAL_GPS_TX_PIN
+  #define PM_GPS_BAUD       PM_BOARD_LOCAL_GPS_BAUD
+#else
+  // Elecrow bench path: BN-180 on GPIO 52 (5V row), UART4, RX-only.
+  #define PM_GPS_UART_NUM   4
+  #define PM_GPS_PIN_RX     52
+  #define PM_GPS_PIN_TX     (-1)
+  #define PM_GPS_BAUD       9600
+#endif
 
 // Init UART, register sentences with parser, spawn read task.
 esp_err_t pm_gps_uart_init(void);

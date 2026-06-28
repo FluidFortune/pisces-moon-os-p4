@@ -1,0 +1,25 @@
+# Pisces Moon OS — LilyGO T-Display-P4 sdkconfig overlay
+# Pisces Moon OS / Fluid Fortune / AGPL-3.0-or-later
+#
+# This file is applied on top of sdkconfig.defaults when the
+# LilyGO board profile is selected via:
+#   PM_P4_BOARD=lilygo_tdisplay_p4 idf.py -B build-tdisplay build
+#
+# IDF picks up `sdkconfig.defaults.lilygo_tdisplay_p4` automatically
+# when SDKCONFIG_DEFAULTS lists it; see the root CMakeLists.txt
+# (this file gets added there once LilyGO builds are validated).
+#
+# Adjustments vs. the Elecrow baseline:
+#   - C6 reset GPIO routed via XL9535 IO14, not direct GPIO 32.
+#     Disable ESP-Hosted's reset pulse so it doesn't poke an
+#     unrelated GPIO. The XL9535 boot sequence already brought
+#     the C6 up cleanly before ESP-Hosted runs.
+#   - SDIO 4-bit (LilyGO wires all four data lines) for higher
+#     C6 throughput. The PHY pads CMD=19, CLK=18, D0=14, D1=15,
+#     D2=16, D3=17 already match Elecrow's pins by coincidence.
+
+CONFIG_ESP_HOSTED_SDIO_GPIO_RESET_SLAVE=-1
+# CONFIG_ESP_HOSTED_SDIO_1_BIT_BUS is not set
+CONFIG_ESP_HOSTED_SDIO_4_BIT_BUS=y
+CONFIG_ESP_HOSTED_PRIV_SDIO_PIN_D2_SLOT_1=16
+CONFIG_ESP_HOSTED_PRIV_SDIO_PIN_D3_SLOT_1=17

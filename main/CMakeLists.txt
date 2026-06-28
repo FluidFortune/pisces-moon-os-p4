@@ -50,5 +50,11 @@ idf_component_register(
         pm_apps_media
         pm_apps_comms
         pm_apps_cyber
+        pm_xl9535
+        pm_rtc_pcf8563
+        pm_fuel_gauge_bq27220
+        pm_haptic_aw86224
+        pm_imu_icm20948
+        pm_c5_uart
         lvgl__lvgl
 )

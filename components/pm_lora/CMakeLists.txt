@@ -8,8 +8,8 @@
 idf_component_register(
     SRCS "pm_lora.cpp"
     INCLUDE_DIRS "include" "."
-    REQUIRES pm_hal
-    PRIV_REQUIRES jgromes__radiolib pm_radio
+    REQUIRES pm_hal pm_board
+    PRIV_REQUIRES jgromes__radiolib pm_radio pm_xl9535 pm_bsp
 )
 
 # Relax v5.5.3 strict warnings for this component.

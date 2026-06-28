@@ -46,6 +46,25 @@
 #include <EspHal.h>
 #include <string.h>
 
+// XL9535 path for the LilyGO T-Display-P4. The SX1262's RST line
+// and DIO1 IRQ both live behind the I2C expander, so RadioLib's
+// usual GPIO-driven path can't reach them. We pulse the reset
+// manually before init and pass PM_LORA_PIN_RST = -1 so RadioLib
+// treats the chip as "already reset".
+//
+// DIO1 interrupt: not currently wired through the expander — RX
+// falls back to polling mode via pm_radio_host on this board.
+// True interrupt-driven RX would require polling the XL9535 input
+// register on a timer and synthesising a software IRQ; deferred.
+#include "pm_board.h"
+#if PM_LORA_HAS_EXPANDER_RST
+  // pm_bsp.h carries the XL9535 pin constants
+  // (PM_XL9535_SX1262_RST, PM_XL9535_SKY13453_VCTL, etc.) that the
+  // expander-driven reset path needs. pm_xl9535.h is the driver API.
+  #include "pm_bsp.h"
+  #include "pm_xl9535.h"
+#endif
+
 extern "C" {
 
 static const char* TAG = "PM_LORA";
@@ -60,6 +79,8 @@ static float             s_last_snr     = 0.0f;
 
 static pm_lora_rx_cb_t   s_rx_cb        = nullptr;
 static void*             s_rx_user      = nullptr;
+static pm_lora_rx_cb_t   s_logger_cb    = nullptr;
+static void*             s_logger_user  = nullptr;
 static volatile bool     s_rx_irq       = false;
 static TaskHandle_t      s_rx_task      = nullptr;
 
@@ -89,7 +110,10 @@ static void _rx_task_fn(void* arg) {
         if (!s_rx_irq) continue;
         s_rx_irq = false;
 
-        if (!s_radio || !s_rx_cb) continue;
+        // We deliver to both the primary callback and the logger,
+        // so we proceed even when only one is set.
+        if (!s_radio) continue;
+        if (!s_rx_cb && !s_logger_cb) continue;
 
         size_t plen = 0;
         int    state = RADIOLIB_ERR_SPI_CMD_FAILED;
@@ -104,7 +128,16 @@ static void _rx_task_fn(void* arg) {
         } PM_SPI_GIVE();
 
         if (state == RADIOLIB_ERR_NONE) {
-            s_rx_cb(buf, plen, s_last_rssi, s_last_snr, s_rx_user);
+            // Primary callback first — typical owner is whatever app
+            // is currently driving the radio (mesh messenger, voice).
+            if (s_rx_cb) {
+                s_rx_cb(buf, plen, s_last_rssi, s_last_snr, s_rx_user);
+            }
+            // Logger callback second — passive subscribers like
+            // wardrive that just want to see every frame.
+            if (s_logger_cb) {
+                s_logger_cb(buf, plen, s_last_rssi, s_last_snr, s_logger_user);
+            }
         } else {
             ESP_LOGW(TAG, "rx readData err=%d", state);
         }
@@ -141,6 +174,19 @@ pm_lora_status_t pm_lora_init(void) {
 
     s_handle_mtx = xSemaphoreCreateMutex();
     if (!s_handle_mtx) return PM_LORA_ERR;
+
+#if PM_LORA_HAS_EXPANDER_RST
+    // LilyGO: the SX1262 NRST line is driven by XL9535 IO16. Pulse
+    // it before RadioLib gets a chance to talk SPI. The expander
+    // boot sequence already left RST high, so this is a clean
+    // assert-low / hold / release cycle.
+    pm_xl9535_pulse_reset(PM_XL9535_SX1262_RST, 20);
+    // Antenna switch: SKY13453 default routing (VCTL low = RX path).
+    // pm_lora flips this around transmit() if PM_LORA_HAS_RF_SWITCH.
+    pm_xl9535_set(PM_XL9535_SKY13453_VCTL, false);
+    vTaskDelay(pdMS_TO_TICKS(10));
+    ESP_LOGI(TAG, "SX1262 RST pulsed via XL9535");
+#endif
 
     // EspHal: (sck, miso, mosi). Bus is shared via PM_SPI_TAKE.
     extern int pm_hal_spi_sck_pin (void);
@@ -257,7 +303,29 @@ pm_lora_status_t pm_lora_set_rx_cb(pm_lora_rx_cb_t cb, void* user) {
         PM_SPI_TAKE("lora_rx_arm") { rc = s_radio->startReceive(); } PM_SPI_GIVE();
         return rc == RADIOLIB_ERR_NONE ? PM_LORA_OK : PM_LORA_ERR;
     } else {
-        PM_SPI_TAKE("lora_rx_off") { s_radio->standby(); } PM_SPI_GIVE();
+        // Only go to standby if NEITHER subscriber is still listening.
+        if (!s_logger_cb) {
+            PM_SPI_TAKE("lora_rx_off") { s_radio->standby(); } PM_SPI_GIVE();
+        }
+        return PM_LORA_OK;
+    }
+}
+
+pm_lora_status_t pm_lora_set_logger_cb(pm_lora_rx_cb_t cb, void* user) {
+    if (!s_inited) return PM_LORA_NOT_INIT;
+    s_logger_cb   = cb;
+    s_logger_user = user;
+    if (cb) {
+        // Make sure RX is armed so the logger actually sees frames
+        // even if there's no primary subscriber.
+        int rc = RADIOLIB_ERR_NONE;
+        PM_SPI_TAKE("lora_log_arm") { rc = s_radio->startReceive(); } PM_SPI_GIVE();
+        return rc == RADIOLIB_ERR_NONE ? PM_LORA_OK : PM_LORA_ERR;
+    } else {
+        // Only go to standby if NEITHER subscriber is still listening.
+        if (!s_rx_cb) {
+            PM_SPI_TAKE("lora_log_off") { s_radio->standby(); } PM_SPI_GIVE();
+        }
         return PM_LORA_OK;
     }
 }

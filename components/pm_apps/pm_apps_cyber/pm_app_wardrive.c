@@ -473,6 +473,250 @@ void pm_app_wardrive_on_pkt(const char* frame_type, const char* src, int rssi) {
     pm_stmt_finalize(ins);
 }
 
+// ─────────────────────────────────
+//  LoRa intake — best-effort Meshtastic parse
+//
+//  A Meshtastic frame on the air has a 16-byte header followed
+//  by the encrypted (or, on the primary channel, plaintext)
+//  payload. The header layout (little-endian, packed):
+//
+//    bytes 0-3   : to / dest node ID
+//    bytes 4-7   : from node ID
+//    bytes 8-11  : packet ID
+//    bytes 12-15 : flags (hop_limit:3, want_ack:1, hop_start:3, ...)
+//
+//  Payload is a nanopb-encoded Meshtastic.Data submessage; on
+//  the primary channel with a known PSK it's plaintext, otherwise
+//  AES-CTR encrypted. We try to decode portnum (field 1, varint)
+//  and, if portnum is 1 (TEXT_MESSAGE_APP), the text payload
+//  (field 2, bytes). Anything else we just record with a hash.
+//
+//  We DELIBERATELY do not try to decrypt. The hash of the
+//  ciphertext is still a useful dedup key.
+// ─────────────────────────────────
+
+// FNV-1a 32-bit — cheap, good enough for dedup keys.
+static uint32_t _fnv1a_32(const uint8_t* data, size_t len) {
+    uint32_t h = 0x811C9DC5u;
+    for (size_t i = 0; i < len; i++) {
+        h ^= data[i];
+        h *= 0x01000193u;
+    }
+    return h;
+}
+
+// Decode a varint at *pos, advancing it. Returns false if it runs
+// off the end of buf.
+static bool _pb_varint(const uint8_t* buf, size_t len, size_t* pos,
+                       uint32_t* out) {
+    uint32_t v = 0;
+    int shift = 0;
+    while (*pos < len) {
+        uint8_t b = buf[(*pos)++];
+        v |= ((uint32_t)(b & 0x7F)) << shift;
+        if (!(b & 0x80)) { *out = v; return true; }
+        shift += 7;
+        if (shift > 28) return false;
+    }
+    return false;
+}
+
+// Best-effort Meshtastic Data submessage parser. Sets *portnum if
+// field 1 (portnum varint) is found, and copies the text payload
+// (field 2, wire type 2) into text_out when portnum == 1
+// (TEXT_MESSAGE_APP).
+static void _mesh_decode_data(const uint8_t* buf, size_t len,
+                              uint32_t* portnum_out,
+                              char* text_out, size_t text_out_cap) {
+    if (text_out && text_out_cap) text_out[0] = 0;
+    *portnum_out = 0;
+    size_t i = 0;
+    while (i < len) {
+        uint8_t tag = buf[i++];
+        uint8_t field_num = tag >> 3;
+        uint8_t wire_type = tag & 0x07;
+        if (wire_type == 0) {           // varint
+            uint32_t v = 0;
+            if (!_pb_varint(buf, len, &i, &v)) break;
+            if (field_num == 1) *portnum_out = v;
+        } else if (wire_type == 2) {    // length-delimited
+            uint32_t blen = 0;
+            if (!_pb_varint(buf, len, &i, &blen)) break;
+            if (i + blen > len) break;
+            if (field_num == 2 && *portnum_out == 1 &&
+                text_out && text_out_cap > 1) {
+                size_t copy = blen < (text_out_cap - 1)
+                                  ? blen : (text_out_cap - 1);
+                memcpy(text_out, buf + i, copy);
+                text_out[copy] = 0;
+                // Strip non-printable bytes so a stray binary
+                // payload doesn't poison the SQLite TEXT column.
+                for (size_t k = 0; k < copy; k++) {
+                    if (text_out[k] < 0x20 || text_out[k] == 0x7f) {
+                        text_out[k] = '?';
+                    }
+                }
+            }
+            i += blen;
+        } else if (wire_type == 5) {    // 32-bit
+            i += 4;
+        } else if (wire_type == 1) {    // 64-bit
+            i += 8;
+        } else {
+            break;                      // unsupported wire type
+        }
+    }
+}
+
+void pm_app_wardrive_on_lora(const uint8_t* buf, size_t len,
+                              int rssi, float snr,
+                              uint32_t freq_khz, const char* preset) {
+    if (!s_running) return;
+    if (!buf || len == 0) return;
+
+    // Pull header fields if the frame is long enough to plausibly
+    // carry a Meshtastic packet. Frames shorter than the header
+    // get logged with a synthetic node_id derived from their hash.
+    char from_str[12] = "";
+    char to_str  [12] = "";
+    char node_id [12] = "";
+    uint32_t pkt_id    = 0;
+    uint32_t flags     = 0;
+    int      hop_limit = 0;
+    int      want_ack  = 0;
+    uint32_t portnum   = 0;
+    char     text_preview[64] = "";
+    bool     parsed_header = false;
+
+    if (len >= 16) {
+        uint32_t dest = (uint32_t)buf[0]      | ((uint32_t)buf[1]  << 8) |
+                        ((uint32_t)buf[2]<<16)| ((uint32_t)buf[3]  << 24);
+        uint32_t from = (uint32_t)buf[4]      | ((uint32_t)buf[5]  << 8) |
+                        ((uint32_t)buf[6]<<16)| ((uint32_t)buf[7]  << 24);
+        pkt_id        = (uint32_t)buf[8]      | ((uint32_t)buf[9]  << 8) |
+                        ((uint32_t)buf[10]<<16)|((uint32_t)buf[11] << 24);
+        flags         = (uint32_t)buf[12]     | ((uint32_t)buf[13] << 8) |
+                        ((uint32_t)buf[14]<<16)|((uint32_t)buf[15] << 24);
+        hop_limit = (int)(flags & 0x07);
+        want_ack  = (int)((flags >> 3) & 0x01);
+
+        // Mesh broadcast = 0xFFFFFFFF; everything else is a node ID.
+        // We KEY by `from` (the sender) since that's who we're
+        // tracking, regardless of whether the frame is unicast or
+        // broadcast.
+        snprintf(from_str, sizeof(from_str), "%08x", (unsigned)from);
+        snprintf(to_str,   sizeof(to_str),   "%08x", (unsigned)dest);
+        snprintf(node_id,  sizeof(node_id),  "%08x", (unsigned)from);
+        parsed_header = true;
+
+        // Try to decode portnum + text from the post-header payload.
+        if (len > 16) {
+            _mesh_decode_data(buf + 16, len - 16,
+                              &portnum, text_preview, sizeof(text_preview));
+        }
+    } else {
+        // Frame too short for a header — just synthesise a node_id
+        // from the payload hash so it gets logged somewhere.
+        uint32_t h = _fnv1a_32(buf, len);
+        snprintf(node_id, sizeof(node_id), "raw%05x", h & 0xFFFFF);
+    }
+
+    // Payload hash — dedup key when the same encrypted payload
+    // arrives on multiple hops, also useful as a content fingerprint.
+    uint32_t phash = _fnv1a_32(buf, len);
+    char payload_hash[12];
+    snprintf(payload_hash, sizeof(payload_hash), "%08x", (unsigned)phash);
+
+    int snr_x10 = (int)(snr * 10.0f);
+    double lat, lng; _gps_now(&lat, &lng);
+    uint32_t now = pm_millis();
+
+    // HUD counter — reuse the packets counter so LoRa frames show
+    // up in the existing PACKETS tile. (A future redesign can split
+    // them into a dedicated LORA tile.)
+    s_pkt_total++;
+
+    if (!_ensure_db()) {
+        pm_log_i(TAG, "LORA: from=%s to=%s port=%u rssi=%d snr=%.1f freq=%ukHz hash=%s%s%s",
+                 parsed_header ? from_str : node_id,
+                 parsed_header ? to_str : "-",
+                 (unsigned)portnum, rssi, (double)snr,
+                 (unsigned)freq_khz, payload_hash,
+                 text_preview[0] ? " text=" : "",
+                 text_preview[0] ? text_preview : "");
+        return;
+    }
+
+    // Upsert on (node_id, payload_hash) so the same packet seen on
+    // multiple hops accumulates as hits rather than spamming rows.
+    // Different packets from the same node create new rows.
+    pm_stmt_t* sel = pm_db_prepare(s_db,
+        "SELECT id, hits FROM lora_seen WHERE node_id=? AND payload_hash=?;");
+    if (!sel) return;
+    pm_stmt_bind_text(sel, 1, node_id);
+    pm_stmt_bind_text(sel, 2, payload_hash);
+    if (pm_stmt_step(sel)) {
+        int id   = pm_stmt_col_int(sel, 0);
+        int hits = pm_stmt_col_int(sel, 1);
+        pm_stmt_finalize(sel);
+
+        pm_stmt_t* up = pm_db_prepare(s_db,
+            "UPDATE lora_seen SET rssi=?, snr_x10=?, last_ms=?, hits=? WHERE id=?;");
+        if (up) {
+            pm_stmt_bind_int(up, 1, rssi);
+            pm_stmt_bind_int(up, 2, snr_x10);
+            pm_stmt_bind_int64(up, 3, (int64_t)now);
+            pm_stmt_bind_int(up, 4, hits + 1);
+            pm_stmt_bind_int(up, 5, id);
+            pm_stmt_step(up);
+            pm_stmt_finalize(up);
+        }
+    } else {
+        pm_stmt_finalize(sel);
+        pm_stmt_t* ins = pm_db_prepare(s_db,
+            "INSERT INTO lora_seen("
+            "  node_id,from_id,to_id,pkt_id,port_num,hop_limit,want_ack,"
+            "  rssi,snr_x10,freq_khz,preset,payload_len,payload_hash,"
+            "  text_preview,lat,lng,first_ms,last_ms,hits) "
+            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1);");
+        if (ins) {
+            pm_stmt_bind_text  (ins,  1, node_id);
+            pm_stmt_bind_text  (ins,  2, parsed_header ? from_str : "");
+            pm_stmt_bind_text  (ins,  3, parsed_header ? to_str   : "");
+            pm_stmt_bind_int64 (ins,  4, (int64_t)pkt_id);
+            pm_stmt_bind_int   (ins,  5, (int)portnum);
+            pm_stmt_bind_int   (ins,  6, hop_limit);
+            pm_stmt_bind_int   (ins,  7, want_ack);
+            pm_stmt_bind_int   (ins,  8, rssi);
+            pm_stmt_bind_int   (ins,  9, snr_x10);
+            pm_stmt_bind_int64 (ins, 10, (int64_t)freq_khz);
+            pm_stmt_bind_text  (ins, 11, preset ? preset : "");
+            pm_stmt_bind_int   (ins, 12, (int)len);
+            pm_stmt_bind_text  (ins, 13, payload_hash);
+            pm_stmt_bind_text  (ins, 14, text_preview);
+            pm_stmt_bind_double(ins, 15, lat);
+            pm_stmt_bind_double(ins, 16, lng);
+            pm_stmt_bind_int64 (ins, 17, (int64_t)now);
+            pm_stmt_bind_int64 (ins, 18, (int64_t)now);
+            pm_stmt_step(ins);
+            pm_stmt_finalize(ins);
+        }
+    }
+
+    // Live log line so it shows in the right-side panel.
+    char ts[8];
+    snprintf(ts, sizeof(ts), "%lu", (unsigned long)(now / 1000) % 100000);
+    char content[80];
+    if (parsed_header) {
+        snprintf(content, sizeof(content), "%s %ddBm port=%u",
+                 from_str, rssi, (unsigned)portnum);
+    } else {
+        snprintf(content, sizeof(content), "%s %ddBm len=%u",
+                 node_id, rssi, (unsigned)len);
+    }
+    pm_app_wardrive_log(ts, "LORA", content, lv_color_hex(0xff66ff));
+}
+
 // ─────────────────────────────────────────────
 //  CSV export — Jennifer-compatible column order
 // ─────────────────────────────────────────────

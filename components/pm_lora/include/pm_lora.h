@@ -66,18 +66,47 @@ typedef void (*pm_lora_rx_cb_t)(const uint8_t* buf, size_t len,
 pm_lora_status_t pm_lora_init(void);
 bool             pm_lora_is_initialized(void);
 
-// Pin map (VERIFIED ELECROW Lesson 14). All pins are
-// for the P4's wireless module slot. Note that NSS/BUSY/IRQ/RST
-// are SHARED with the nRF24 carrier (NRF24_CS / NRF24_IRQ /
-// NRF24_CE) — the same physical pins, just different chip
-// semantics. The radio detector reads chip-specific signatures
-// to decide which is plugged in.
-#define PM_LORA_PIN_NSS    10    // SX1262 NSS  / nRF24 CS
-#define PM_LORA_PIN_BUSY    9    // SX1262 BUSY / nRF24 IRQ
-#define PM_LORA_PIN_DIO1   53    // SX1262 IRQ  / nRF24 CE
-#define PM_LORA_PIN_RST    54    // SX1262 NRST
-// SPI pins inherited from pm_hal SPI Treaty bus
-// (CLK=8, MISO=7, MOSI=6 per ELECROW).
+// Pin map (board-conditional). Both profiles wrap the SX1262
+// behind the same Pisces Moon API; what differs is whether the
+// RST and DIO1 lines are direct GPIO (Elecrow) or routed through
+// the XL9535 power expander (LilyGO).
+#include "pm_board.h"
+
+#if defined(PM_BOARD_PROFILE_LILYGO_TDISPLAY_P4)
+  // LilyGO T-Display-P4 — HPD16A (SX1262 + SKY13453 RF switch)
+  // on SPI1 with GPIO 24/6/2/3/4. RST and DIO1 are XL9535 IO16
+  // and IO17 respectively; SKY13453 antenna switch VCTL is
+  // XL9535 IO1. The pm_lora implementation calls into pm_xl9535
+  // for those lines instead of driving GPIO directly.
+  #define PM_LORA_PIN_NSS    24    // SX1262 NSS
+  #define PM_LORA_PIN_BUSY    6    // SX1262 BUSY (direct GPIO)
+  #define PM_LORA_PIN_DIO1   (-1)  // routed via XL9535 IO17 — poll
+  #define PM_LORA_PIN_RST    (-1)  // routed via XL9535 IO16 — use pm_xl9535_pulse_reset
+  #define PM_LORA_PIN_SCK     2
+  #define PM_LORA_PIN_MOSI    3
+  #define PM_LORA_PIN_MISO    4
+  // SX1262/SKY13453 reset + antenna-switch helpers live in pm_xl9535.
+  #define PM_LORA_HAS_EXPANDER_RST   1
+  #define PM_LORA_HAS_EXPANDER_DIO1  1
+  #define PM_LORA_HAS_RF_SWITCH      1
+#else
+  // Elecrow wireless module slot — NSS/BUSY/IRQ/RST shared with
+  // the nRF24 carrier (NRF24_CS/IRQ/CE map onto the same physical
+  // pins, just different chip semantics). The radio detector reads
+  // chip-specific signatures to decide which is plugged in.
+  #define PM_LORA_PIN_NSS    10    // SX1262 NSS  / nRF24 CS
+  #define PM_LORA_PIN_BUSY    9    // SX1262 BUSY / nRF24 IRQ
+  #define PM_LORA_PIN_DIO1   53    // SX1262 IRQ  / nRF24 CE
+  #define PM_LORA_PIN_RST    54    // SX1262 NRST
+  // SPI pins inherited from pm_hal SPI Treaty bus
+  // (CLK=8, MISO=7, MOSI=6 per ELECROW).
+  #define PM_LORA_PIN_SCK     8
+  #define PM_LORA_PIN_MOSI    6
+  #define PM_LORA_PIN_MISO    7
+  #define PM_LORA_HAS_EXPANDER_RST   0
+  #define PM_LORA_HAS_EXPANDER_DIO1  0
+  #define PM_LORA_HAS_RF_SWITCH      0
+#endif
 
 // ── Mode selection ──────────────────────────────────────────
 // Switching modes drops any in-flight TX/RX and reconfigures
@@ -109,6 +138,16 @@ pm_lora_status_t pm_lora_tx(const uint8_t* buf, size_t len, uint32_t timeout_ms)
 // Set the RX callback. NULL disables RX. The driver enters
 // continuous RX mode whenever a callback is set.
 pm_lora_status_t pm_lora_set_rx_cb(pm_lora_rx_cb_t cb, void* user);
+
+// Set a secondary "logger" callback that fires for every received
+// frame, INDEPENDENT of the primary callback above. This exists so
+// wardrive can passively log all LoRa traffic even while another
+// app (e.g. mesh messenger) holds the primary RX callback for its
+// own use. The logger callback is invoked AFTER the primary one,
+// from the same RX worker task; the buffer is borrowed for the
+// call only. Pass NULL to clear. Multiple calls replace the
+// previous logger — only one logger at a time, by design.
+pm_lora_status_t pm_lora_set_logger_cb(pm_lora_rx_cb_t cb, void* user);
 
 // Diagnostics
 int   pm_lora_last_rssi(void);

@@ -4,9 +4,15 @@
 # Contributions: see CLA.md
 # fluidfortune.com
 
-
+# Both .c files are listed unconditionally — each one's body is
+# gated by #if defined(PM_BOARD_PROFILE_*) so only the active
+# board profile contributes object code. The HI8561 panel driver
+# is also gated on profile (it's irrelevant on the Elecrow boards).
 idf_component_register(
-    SRCS "pm_bsp.c"
+    SRCS
+        "pm_bsp.c"
+        "pm_bsp_lilygo.c"
+        "pm_bsp_hi8561.c"
     INCLUDE_DIRS "include"
     REQUIRES
         pm_board
@@ -16,6 +22,8 @@ idf_component_register(
         esp_driver_gpio
         esp_driver_ledc
         esp_driver_i2c
+        esp_driver_sdmmc
+        fatfs
     PRIV_REQUIRES
         espressif__esp_lcd_ek79007
         espressif__esp_lcd_touch

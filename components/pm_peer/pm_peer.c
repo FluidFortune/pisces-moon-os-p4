@@ -193,6 +193,7 @@ static const char* _kind_name(pm_peer_kind_t k) {
         case PM_PEER_KIND_BT_GAMEPAD:  return "BT Gamepad";
         case PM_PEER_KIND_BT_KEYBOARD: return "BT Keyboard";
         case PM_PEER_KIND_CARDPUTER_I2C: return "Cardputer UART Module";
+        case PM_PEER_KIND_C5_UART:       return "ESP32-C5 Edge Radio";
     }
     return "(unknown)";
 }
